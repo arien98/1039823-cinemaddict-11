@@ -1,7 +1,7 @@
 # Личный проект «Киноман» [![Build status][travis-image]][travis-url]
 
 * Студент: [Светлана Хамматова](https://up.htmlacademy.ru/ecmascript/11/user/1039823).
-* Наставник: `Неизвестно`.
+* Наставник: `Иван Патрицкий`.
 
 ---
 
