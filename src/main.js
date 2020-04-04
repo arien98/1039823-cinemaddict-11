@@ -284,3 +284,4 @@ for (let i = 0; i < MOST_COMMENTED_FILMS_NUMBER; i++) {
   renderElement(`.most-commented`, createFilmCardTemplate(), `beforeend`);
 }
 renderElement(`.footer__statistics`, createFilmCountTemplate(), `beforeend`);
+renderElement(`body`, createFilmDetailsTemplate(), `beforeend`);
