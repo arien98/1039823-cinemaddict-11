@@ -230,6 +230,10 @@ button {
   padding: var(--vertical-gap) 0;
 }
 
+.main-navigation__item::first-letter {
+  text-transform: uppercase;
+}
+
 .main-navigation__item-count {
   background:rgba(0,46,255, 0.4);
   border-radius: 18px;
