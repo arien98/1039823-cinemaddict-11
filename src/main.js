@@ -13,6 +13,13 @@ const TOTAL_FILMS_NUMBER = 20;
 const TOP_RATED_FILMS_NUMBER = 2;
 const MOST_COMMENTED_FILMS_NUMBER = 2;
 
+const renderFilms = (start, end) => {
+  films.slice(start, end)
+  .forEach((film) => {
+    renderElement(`.films-list__container`, createFilmCardTemplate(film), `beforeend`);
+  });
+};
+
 const menuItems = generateMenu();
 const films = generateFilms(TOTAL_FILMS_NUMBER);
 
@@ -23,10 +30,7 @@ const renderElement = (place, template, position) => {
 renderElement(`.header`, createProfileTemplate(), `beforeend`);
 renderElement(`.main`, createMenuTemplate(menuItems), `afterbegin`);
 
-films.slice(0, FILMS_NUMBER_ON_START)
-  .forEach((film) => {
-    renderElement(`.films-list__container`, createFilmCardTemplate(film), `beforeend`);
-  });
+renderFilms(0, FILMS_NUMBER_ON_START);
 
 let filmsOnPageNumber = FILMS_NUMBER_ON_START;
 
@@ -51,10 +55,7 @@ const showButtonClickHandler = () => {
   let prevFilmsNumber = filmsOnPageNumber;
   filmsOnPageNumber += FILMS_NUMBER_ON_BUTTON_CLICK;
 
-  films.slice(prevFilmsNumber, filmsOnPageNumber)
-    .forEach((film) => {
-      renderElement(`.films-list__container`, createFilmCardTemplate(film), `beforeend`);
-    });
+  renderFilms(prevFilmsNumber, filmsOnPageNumber);
 
   if (filmsOnPageNumber >= TOTAL_FILMS_NUMBER) {
     showButton.remove();

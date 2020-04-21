@@ -16,7 +16,7 @@ export const getRandomArrayItems = (array, number) => {
     const randomIndex = getRandomIntegerNumber(0, length);
 
     newArray.push(array[randomIndex]);
-    array.slice(randomIndex, 1);
+    array.splice(randomIndex, 1);
     length--;
   }
   return newArray;

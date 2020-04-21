@@ -7,8 +7,9 @@ const createMenuItem = (name, count, isActive) => {
 };
 
 export const createMenuTemplate = (menuItems) => {
-  const menuMarkup = menuItems.map((it, i) => createMenuItem(it.name, it.count, i === 0))
-  .join(`\n`);
+  const menuMarkup = menuItems
+    .map((it, i) => createMenuItem(it.name, it.count, i === 0))
+    .join(`\n`);
 
   return (
     `<nav class="main-navigation">

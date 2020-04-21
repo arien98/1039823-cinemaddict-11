@@ -1,42 +1,17 @@
-import {createCommentData} from "../mocks/comments.js";
-import {getRandomIntegerNumber} from "../utils.js";
-
-const comments = createCommentData(getRandomIntegerNumber(0, 5));
-
-const createCommentTemplate = () => {
-  return comments.map((comment) => {
-    const {emoji, text, author, date} = comment;
-
-    return (
-      `<li class="film-details__comment">
-        <span class="film-details__comment-emoji">
-          <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
-        </span>
-        <div>
-          <p class="film-details__comment-text">${text}</p>
-          <p class="film-details__comment-info">
-            <span class="film-details__comment-author">${author}</span>
-            <span class="film-details__comment-day">${date}</span>
-            <button class="film-details__comment-delete">Delete</button>
-          </p>
-        </div>
-      </li>`
-    );
-  })
-  .join(`\n`);
-};
+import {createCommentTemplate} from "./comments.js"
 
 const createGenreTemplete = (arr) => {
-  return arr.map((genre) => {
-    return `<span class="film-details__genre">${genre}</span>`;
-  }).join(`\n`);
+  return arr
+    .map((genre) => {
+      return `<span class="film-details__genre">${genre}</span>`;
+    })
+    .join(`\n`);
 };
 
-const commentsMarkup = createCommentTemplate();
-
 export const createFilmDetailsTemplate = (film) => {
-  const {title, originalTitile, rating, duration, genres, posterSrc, description, age, director, writers, actors, releaseDate, country} = film;
+  const {title, originalTitile, rating, duration, genres, posterSrc, description, age, director, writers, actors, releaseDate, country, comments} = film;
   const genresMarkup = createGenreTemplete(genres);
+  const commentsMarkup = createCommentTemplate(comments);
 
   return (
     `<section class="film-details visually-hidden">
@@ -79,7 +54,7 @@ export const createFilmDetailsTemplate = (film) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${releaseDate}</td>
+                  <td class="film-details__cell">${releaseDate.getDate()} ${releaseDate.getMonth()}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>

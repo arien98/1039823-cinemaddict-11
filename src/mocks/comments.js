@@ -1,26 +1,28 @@
-import {getRandomIntegerNumber} from "../utils.js";
+import {getRandomArrayItem} from "../utils.js";
 
-const CommentEmoji = [`angry`, `puke`, `sleeping`, `smile`];
-const CommentText = [
+const COMMENT_EMOJIS = [`angry`, `puke`, `sleeping`, `smile`];
+const COMMENT_TEXTS = [
   `Almost two hours? Seriously?`,
   `Interesting setting and a good cast`,
   `Booooooooooring`,
   `Very very old. Meh`,
   `Interesting setting and a good cast`
 ];
-const CommentAuthor = [`John Doe`, `Tim Macoveev`, `Jerald Bathler`, `Julie Roberts`, `Kathe Blanchet`];
+const COMMENT_AUTHORS = [`John Doe`, `Tim Macoveev`, `Jerald Bathler`, `Julie Roberts`, `Kathe Blanchet`];
 
-const createComment = () => {
+const generateComment = () => {
   return {
-    emoji: CommentEmoji[getRandomIntegerNumber(0, CommentEmoji.length)],
-    text: CommentText[getRandomIntegerNumber(0, CommentText.length)],
-    author: CommentAuthor[getRandomIntegerNumber(0, CommentAuthor.length)],
+    emoji: getRandomArrayItem(COMMENT_EMOJIS),
+    text: getRandomArrayItem(COMMENT_TEXTS),
+    author: getRandomArrayItem(COMMENT_AUTHORS),
     day: new Date()
   };
 };
 
-export const createCommentData = (count) => {
+export const generateComments = (count) => {
   return new Array(count)
     .fill(``)
-    .map(createComment);
+    .map(generateComment);
 };
+
+

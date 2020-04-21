@@ -1,6 +1,8 @@
 import {getRandomIntegerNumber} from "../utils.js";
 import {getRandomArrayItem} from "../utils.js";
 import {getRandomArrayItems} from "../utils.js";
+import {generateComments} from "./comments.js";
+
 
 const FilmTitles = [
   `Made for each other`,
@@ -46,8 +48,28 @@ const FilmDescriptions = [
   `In rutrum ac purus sit amet tempus.`
 ];
 
+const AGES = [`+6`, `12+`, `18+`];
+
+const NAMES = [
+  `Anthony Mann`,
+  `Guy Ritchie`,
+  `Rian Johnson`,
+  `Anne Wigton`,
+  `Heinz Herald`,
+  `Richard Weil`,
+  `Erich von Stroheim`,
+  `Mary Beth Hughes`,
+  `Dan Duryea`,
+  `Matthew McConaughey`,
+  `Charlie Hunnam`,
+  `Michelle Dockery`
+];
+
+const COUNTRIES = [`USA`, `Japan`, `China`, `Russia`, `Mexico`];
+
 const createFilmData = () => {
   let i = getRandomIntegerNumber(0, FilmTitles.length);
+
   return {
     title: FilmTitles[i],
     originalTitile: `Original: ${FilmTitles[i]}`,
@@ -57,13 +79,13 @@ const createFilmData = () => {
     genres: [getRandomArrayItem(FilmGenres), getRandomArrayItem(FilmGenres)],
     posterSrc: FilmSources[i],
     description: getRandomArrayItems(FilmDescriptions, getRandomIntegerNumber(1, 5)).join(` `),
-    comments: [1, 1, 1],
-    age: `18+`,
-    director: `Anthony Mann`,
-    writers: `Anne Wigton, Heinz Herald, Richard Weil`,
-    actors: `Erich von Stroheim, Mary Beth Hughes, Dan Duryea`,
+    comments: generateComments(getRandomIntegerNumber(0, 5)),
+    age: getRandomArrayItem(AGES),
+    director: getRandomArrayItem(NAMES),
+    writers: getRandomArrayItems(NAMES, 3),
+    actors: getRandomArrayItems(NAMES, 3),
     releaseDate: new Date(),
-    country: `USA`,
+    country: getRandomArrayItem(COUNTRIES)
   };
 };
 
