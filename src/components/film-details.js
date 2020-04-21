@@ -1,4 +1,4 @@
-import {createCommentTemplate} from "./comments.js"
+import {createCommentTemplate} from "./comments.js";
 
 const createGenreTemplete = (arr) => {
   return arr
