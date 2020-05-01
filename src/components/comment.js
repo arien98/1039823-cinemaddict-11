@@ -19,6 +19,5 @@ export const createCommentTemplate = (comments) => {
         </li>`
       );
     })
-
-  .join(`\n`);
+    .join(`\n`);
 };

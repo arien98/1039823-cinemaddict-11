@@ -1,7 +1,5 @@
-import {getRandomIntegerNumber} from "../utils.js";
-import {getRandomArrayItem} from "../utils.js";
-import {getRandomArrayItems} from "../utils.js";
-import {generateComments} from "./comments.js";
+import {getRandomIntegerNumber, getRandomArrayItem, getRandomArrayItems} from "../utils.js";
+import {generateComments} from "./comment.js";
 
 
 const FilmTitles = [

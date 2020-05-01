@@ -14,10 +14,11 @@ const TOP_RATED_FILMS_NUMBER = 2;
 const MOST_COMMENTED_FILMS_NUMBER = 2;
 
 const renderFilms = (start, end) => {
-  films.slice(start, end)
-  .forEach((film) => {
-    renderElement(`.films-list__container`, createFilmCardTemplate(film), `beforeend`);
-  });
+  films
+    .slice(start, end)
+    .forEach((film) => {
+      renderElement(`.films-list__container`, createFilmCardTemplate(film), `beforeend`);
+    });
 };
 
 const menuItems = generateMenu();

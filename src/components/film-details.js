@@ -1,7 +1,7 @@
-import {createCommentTemplate} from "./comments.js";
+import {createCommentTemplate} from "./comment.js";
 
-const createGenreTemplete = (arr) => {
-  return arr
+const createGenresTemplate = (genres) => {
+  return genres
     .map((genre) => {
       return `<span class="film-details__genre">${genre}</span>`;
     })
@@ -9,8 +9,11 @@ const createGenreTemplete = (arr) => {
 };
 
 export const createFilmDetailsTemplate = (film) => {
-  const {title, originalTitile, rating, duration, genres, posterSrc, description, age, director, writers, actors, releaseDate, country, comments} = film;
-  const genresMarkup = createGenreTemplete(genres);
+  const {
+    title, originalTitile, rating, duration, genres, posterSrc,
+    description, age, director, writers, actors, releaseDate, country, comments
+  } = film;
+  const genresMarkup = createGenresTemplate(genres);
   const commentsMarkup = createCommentTemplate(comments);
 
   return (
