@@ -1,7 +1,7 @@
 import {createElement} from "../utils.js";
 
-export class ShowButton {
-  constractor() {
+export class ShowButtonComponent {
+  constructor() {
     this._element = null;
   }
 

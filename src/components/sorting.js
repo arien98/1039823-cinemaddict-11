@@ -1,7 +1,7 @@
 import {createElement} from "../utils.js";
 
-export class Sorting {
-  constractor() {
+export class SortingComponent {
+  constructor() {
     this._element = null;
   }
 

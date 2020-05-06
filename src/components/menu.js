@@ -22,8 +22,8 @@ const createMenuTemplate = (menuItems) => {
     </nav>`);
 };
 
-export class Menu {
-  constractor(menuItems) {
+export class MenuComponent {
+  constructor(menuItems) {
     this._menuItems = menuItems;
     this._element = null;
   }

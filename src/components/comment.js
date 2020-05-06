@@ -1,6 +1,6 @@
 import {createElement} from "../utils.js";
 
-const createCommentTemplate = (comments) => {
+const createCommentsTemplate = (comments) => {
   return comments
     .map((comment) => {
       const {emoji, text, author, date} = comment;
@@ -24,14 +24,14 @@ const createCommentTemplate = (comments) => {
     .join(`\n`);
 };
 
-export class Comments {
-  constractor(comments) {
+export class CommentsComponent {
+  constructor(comments) {
     this._comments = comments;
     this._element = null;
   }
 
   getTemplate() {
-    return createCommentTemplate(this._comments);
+    return createCommentsTemplate(this._comments);
   }
 
   getElement() {

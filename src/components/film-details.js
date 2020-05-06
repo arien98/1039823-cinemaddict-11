@@ -1,4 +1,4 @@
-import {Comments} from "./comment.js";
+import {CommentsComponent} from "./comment.js";
 import {createElement} from "../utils.js";
 
 const createGenresTemplate = (genres) => {
@@ -15,7 +15,7 @@ const createFilmDetailsTemplate = (film) => {
     description, age, director, writers, actors, releaseDate, country, comments
   } = film;
   const genresMarkup = createGenresTemplate(genres);
-  const commentsMarkup = new Comments(comments).getElement();
+  const commentsMarkup = new CommentsComponent(comments).getElement();
 
   return (
     `<section class="film-details visually-hidden">
@@ -137,8 +137,8 @@ const createFilmDetailsTemplate = (film) => {
     </section>`);
 };
 
-export class FilmDetails {
-  constractor(film) {
+export class FilmDetailsComponent {
+  constructor(film) {
     this._film = film;
     this._element = null;
   }

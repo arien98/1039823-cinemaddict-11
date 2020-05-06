@@ -1,7 +1,7 @@
 import {createElement} from "../utils.js";
 
-export class Profile {
-  constractor() {
+export class ProfileComponent {
+  constructor() {
     this._element = null;
   }
 

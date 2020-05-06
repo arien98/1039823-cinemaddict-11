@@ -1,16 +1,12 @@
 import {createElement} from "../utils.js";
 
-const createFilmCountTemplate = () => {
-  return `<p>130 291 movies inside</p>`;
-};
-
-export class FilmCount {
-  constractor() {
+export class FilmCountComponent {
+  constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createFilmCountTemplate();
+    return `<p>130 291 movies inside</p>`;
   }
 
   getElement() {

@@ -1,9 +1,9 @@
-import {Profile} from "./components/profile.js";
-import {Menu} from "./components/menu.js";
-import {FilmCard} from "./components/film-card.js";
-import {ShowButton} from "./components/show-button.js";
-import {FilmCount} from "./components/film-count.js";
-import {FilmDetails} from "./components/film-details.js";
+import {ProfileComponent} from "./components/profile.js";
+import {MenuComponent} from "./components/menu.js";
+import {FilmCardComponent} from "./components/film-card.js";
+import {ShowButtonComponent} from "./components/show-button.js";
+import {FilmCountComponent} from "./components/film-count.js";
+import {FilmDetailsComponent} from "./components/film-details.js";
 import {generateMenu} from "./mocks/menu.js";
 import {generateFilms} from "./mocks/film.js";
 import {renderElement, RenderPosition} from "./utils.js";
@@ -24,6 +24,7 @@ const filmList = siteMain.querySelector(`.films-list`);
 const filmListContainer = siteMain.querySelector(`.films-list__container`);
 const topRatedContainer = siteMain.querySelector(`.top-rated`);
 const mostCommentedContainer = siteMain.querySelector(`.most-commented`);
+const footerStatisticsContainer = siteMain.querySelector(`.footer__statistics`);
 
 const renderFilms = (start, end, container) => {
   films
@@ -34,11 +35,9 @@ const renderFilms = (start, end, container) => {
 };
 
 const renderFilm = (film, place) => {
-  const filmComponent = new FilmCard(film);
-  const filmDetailsComponent = new FilmDetails(film);
-  const filmPoster = filmComponent.getElement().querySelector(`.film-card__poster`);
-  const filmTitle = filmComponent.getElement().querySelector(`.film-card__title`);
-  const filmComments = filmComponent.getElement().querySelector(`.film-card__comments`);
+  const filmComponent = new FilmCardComponent(film);
+  const filmDetailsComponent = new FilmDetailsComponent(film);
+  const filmElements = filmComponent.getElement().querySelectorAll(`.film-card__poster, .film-card__title, .film-card__comments`);
   const closeDetailsButton = filmDetailsComponent.getElement().querySelector(`.film-details__close-btn`);
 
   const filmClickHandler = () => {
@@ -49,9 +48,7 @@ const renderFilm = (film, place) => {
     siteBody.remove(filmDetailsComponent.getElement());
   };
 
-  filmPoster.addEventListener(`click`, filmClickHandler);
-  filmTitle.addEventListener(`click`, filmClickHandler);
-  filmComments.addEventListener(`click`, filmClickHandler);
+  filmElements.forEach((element) => element.addEventListener(`click`, filmClickHandler));
   closeDetailsButton.addEventListener(`click`, closeDetailsButtonHandler);
 
   renderElement(place, filmComponent.getElement(), RenderPosition.END);
@@ -59,7 +56,7 @@ const renderFilm = (film, place) => {
 
 const renderBoard = () => {
   renderFilms(0, FILMS_NUMBER_ON_START, filmListContainer);
-  renderElement(filmList, new ShowButton().getElement(), RenderPosition.END);
+  renderElement(filmList, new ShowButtonComponent().getElement(), RenderPosition.END);
 
   const showButton = document.querySelector(`.films-list__show-more`);
   let filmsOnPageNumber = FILMS_NUMBER_ON_START;
@@ -68,7 +65,7 @@ const renderBoard = () => {
     let prevFilmsNumber = filmsOnPageNumber;
     filmsOnPageNumber += FILMS_NUMBER_ON_BUTTON_CLICK;
 
-    renderFilms(prevFilmsNumber, filmsOnPageNumber);
+    renderFilms(prevFilmsNumber, filmsOnPageNumber, filmListContainer);
 
     if (filmsOnPageNumber >= TOTAL_FILMS_NUMBER) {
       showButton.remove();
@@ -79,14 +76,14 @@ const renderBoard = () => {
   showButton.addEventListener(`click`, showButtonClickHandler);
 };
 
-renderElement(siteHeader, new Profile().getElement(), RenderPosition.END);
-renderElement(siteMain, new Menu(menuItems).getElement(), RenderPosition.BEGIN);
+renderElement(siteHeader, new ProfileComponent().getElement(), RenderPosition.END);
+renderElement(siteMain, new MenuComponent(menuItems).getElement(), RenderPosition.BEGIN);
 
-renderElement(siteMain, new FilmCard(films[0]).getElement(), RenderPosition.END);
+renderElement(siteMain, new FilmCardComponent(films[0]).getElement(), RenderPosition.END);
 
 renderBoard();
 
 renderFilms(0, TOP_RATED_FILMS_NUMBER, topRatedContainer);
 renderFilms(0, MOST_COMMENTED_FILMS_NUMBER, mostCommentedContainer);
 
-renderElement(`.footer__statistics`, new FilmCount().getElement(), RenderPosition.END);
+renderElement(footerStatisticsContainer, new FilmCountComponent().getElement(), RenderPosition.END);
