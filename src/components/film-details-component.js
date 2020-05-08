@@ -1,4 +1,4 @@
-import {CommentsComponent} from "./comment.js";
+import {CommentsComponent} from "./comments-component.js";
 import {createElement} from "../utils.js";
 
 const createGenresTemplate = (genres) => {
@@ -18,7 +18,7 @@ const createFilmDetailsTemplate = (film) => {
   const commentsMarkup = new CommentsComponent(comments).getElement();
 
   return (
-    `<section class="film-details visually-hidden">
+    `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
         <div class="form-details__top-container">
           <div class="film-details__close">

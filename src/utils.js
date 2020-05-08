@@ -33,7 +33,7 @@ export const createElement = (template) => {
   return newElement.firstChild;
 };
 
-export const renderElement = (container, element, place) => {
+export const renderElement = (container, element, place = RenderPosition.END) => {
   switch (place) {
     case RenderPosition.BEGIN:
       container.prepend(element);

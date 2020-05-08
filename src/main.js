@@ -1,9 +1,9 @@
-import {ProfileComponent} from "./components/profile.js";
-import {MenuComponent} from "./components/menu.js";
-import {FilmCardComponent} from "./components/film-card.js";
-import {ShowButtonComponent} from "./components/show-button.js";
-import {FilmCountComponent} from "./components/film-count.js";
-import {FilmDetailsComponent} from "./components/film-details.js";
+import {ProfileComponent} from "./components/profile-component.js";
+import {MenuComponent} from "./components/menu-component.js";
+import {FilmCardComponent} from "./components/film-card-component.js";
+import {ShowButtonComponent} from "./components/show-button-component.js";
+import {FilmCountComponent} from "./components/film-count-component.js";
+import {FilmDetailsComponent} from "./components/film-details-component.js";
 import {generateMenu} from "./mocks/menu.js";
 import {generateFilms} from "./mocks/film.js";
 import {renderElement, RenderPosition} from "./utils.js";
@@ -19,7 +19,6 @@ const films = generateFilms(TOTAL_FILMS_NUMBER);
 
 const siteMain = document.querySelector(`.main`);
 const siteHeader = document.querySelector(`.header`);
-const siteBody = document.querySelector(`.body`);
 const filmList = siteMain.querySelector(`.films-list`);
 const filmListContainer = siteMain.querySelector(`.films-list__container`);
 const topRatedContainer = siteMain.querySelector(`.top-rated`);
@@ -41,22 +40,23 @@ const renderFilm = (film, place) => {
   const closeDetailsButton = filmDetailsComponent.getElement().querySelector(`.film-details__close-btn`);
 
   const filmClickHandler = () => {
-    siteBody.append(filmDetailsComponent.getElement());
+    siteMain.append(filmDetailsComponent.getElement());
+    closeDetailsButton.addEventListener(`click`, closeDetailsButtonHandler);
   };
 
   const closeDetailsButtonHandler = () => {
-    siteBody.remove(filmDetailsComponent.getElement());
+    siteMain.removeChild(filmDetailsComponent.getElement());
+    closeDetailsButton.removeEventListener(`click`, closeDetailsButtonHandler);
   };
 
   filmElements.forEach((element) => element.addEventListener(`click`, filmClickHandler));
-  closeDetailsButton.addEventListener(`click`, closeDetailsButtonHandler);
 
-  renderElement(place, filmComponent.getElement(), RenderPosition.END);
+  renderElement(place, filmComponent.getElement());
 };
 
 const renderBoard = () => {
   renderFilms(0, FILMS_NUMBER_ON_START, filmListContainer);
-  renderElement(filmList, new ShowButtonComponent().getElement(), RenderPosition.END);
+  renderElement(filmList, new ShowButtonComponent().getElement());
 
   const showButton = document.querySelector(`.films-list__show-more`);
   let filmsOnPageNumber = FILMS_NUMBER_ON_START;
@@ -76,14 +76,12 @@ const renderBoard = () => {
   showButton.addEventListener(`click`, showButtonClickHandler);
 };
 
-renderElement(siteHeader, new ProfileComponent().getElement(), RenderPosition.END);
+renderElement(siteHeader, new ProfileComponent().getElement());
 renderElement(siteMain, new MenuComponent(menuItems).getElement(), RenderPosition.BEGIN);
-
-renderElement(siteMain, new FilmCardComponent(films[0]).getElement(), RenderPosition.END);
 
 renderBoard();
 
 renderFilms(0, TOP_RATED_FILMS_NUMBER, topRatedContainer);
 renderFilms(0, MOST_COMMENTED_FILMS_NUMBER, mostCommentedContainer);
 
-renderElement(footerStatisticsContainer, new FilmCountComponent().getElement(), RenderPosition.END);
+renderElement(footerStatisticsContainer, new FilmCountComponent().getElement());
