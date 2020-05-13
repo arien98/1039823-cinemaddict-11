@@ -1,4 +1,5 @@
-import {createCommentTemplate} from "./comment.js";
+import {CommentsComponent} from "./comments-component.js";
+import {createElement} from "../utils.js";
 
 const createGenresTemplate = (genres) => {
   return genres
@@ -8,16 +9,16 @@ const createGenresTemplate = (genres) => {
     .join(`\n`);
 };
 
-export const createFilmDetailsTemplate = (film) => {
+const createFilmDetailsTemplate = (film) => {
   const {
     title, originalTitile, rating, duration, genres, posterSrc,
     description, age, director, writers, actors, releaseDate, country, comments
   } = film;
   const genresMarkup = createGenresTemplate(genres);
-  const commentsMarkup = createCommentTemplate(comments);
+  const commentsMarkup = new CommentsComponent(comments).getElement();
 
   return (
-    `<section class="film-details visually-hidden">
+    `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
         <div class="form-details__top-container">
           <div class="film-details__close">
@@ -135,3 +136,25 @@ export const createFilmDetailsTemplate = (film) => {
       </form>
     </section>`);
 };
+
+export class FilmDetailsComponent {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmDetailsTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

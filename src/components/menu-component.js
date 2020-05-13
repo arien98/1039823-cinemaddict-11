@@ -1,3 +1,5 @@
+import {createElement} from "../utils.js";
+
 const createMenuItem = (name, count, isActive) => {
   return (
     `<a href="#${name}" class="main-navigation__item ${isActive ? `main-navigation__item--active` : ``}">
@@ -6,7 +8,7 @@ const createMenuItem = (name, count, isActive) => {
   );
 };
 
-export const createMenuTemplate = (menuItems) => {
+const createMenuTemplate = (menuItems) => {
   const menuMarkup = menuItems
     .map((it, i) => createMenuItem(it.name, it.count, i === 0))
     .join(`\n`);
@@ -17,11 +19,27 @@ export const createMenuTemplate = (menuItems) => {
         ${menuMarkup}
       </div>
       <a href="#stats" class="main-navigation__additional">Stats</a>
-    </nav>
-
-    <ul class="sort">
-      <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
-      <li><a href="#" class="sort__button">Sort by date</a></li>
-      <li><a href="#" class="sort__button">Sort by rating</a></li>
-    </ul>`);
+    </nav>`);
 };
+
+export class MenuComponent {
+  constructor(menuItems) {
+    this._menuItems = menuItems;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createMenuTemplate(this._menuItems);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,4 +1,6 @@
-export const createCommentTemplate = (comments) => {
+import {createElement} from "../utils.js";
+
+const createCommentsTemplate = (comments) => {
   return comments
     .map((comment) => {
       const {emoji, text, author, date} = comment;
@@ -21,3 +23,25 @@ export const createCommentTemplate = (comments) => {
     })
     .join(`\n`);
 };
+
+export class CommentsComponent {
+  constructor(comments) {
+    this._comments = comments;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createCommentsTemplate(this._comments);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
