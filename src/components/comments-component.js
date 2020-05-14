@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import {AbstractComponent} from "./abstract-component.js";
 
 const createCommentsTemplate = (comments) => {
   return comments
@@ -24,24 +24,13 @@ const createCommentsTemplate = (comments) => {
     .join(`\n`);
 };
 
-export class CommentsComponent {
+export class CommentsComponent extends AbstractComponent {
   constructor(comments) {
+    super();
     this._comments = comments;
-    this._element = null;
   }
 
   getTemplate() {
     return createCommentsTemplate(this._comments);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,5 +1,5 @@
 import {CommentsComponent} from "./comments-component.js";
-import {createElement} from "../utils.js";
+import {AbstractComponent} from "./abstract-component.js";
 
 const createGenresTemplate = (genres) => {
   return genres
@@ -137,24 +137,21 @@ const createFilmDetailsTemplate = (film) => {
     </section>`);
 };
 
-export class FilmDetailsComponent {
+export class FilmDetailsComponent extends AbstractComponent {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmDetailsTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  setCloseButtonHandler(handler) {
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, handler);
   }
 
-  removeElement() {
-    this._element = null;
+  removeCloseButtonHandler(handler) {
+    this.getElement().querySelector(`.film-details__close-btn`).removeEventListener(`click`, handler);
   }
 }
