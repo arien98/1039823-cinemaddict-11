@@ -1,4 +1,4 @@
-import {getRandomIntegerNumber, getRandomArrayItem, getRandomArrayItems} from "../utils.js";
+import {getRandomIntegerNumber, getRandomArrayItem, getRandomArrayItems} from "../utils/common.js";
 import {generateComments} from "./comment.js";
 
 

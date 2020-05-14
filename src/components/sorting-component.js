@@ -1,10 +1,6 @@
-import {createElement} from "../utils.js";
+import {AbstractComponent} from "./abstract-component.js";
 
-export class SortingComponent {
-  constructor() {
-    this._element = null;
-  }
-
+export class SortingComponent extends AbstractComponent {
   getTemplate() {
     return (
       `<ul class="sort">
@@ -12,16 +8,5 @@ export class SortingComponent {
         <li><a href="#" class="sort__button">Sort by date</a></li>
         <li><a href="#" class="sort__button">Sort by rating</a></li>
       </ul>`);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

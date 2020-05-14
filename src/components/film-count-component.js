@@ -1,22 +1,7 @@
-import {createElement} from "../utils.js";
+import {AbstractComponent} from "./abstract-component";
 
-export class FilmCountComponent {
-  constructor() {
-    this._element = null;
-  }
-
+export class FilmCountComponent extends AbstractComponent {
   getTemplate() {
     return `<p>130 291 movies inside</p>`;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
