@@ -32,4 +32,11 @@ export class FilmCardComponent extends AbstractComponent {
   getTemplate() {
     return createFilmCardTemplate(this._film);
   }
+
+  setClickHandler(handler) {
+    this.getElement().querySelectorAll(`.film-card__poster, .film-card__title, .film-card__comments`)
+      .forEach((element) => {
+        element.addEventListener(`click`, handler);
+      });
+  }
 }

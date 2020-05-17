@@ -16,7 +16,7 @@ const TOP_RATED_FILMS_NUMBER = 2;
 const MOST_COMMENTED_FILMS_NUMBER = 2;
 
 const menuItems = generateMenu();
-const films = generateFilms(TOTAL_FILMS_NUMBER);
+const filmsData = generateFilms(TOTAL_FILMS_NUMBER);
 
 const siteMain = document.querySelector(`.main`);
 const siteHeader = document.querySelector(`.header`);
@@ -26,7 +26,7 @@ const topRatedContainer = siteMain.querySelector(`.top-rated`);
 const mostCommentedContainer = siteMain.querySelector(`.most-commented`);
 const footerStatisticsContainer = document.querySelector(`.footer__statistics`);
 
-const renderFilms = (start, end, container) => {
+const renderFilms = (start, end, container, films = filmsData) => {
   films
     .slice(start, end)
     .forEach((film) => {
@@ -37,7 +37,6 @@ const renderFilms = (start, end, container) => {
 const renderFilm = (film, place) => {
   const filmComponent = new FilmCardComponent(film);
   const filmDetailsComponent = new FilmDetailsComponent(film);
-  const filmElements = filmComponent.getElement().querySelectorAll(`.film-card__poster, .film-card__title, .film-card__comments`);
 
   const filmClickHandler = () => {
     renderElement(siteMain, filmDetailsComponent);
@@ -57,7 +56,7 @@ const renderFilm = (film, place) => {
     }
   };
 
-  filmElements.forEach((element) => element.addEventListener(`click`, filmClickHandler));
+  filmComponent.setClickHandler(filmClickHandler);
 
   renderElement(place, filmComponent);
 };
