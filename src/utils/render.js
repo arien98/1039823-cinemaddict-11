@@ -1,6 +1,7 @@
 export const RenderPosition = {
   BEGIN: `afterbegin`,
-  END: `beforeend`
+  END: `beforeend`,
+  AFTER: `afterend`
 };
 
 export const createElement = (template) => {
@@ -17,6 +18,9 @@ export const renderElement = (container, component, place = RenderPosition.END) 
     case RenderPosition.END:
       container.append(component.getElement());
       break;
+    case RenderPosition.AFTER:
+      container.after(component.getElement());
+      break;
   }
 };
 
@@ -24,3 +28,11 @@ export const remove = (component) => {
   component.getElement().remove();
   component.renderElement();
 };
+
+// export const renderFilms = (start, end, container, films) => {
+//   films
+//     .slice(start, end)
+//     .forEach((film) => {
+//       renderFilm(film, container);
+//     });
+// };
