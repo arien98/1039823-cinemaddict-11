@@ -26,13 +26,5 @@ export const renderElement = (container, component, place = RenderPosition.END) 
 
 export const remove = (component) => {
   component.getElement().remove();
-  component.renderElement();
+  component.removeElement();
 };
-
-// export const renderFilms = (start, end, container, films) => {
-//   films
-//     .slice(start, end)
-//     .forEach((film) => {
-//       renderFilm(film, container);
-//     });
-// };
