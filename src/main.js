@@ -3,18 +3,19 @@ import {FilmCardComponent} from "./components/film-card-component.js";
 import {FilmCountComponent} from "./components/film-count-component.js";
 import {FilmDetailsComponent} from "./components/film-details-component.js";
 import {generateFilms} from "./mocks/film.js";
-import {renderElement, remove} from "./utils/render.js";
+import {renderElement, RenderPosition, remove} from "./utils/render.js";
 import {PageController} from "./controllers/page-controller.js";
+import {MenuComponent} from "./components/menu-component.js";
+import {generateMenu} from "./mocks/menu.js";
 
 const TOTAL_FILMS_NUMBER = 20;
-const TOP_RATED_FILMS_NUMBER = 2;
-const MOST_COMMENTED_FILMS_NUMBER = 2;
 
 const filmsData = generateFilms(TOTAL_FILMS_NUMBER);
+const menuItems = generateMenu();
 
 const siteMain = document.querySelector(`.main`);
 const siteHeader = document.querySelector(`.header`);
-const filmListContainer = siteMain.querySelector(`.films-list__container`);
+const filmContainer = siteMain.querySelector(`.films`);
 const topRatedContainer = siteMain.querySelector(`.top-rated`);
 const mostCommentedContainer = siteMain.querySelector(`.most-commented`);
 const footerStatisticsContainer = document.querySelector(`.footer__statistics`);
@@ -55,9 +56,10 @@ const renderFilm = (film, place) => {
 };
 
 renderElement(siteHeader, new ProfileComponent());
+renderElement(siteMain, new MenuComponent(menuItems), RenderPosition.BEGIN);
 
-new PageController(siteMain, filmListContainer).render(filmsData);
+new PageController(siteMain).render(filmsData);
 
-renderFilms(0, TOP_RATED_FILMS_NUMBER, topRatedContainer);
-renderFilms(0, MOST_COMMENTED_FILMS_NUMBER, mostCommentedContainer);
+// renderFilms(0, TOP_RATED_FILMS_NUMBER, topRatedContainer);
+// renderFilms(0, MOST_COMMENTED_FILMS_NUMBER, mostCommentedContainer);
 renderElement(footerStatisticsContainer, new FilmCountComponent());

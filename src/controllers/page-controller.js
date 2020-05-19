@@ -4,14 +4,13 @@ import {FilmDetailsComponent} from "../components/film-details-component.js";
 import {NoFilmsComponents} from "../components/no-films-component.js";
 import {renderElement, RenderPosition, remove} from "../utils/render.js";
 import {SortingComponent, SortType} from "../components/sorting-component.js";
-import {MenuComponent} from "../components/menu-component.js";
-import {generateMenu} from "../mocks/menu.js";
+import {FilmsContainerComponent} from "../components/films-container-component.js";
 
+const TOTAL_FILMS_NUMBER = 20;
 const FILMS_NUMBER_ON_START = 5;
 const FILMS_NUMBER_ON_BUTTON_CLICK = 5;
-const TOTAL_FILMS_NUMBER = 20;
-
-const menuItems = generateMenu();
+const TOP_RATED_FILMS_NUMBER = 2;
+const MOST_COMMENTED_FILMS_NUMBER = 2;
 
 const renderFilms = (start, end, container, films) => {
   films
@@ -22,12 +21,11 @@ const renderFilms = (start, end, container, films) => {
 };
 
 const renderFilm = (film, place) => {
-  const siteMain = document.querySelector(`.main`);
   const filmComponent = new FilmCardComponent(film);
   const filmDetailsComponent = new FilmDetailsComponent(film);
 
   const filmClickHandler = () => {
-    renderElement(siteMain, filmDetailsComponent);
+    renderElement(document.body, filmDetailsComponent);
     filmDetailsComponent.setCloseButtonHandler(closeDetailsButtonHandler);
     document.addEventListener(`keydown`, escPressHandler);
   };
@@ -69,50 +67,59 @@ const getSortedFilms = (films, sortType) => {
 };
 
 export class PageController {
-  constructor(container, filmContainer) {
+  constructor(container) {
     this._container = container;
-    this._filmContainer = filmContainer;
     this._showButton = new ShowButtonComponent();
     this._noFilms = new NoFilmsComponents();
-    this._menu = new MenuComponent(menuItems);
     this._sorting = new SortingComponent();
+    this._filmsContainer = new FilmsContainerComponent();
   }
 
   render(filmsData) {
-    renderElement(this._container, this._sorting, RenderPosition.BEGIN);
-    renderElement(this._container, this._menu, RenderPosition.BEGIN);
+    renderElement(this._container, this._filmsContainer);
+
+    const filmsContainer = this._filmsContainer.getFilmsContainer();
+    const topRatedFilmsContainer = this._filmsContainer.getTopRatedFilmsContainer();
+    const mostCommentedFilmsContainer = this._filmsContainer.getTopMostCommentedContainer();
+
+    if (TOTAL_FILMS_NUMBER === 0) {
+      renderElement(filmsContainer, this._noFilms);
+      return;
+    }
+
+    renderElement(filmsContainer, this._sorting, RenderPosition.BEFORE);
+
+    const showButtonClickHandler = (films, filmsOnPageNumber) => () => {
+      let prevFilmsNumber = filmsOnPageNumber;
+      filmsOnPageNumber += FILMS_NUMBER_ON_BUTTON_CLICK;
+
+      renderFilms(prevFilmsNumber, filmsOnPageNumber, filmsContainer, films);
+
+      if (filmsOnPageNumber >= TOTAL_FILMS_NUMBER) {
+        remove(this._showButton);
+        this._showButton.removeClickHandler(showButtonClickHandler);
+      }
+    };
 
     const renderFilmDesk = (films) => {
-      if (TOTAL_FILMS_NUMBER === 0) {
-        renderElement(this._filmContainer, this._noFilms);
-      } else {
-        renderFilms(0, FILMS_NUMBER_ON_START, this._filmContainer, films);
-        renderElement(this._filmContainer, this._showButton, RenderPosition.AFTER);
-      }
+      renderFilms(0, FILMS_NUMBER_ON_START, filmsContainer, films);
+      renderElement(filmsContainer, this._showButton, RenderPosition.AFTER);
 
       let filmsOnPageNumber = FILMS_NUMBER_ON_START;
 
-      const showButtonClickHandler = () => {
-        let prevFilmsNumber = filmsOnPageNumber;
-        filmsOnPageNumber += FILMS_NUMBER_ON_BUTTON_CLICK;
-
-        renderFilms(prevFilmsNumber, filmsOnPageNumber, this._filmContainer, films);
-
-        if (filmsOnPageNumber >= TOTAL_FILMS_NUMBER) {
-          remove(this._showButton);
-          this._showButton.removeClickHandler(showButtonClickHandler);
-        }
-      };
-
-      this._showButton.setClickHandler(showButtonClickHandler);
+      this._showButton.setClickHandler(showButtonClickHandler(films, filmsOnPageNumber));
     };
 
     renderFilmDesk(filmsData);
 
     this._sorting.setSortTypeChengeHandler((sortType) => {
-      this._filmContainer.innerHTML = ``;
+      this._showButton.removeClickHandler(showButtonClickHandler);
+      filmsContainer.innerHTML = ``;
 
       renderFilmDesk(getSortedFilms(filmsData, sortType));
     });
+
+    renderFilms(0, TOP_RATED_FILMS_NUMBER, topRatedFilmsContainer, filmsData);
+    renderFilms(0, MOST_COMMENTED_FILMS_NUMBER, mostCommentedFilmsContainer, filmsData);
   }
 }

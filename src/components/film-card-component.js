@@ -34,7 +34,8 @@ export class FilmCardComponent extends AbstractComponent {
   }
 
   setClickHandler(handler) {
-    this.getElement().querySelectorAll(`.film-card__poster, .film-card__title, .film-card__comments`)
+    this.getElement()
+      .querySelectorAll(`.film-card__poster, .film-card__title, .film-card__comments`)
       .forEach((element) => {
         element.addEventListener(`click`, handler);
       });
