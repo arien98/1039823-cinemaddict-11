@@ -1,4 +1,4 @@
-import {getRandomArrayItem} from "../utils.js";
+import {getRandomArrayItem} from "../utils/common.js";
 
 const COMMENT_EMOJIS = [`angry`, `puke`, `sleeping`, `smile`];
 const COMMENT_TEXTS = [
