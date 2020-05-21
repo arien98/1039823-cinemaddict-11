@@ -38,6 +38,4 @@ export class FilmController {
       this._closeDetailsButtonHandler();
     }
   }
-
-  
 }
