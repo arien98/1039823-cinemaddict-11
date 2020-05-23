@@ -15,7 +15,7 @@ const createFilmDetailsTemplate = (film) => {
     description, age, director, writers, actors, releaseDate, country, comments
   } = film;
   const genresMarkup = createGenresTemplate(genres);
-  const commentsMarkup = new CommentsComponent(comments).getElement();
+  const commentsMarkup = new CommentsComponent(comments).getTemplate();
 
   return (
     `<section class="film-details">
@@ -145,6 +145,7 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     this._historyClickHandler = null;
     this._favoriteClickHandler = null;
     this._closeButtonClickHandler = null;
+    this._escClickHandler = null;
   }
 
   getTemplate() {
@@ -158,6 +159,15 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
 
   removeCloseButtonHandler(handler) {
     this.getElement().querySelector(`.film-details__close-btn`).removeEventListener(`click`, handler);
+  }
+
+  setEscButtonHandler(handler) {
+    document.addEventListener(`keydown`, handler);
+    this._escClickHandler = handler;
+  }
+
+  removeEscButtonHandler(handler) {
+    document.removeEventListener(`keydown`, handler);
   }
 
   setWatchlistButtonClickHandler(handler) {
@@ -198,6 +208,7 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
 
   recoveryListeners() {
     this.setCloseButtonHandler(this._closeButtonClickHandler);
+    this.setEscButtonHandler(this._escClickHandler);
     this.setWatchlistButtonClickHandler(this._watchlistClickHandler);
     this.setWatchedButtonClickHandler(this._historyClickHandler);
     this.setFavoriteButtonClickHandler(this._favoriteClickHandler);

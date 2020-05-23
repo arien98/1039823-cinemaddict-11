@@ -48,7 +48,7 @@ export class FilmController {
       renderElement(document.body, this._filmDetails);
 
       this._filmDetails.setCloseButtonHandler(this._closeDetailsButtonHandler);
-      document.addEventListener(`keydown`, this._escPressHandler);
+      this._filmDetails.setEscButtonHandler(this._escPressHandler);
 
       this._filmDetails.setWatchlistButtonClickHandler(() => {
         this._onDataChange(this, film, Object.assign({}, film, {isInWatchlist: !film.isInWatchlist}));
@@ -65,7 +65,7 @@ export class FilmController {
   _closeDetailsButtonHandler() {
     remove(this._filmDetails);
     this._filmDetails.removeCloseButtonHandler(this._closeDetailsButtonHandler);
-    document.removeEventListener(`keydown`, this._escPressHandler);
+    this._filmDetails.removeEscButtonHandler(this._escPressHandler);
   }
 
   _escPressHandler(evt) {
