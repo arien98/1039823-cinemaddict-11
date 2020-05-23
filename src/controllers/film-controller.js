@@ -16,26 +16,27 @@ export class FilmController {
   }
 
   render(film) {
-    this._film = new FilmCardComponent(film);
-    this._filmDetails = new FilmDetailsComponent(film);
+    this._film = film;
+    this._filmComponent = new FilmCardComponent(this._film);
+    this._filmDetails = new FilmDetailsComponent(this._film);
 
-    renderElement(this._container, this._film);
+    renderElement(this._container, this._filmComponent);
 
-    this._film.setClickHandler(this._filmClickHandler(film));
+    this._filmComponent.setClickHandler(this._filmClickHandler(this._film));
 
-    this._film.setWatchlistButtonClickHandler((evt) => {
+    this._filmComponent.setWatchlistButtonClickHandler((evt) => {
       evt.preventDefault();
-      this._onDataChange(this, film, Object.assign({}, film, {isInWatchlist: !film.isInWatchlist}));
+      this._onDataChange(this, this._film, Object.assign({}, this._film, {isInWatchlist: !this._film.isInWatchlist}));
     });
 
-    this._film.setWatchedButtonClickHandler((evt) => {
+    this._filmComponent.setWatchedButtonClickHandler((evt) => {
       evt.preventDefault();
-      this._onDataChange(this, film, Object.assign({}, film, {isHistor: !film.isHistor}));
+      this._onDataChange(this, this._film, Object.assign({}, this._film, {isHistor: !this._film.isHistor}));
     });
 
-    this._film.setFavoriteButtonClickHandler((evt) => {
+    this._filmComponent.setFavoriteButtonClickHandler((evt) => {
       evt.preventDefault();
-      this._onDataChange(this, film, Object.assign({}, film, {isFavorite: !film.isFavorite}));
+      this._onDataChange(this, this._film, Object.assign({}, this._film, {isFavorite: !this._film.isFavorite}));
     });
   }
 
