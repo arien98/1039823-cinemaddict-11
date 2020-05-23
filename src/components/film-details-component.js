@@ -2,6 +2,8 @@ import {CommentsComponent} from "./comments-component.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import moment from "moment";
 
+const emojis = [`smile`, `sleeping`, `puke`, `angry`];
+
 const createGenresTemplate = (genres) => {
   return genres
     .map((genre) => {
@@ -10,7 +12,18 @@ const createGenresTemplate = (genres) => {
     .join(`\n`);
 };
 
-const createFilmDetailsTemplate = (film) => {
+const createEmojiMarkup = (newComment) => {
+  emojis.map((emoji) => {
+    return (
+      `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${(newComment.emoji === emoji) ? `checked` : ``}>
+      <label class="film-details__emoji-label" for="emoji-${emoji}">
+        <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji" dataset-emoji-type = ${emoji}>
+      </label>`);
+  })
+    .join(`\n`);
+};
+
+const createFilmDetailsTemplate = (film, newComment) => {
   const {
     title, originalTitile, rating, duration, genres, posterSrc,
     description, age, director, writers, actors, releaseDate, country, comments
@@ -18,6 +31,8 @@ const createFilmDetailsTemplate = (film) => {
   const genresMarkup = createGenresTemplate(genres);
   const commentsMarkup = new CommentsComponent(comments).getTemplate();
   const releaseDateMarkup = moment(releaseDate, `YYYYMMDD`).fromNow();
+
+  const emojisMarkup = createEmojiMarkup(newComment);
 
   return (
     `<section class="film-details">
@@ -112,25 +127,7 @@ const createFilmDetailsTemplate = (film) => {
               </label>
 
               <div class="film-details__emoji-list">
-                <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
-                <label class="film-details__emoji-label" for="emoji-smile">
-                  <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
-                </label>
-
-                <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
-                <label class="film-details__emoji-label" for="emoji-sleeping">
-                  <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-                </label>
-
-                <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
-                <label class="film-details__emoji-label" for="emoji-puke">
-                  <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-                </label>
-
-                <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
-                <label class="film-details__emoji-label" for="emoji-angry">
-                  <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-                </label>
+                ${emojisMarkup}
               </div>
             </div>
           </section>
@@ -148,10 +145,11 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     this._favoriteClickHandler = null;
     this._closeButtonClickHandler = null;
     this._escClickHandler = null;
+    this._newComment = {};
   }
 
   getTemplate() {
-    return createFilmDetailsTemplate(this._film);
+    return createFilmDetailsTemplate(this._film, this._newComment);
   }
 
   setCloseButtonHandler(handler) {
@@ -201,10 +199,11 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   }
 
   setEmoji(emoji) {
+    this._newComment = {emoji: `${emoji}`};
     this.rerender();
     this.recoveryListeners();
     const container = this.getElement().querySelector(`.film-details__add-emoji-label`);
-    container.append(emoji);
+    container.append(this._createEmojiMarkup(emoji).getTemplate());
   }
 
   recoveryListeners() {
@@ -214,6 +213,10 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     this.setWatchedButtonClickHandler(this._historyClickHandler);
     this.setFavoriteButtonClickHandler(this._favoriteClickHandler);
     this.setEmojiClickHandler(this._emojiClickHandler);
+  }
+
+  _createEmojiMarkup(emoji) {
+    return `<img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji" dataset-emoji-type = ${emoji}>`;
   }
 
   reset() {

@@ -6,7 +6,7 @@ import {FilmsContainerComponent} from "../components/films-container-component.j
 import {FilmController} from "./film-controller.js";
 
 export class PageController {
-  constructor(container) {
+  constructor(container, filmsModel) {
     this._films = [];
     this._showedFilmControllers = [];
     this._container = container;
@@ -21,6 +21,7 @@ export class PageController {
     this._filmsOnPageNumber = 0;
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
+    this._filmsModel = filmsModel;
   }
 
 

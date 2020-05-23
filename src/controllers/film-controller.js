@@ -9,7 +9,7 @@ export class FilmController {
     this._closeDetailsButtonHandler = this._closeDetailsButtonHandler.bind(this);
     this._escPressHandler = this._escPressHandler.bind(this);
     this._onDataChange = onDataChange;
-    this._EmojiClickHandler = this._EmojiClickHandler.bind(this);
+    this._EmojiClickHandler = this._emojiClickHandler.bind(this);
     this._onViewChange = onViewChange;
     this._film = null;
     this._filmDetails = null;
@@ -47,7 +47,7 @@ export class FilmController {
 
       this._filmDetails.setCloseButtonHandler(this._closeDetailsButtonHandler);
       this._filmDetails.setEscButtonHandler(this._escPressHandler);
-      this._filmDetails.setEmojiClickHandler(this._EmojiClickHandler);
+      this._filmDetails.setEmojiClickHandler(this._emojiClickHandler);
 
       this._filmDetails.setWatchlistButtonClickHandler(() => {
         this._onDataChange(this, film, Object.assign({}, film, {isInWatchlist: !film.isInWatchlist}));
@@ -73,8 +73,8 @@ export class FilmController {
     }
   }
 
-  _EmojiClickHandler(evt) {
-    const emoji = evt.target.cloneNode();
+  _emojiClickHandler(evt) {
+    const emoji = evt.target.datasetEmojiType;
     this._filmDetails.setEmoji(emoji);
   }
 

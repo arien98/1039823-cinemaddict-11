@@ -5,6 +5,7 @@ import {renderElement, RenderPosition} from "./utils/render.js";
 import {PageController} from "./controllers/page-controller.js";
 import {MenuComponent} from "./components/menu-component.js";
 import {generateMenu} from "./mocks/menu.js";
+import FilmsModel from "./models/films-model.js";
 
 export const TOTAL_FILMS_NUMBER = 20;
 
@@ -18,6 +19,6 @@ const footerStatisticsContainer = document.querySelector(`.footer__statistics`);
 renderElement(siteHeader, new ProfileComponent());
 renderElement(siteMain, new MenuComponent(menuItems), RenderPosition.BEGIN);
 
-new PageController(siteMain).render(filmsData);
+new PageController(siteMain).render(filmsData, new FilmsModel());
 
 renderElement(footerStatisticsContainer, new FilmCountComponent());
