@@ -1,6 +1,6 @@
 import {getRandomIntegerNumber, getRandomArrayItem, getRandomArrayItems} from "../utils/common.js";
 import {generateComments} from "./comment.js";
-
+import moment from "moment";
 
 const FilmTitles = [
   `Made for each other`,
@@ -82,8 +82,11 @@ const createFilmData = () => {
     director: getRandomArrayItem(NAMES),
     writers: getRandomArrayItems(NAMES, 3),
     actors: getRandomArrayItems(NAMES, 3),
-    releaseDate: new Date(),
-    country: getRandomArrayItem(COUNTRIES)
+    releaseDate: moment(new Date()).format(`MMMM Do YYYY`),
+    country: getRandomArrayItem(COUNTRIES),
+    isInWatchlist: null,
+    isFavorite: null,
+    isHistory: null
   };
 };
 

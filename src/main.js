@@ -7,14 +7,14 @@ import {MenuComponent} from "./components/menu-component.js";
 import {generateMenu} from "./mocks/menu.js";
 
 export const FilmsNumber = {
-  TOTAL: `20`,
-  ON_START: `5`,
-  ON_BUTTON_CLICK: `5`,
-  TOP_RATED: `2`,
-  MOST_COMMENTED: `2`
+  TOTAL: 20,
+  ON_START: 5,
+  ON_BUTTON_CLICK: 5,
+  TOP_RATED: 5,
+  MOST_COMMENTED: 2
 };
 
-const filmsData = generateFilms(20);
+const filmsData = generateFilms(FilmsNumber.TOTAL);
 const menuItems = generateMenu();
 
 const siteMain = document.querySelector(`.main`);

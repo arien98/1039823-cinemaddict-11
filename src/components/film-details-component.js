@@ -1,5 +1,5 @@
 import {CommentsComponent} from "./comments-component.js";
-import {AbstractComponent} from "./abstract-component.js";
+import AbstractSmartComponent from "./abstract-smart-component.js";
 
 const createGenresTemplate = (genres) => {
   return genres
@@ -58,7 +58,7 @@ const createFilmDetailsTemplate = (film) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${releaseDate.getDate()} ${releaseDate.getMonth()}</td>
+                  <td class="film-details__cell">${releaseDate}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
@@ -96,7 +96,7 @@ const createFilmDetailsTemplate = (film) => {
 
         <div class="form-details__bottom-container">
           <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>
+            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
             <ul class="film-details__comments-list">
               ${commentsMarkup}
@@ -137,10 +137,14 @@ const createFilmDetailsTemplate = (film) => {
     </section>`);
 };
 
-export class FilmDetailsComponent extends AbstractComponent {
+export class FilmDetailsComponent extends AbstractSmartComponent {
   constructor(film) {
     super();
     this._film = film;
+    this._watchlistClickHandler = null;
+    this._historyClickHandler = null;
+    this._favoriteClickHandler = null;
+    this._closeButtonClickHandler = null;
   }
 
   getTemplate() {
@@ -149,6 +153,7 @@ export class FilmDetailsComponent extends AbstractComponent {
 
   setCloseButtonHandler(handler) {
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, handler);
+    this._closeButtonClickHandler = handler;
   }
 
   removeCloseButtonHandler(handler) {
@@ -157,19 +162,50 @@ export class FilmDetailsComponent extends AbstractComponent {
 
   setWatchlistButtonClickHandler(handler) {
     this.getElement()
-      .querySelector(`.film-card__controls-item--add-to-watchlist`)
+      .querySelector(`.film-details__control-label--watchlist`)
       .addEventListener(`click`, handler);
+    this._watchlistClickHandler = handler;
   }
 
   setWatchedButtonClickHandler(handler) {
     this.getElement()
-      .querySelector(`.film-card__controls-item--mark-as-watched`)
+      .querySelector(`.film-details__control-label--watched`)
       .addEventListener(`click`, handler);
+    this._historyClickHandler = handler;
   }
 
   setFavoriteButtonClickHandler(handler) {
     this.getElement()
-      .querySelector(`.film-card__controls-item--favorite`)
+      .querySelector(`.film-details__control-label--favorite`)
       .addEventListener(`click`, handler);
+    this._favoriteClickHandler = handler;
+  }
+
+  setEmojiClickHandler(handler) {
+    this.getElement()
+      .querySelector(`.film-details__emoji-list`)
+      .addEventListener(`click`, handler);
+    this._emojiClickHandler = handler;
+  }
+
+  setEmoji(emoji) {
+    const container = this.getElement().querySelector(`.film-details__add-emoji-label`);
+    while (container.firstChild) {
+      container.firstChild.remove();
+    }
+    container.append(emoji);
+  }
+
+  recoveryListeners() {
+    this.setCloseButtonHandler(this._closeButtonClickHandler);
+    this.setWatchlistButtonClickHandler(this._watchlistClickHandler);
+    this.setWatchedButtonClickHandler(this._historyClickHandler);
+    this.setFavoriteButtonClickHandler(this._favoriteClickHandler);
+    this.setEmojiClickHandler(this._emojiClickHandler);
+  }
+
+  reset() {
+    // const film = this._film;
+    // film.
   }
 }
