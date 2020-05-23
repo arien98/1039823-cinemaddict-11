@@ -1,5 +1,6 @@
 import {CommentsComponent} from "./comments-component.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
+import moment from "moment";
 
 const createGenresTemplate = (genres) => {
   return genres
@@ -16,6 +17,7 @@ const createFilmDetailsTemplate = (film) => {
   } = film;
   const genresMarkup = createGenresTemplate(genres);
   const commentsMarkup = new CommentsComponent(comments).getTemplate();
+  const releaseDateMarkup = moment(releaseDate, `YYYYMMDD`).fromNow();
 
   return (
     `<section class="film-details">
@@ -58,7 +60,7 @@ const createFilmDetailsTemplate = (film) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${releaseDate}</td>
+                  <td class="film-details__cell">${releaseDateMarkup}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
@@ -199,10 +201,9 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   }
 
   setEmoji(emoji) {
+    this.rerender();
+    this.recoveryListeners();
     const container = this.getElement().querySelector(`.film-details__add-emoji-label`);
-    while (container.firstChild) {
-      container.firstChild.remove();
-    }
     container.append(emoji);
   }
 

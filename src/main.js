@@ -6,15 +6,9 @@ import {PageController} from "./controllers/page-controller.js";
 import {MenuComponent} from "./components/menu-component.js";
 import {generateMenu} from "./mocks/menu.js";
 
-export const FilmsNumber = {
-  TOTAL: 20,
-  ON_START: 5,
-  ON_BUTTON_CLICK: 5,
-  TOP_RATED: 5,
-  MOST_COMMENTED: 2
-};
+export const TOTAL_FILMS_NUMBER = 20;
 
-const filmsData = generateFilms(FilmsNumber.TOTAL);
+const filmsData = generateFilms(TOTAL_FILMS_NUMBER);
 const menuItems = generateMenu();
 
 const siteMain = document.querySelector(`.main`);

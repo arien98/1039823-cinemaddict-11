@@ -84,9 +84,9 @@ const createFilmData = () => {
     actors: getRandomArrayItems(NAMES, 3),
     releaseDate: moment(new Date()).format(`MMMM Do YYYY`),
     country: getRandomArrayItem(COUNTRIES),
-    isInWatchlist: null,
-    isFavorite: null,
-    isHistory: null
+    isInWatchlist: Math.random() > 0.5,
+    isFavorite: Math.random() > 0.5,
+    isHistory: Math.random() > 0.5
   };
 };
 

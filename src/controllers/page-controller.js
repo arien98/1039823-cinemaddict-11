@@ -5,14 +5,6 @@ import {SortingComponent, SortType} from "../components/sorting-component.js";
 import {FilmsContainerComponent} from "../components/films-container-component.js";
 import {FilmController} from "./film-controller.js";
 
-const FilmsNumber = {
-  TOTAL: 20,
-  ON_START: 5,
-  ON_BUTTON_CLICK: 5,
-  TOP_RATED: 2,
-  MOST_COMMENTED: 2
-};
-
 export class PageController {
   constructor(container) {
     this._films = [];
@@ -22,11 +14,10 @@ export class PageController {
     this._noFilms = new NoFilmsComponents();
     this._sorting = new SortingComponent();
     this._filmsContainer = new FilmsContainerComponent();
-    this._totalFilmsCount = FilmsNumber.TOTAL;
-    this._onStartFilmsCount = FilmsNumber.ON_START;
-    this._onButtonClickFilmsCount = FilmsNumber.ON_BUTTON_CLICK;
-    this._topRatedFilmsCount = FilmsNumber.TOP_RATED;
-    this._mostCommentedFilmsCount = FilmsNumber.MOST_COMMENTED;
+    this._onStartFilmsCount = 5;
+    this._onButtonClickFilmsCount = 5;
+    this._topRatedFilmsCount = 2;
+    this._mostCommentedFilmsCount = 2;
     this._filmsOnPageNumber = 0;
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
@@ -41,7 +32,7 @@ export class PageController {
 
     renderElement(this._container, this._filmsContainer);
 
-    if (this._totalFilmsCount === 0) {
+    if (this._films.length === 0) {
       renderElement(filmsContainer, this._noFilms);
       return;
     }
@@ -90,7 +81,7 @@ export class PageController {
       const newFilms = this._renderFilms(prevFilmsNumber, this._filmsOnPageNumber, filmsContainer, films);
       this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
 
-      if (this._filmsOnPageNumber >= this._totalFilmsCount) {
+      if (this._filmsOnPageNumber >= this._films.length) {
         remove(this._showButton);
         this._showButton.removeClickHandler(this._showButtonClickHandler(films, filmsContainer));
       }

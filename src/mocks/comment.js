@@ -1,5 +1,4 @@
 import {getRandomArrayItem} from "../utils/common.js";
-import moment from "moment";
 
 const COMMENT_EMOJIS = [`angry`, `puke`, `sleeping`, `smile`];
 const COMMENT_TEXTS = [
@@ -16,7 +15,7 @@ const generateComment = () => {
     emoji: getRandomArrayItem(COMMENT_EMOJIS),
     text: getRandomArrayItem(COMMENT_TEXTS),
     author: getRandomArrayItem(COMMENT_AUTHORS),
-    day: moment(new Date(), `YYYYMMDD`).fromNow()
+    day: new Date()
   };
 };
 

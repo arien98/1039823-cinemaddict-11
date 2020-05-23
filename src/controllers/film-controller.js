@@ -37,8 +37,6 @@ export class FilmController {
       evt.preventDefault();
       this._onDataChange(this, film, Object.assign({}, film, {isFavorite: !film.isFavorite}));
     });
-
-    this._filmDetails.setEmojiClickHandler(this._EmojiClickHandler);
   }
 
   _filmClickHandler(film) {
@@ -49,6 +47,7 @@ export class FilmController {
 
       this._filmDetails.setCloseButtonHandler(this._closeDetailsButtonHandler);
       this._filmDetails.setEscButtonHandler(this._escPressHandler);
+      this._filmDetails.setEmojiClickHandler(this._EmojiClickHandler);
 
       this._filmDetails.setWatchlistButtonClickHandler(() => {
         this._onDataChange(this, film, Object.assign({}, film, {isInWatchlist: !film.isInWatchlist}));
