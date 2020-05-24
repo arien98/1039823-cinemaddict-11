@@ -14,8 +14,9 @@ const createGenresTemplate = (genres) => {
 
 const createEmojiMarkup = (newComment) => {
   emojis.map((emoji) => {
+    const isChecked = (newComment.emoji === emoji) ? `checked` : ``;
     return (
-      `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${(newComment.emoji === emoji) ? `checked` : ``}>
+      `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${isChecked}>
       <label class="film-details__emoji-label" for="emoji-${emoji}">
         <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji" dataset-emoji-type = ${emoji}>
       </label>`);
