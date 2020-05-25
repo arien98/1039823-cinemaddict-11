@@ -114,7 +114,7 @@ export class PageController {
   }
 
   _onDataChange(filmController, oldData, newData) {
-    const isSuccess = this._filmsModel.updateTask(oldData.id, newData);
+    const isSuccess = this._filmsModel.updateFilm(oldData.id, newData);
 
     if (isSuccess) {
       filmController.render(newData);

@@ -12,7 +12,7 @@ export class FilmController {
     this._EmojiClickHandler = this._emojiClickHandler.bind(this);
     this._onViewChange = onViewChange;
     this._film = null;
-    this._filmDetails = null;
+    this._filmDetailsComponent = null;
   }
 
   render(film) {
@@ -44,7 +44,7 @@ export class FilmController {
     return () => {
       this._onViewChange();
 
-      renderElement(document.body, this._filmDetails);
+      renderElement(document.body, this._filmDetailsComponent);
 
       this._filmDetailsComponent.setCloseButtonHandler(this._closeDetailsButtonHandler);
       this._filmDetailsComponent.setEscButtonHandler(this._escPressHandler);
