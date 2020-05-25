@@ -16,6 +16,7 @@ const createGenresTemplate = (genres) => {
 const createEmojiMarkup = (emojis, newComment) => {
   return emojis.map((emoji) => {
     const isChecked = (newComment.emoji === emoji) ? `checked` : ``;
+
     return (
       `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${isChecked}>
       <label class="film-details__emoji-label" for="emoji-${emoji}">
@@ -35,6 +36,8 @@ const createFilmDetailsTemplate = (film, newComment) => {
   const releaseDateMarkup = moment(releaseDate).format(`MMMM Do YYYY`);
 
   const emojisMarkup = createEmojiMarkup(emojisType, newComment);
+  const selectedEmoji = newComment.emoji ? `<img src="./images/emoji/${newComment.emoji}.png" width="30" height="30" alt="emoji" data-emoji-type = ${newComment.emoji}></img>` : ``;
+
 
   return (
     `<section class="film-details">
@@ -122,7 +125,9 @@ const createFilmDetailsTemplate = (film, newComment) => {
             </ul>
 
             <div class="film-details__new-comment">
-              <div for="add-emoji" class="film-details__add-emoji-label"></div>
+              <div for="add-emoji" class="film-details__add-emoji-label">
+                ${selectedEmoji}
+              </div>
 
               <label class="film-details__comment-label">
                 <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
@@ -194,13 +199,8 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
 
   _emojiClickHandler(evt) {
     const emoji = evt.target.dataset.emojiType;
-    console.log(emoji);
     this._newComment = {emoji: `${emoji}`};
     this.rerender();
-    this.recoveryListeners();
-    const container = this.getElement().querySelector(`.film-details__add-emoji-label`);
-    const imageElement = createElement(this._createEmojiMarkup(emoji));
-    container.append(imageElement);
   }
 
   recoveryListeners() {
@@ -210,10 +210,6 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     this.setWatchedButtonClickHandler(this._historyClickHandler);
     this.setFavoriteButtonClickHandler(this._favoriteClickHandler);
     this.setEmojiClickHandler(this._emojiClickHandler);
-  }
-
-  _createEmojiMarkup(emoji) {
-    return `<img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji" data-emoji-type = ${emoji}>`;
   }
 
   rerender() {
