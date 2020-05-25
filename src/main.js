@@ -6,7 +6,7 @@ import {PageController} from "./controllers/page-controller.js";
 import {FilmsModel} from "./models/films-model.js";
 import {FilterController} from "./controllers/filter-controller.js";
 
-export const TOTAL_FILMS_NUMBER = 20;
+const TOTAL_FILMS_NUMBER = 20;
 
 const filmsData = generateFilms(TOTAL_FILMS_NUMBER);
 
