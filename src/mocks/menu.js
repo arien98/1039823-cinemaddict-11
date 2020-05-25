@@ -1,7 +1,8 @@
-const MENU_ITEMS = [`all`, `watchlist`, `history`, `favorites`];
+import {FilterType} from "../constants.js";
 
 export const generateMenu = () => {
-  return MENU_ITEMS.map((element) =>{
+  const menuItems = Object.keys(FilterType);
+  return menuItems.map((element) =>{
     return {
       name: element,
       count: Math.floor(Math.random() * 50)

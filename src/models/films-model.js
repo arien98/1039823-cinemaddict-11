@@ -1,7 +1,6 @@
-export default class FilmsModel {
+export class FilmsModel {
   constructor() {
     this._films = [];
-
     this._dataChangeHandlers = [];
   }
 

@@ -25,8 +25,8 @@ export class PageController {
   }
 
 
-  render(filmsData) {
-    this._films = filmsData;
+  render() {
+    this._films = this._filmsModel.getFilms();
     const filmsContainer = this._filmsContainer.getFilmsContainer();
     const topRatedFilmsContainer = this._filmsContainer.getTopRatedFilmsContainer();
     const mostCommentedFilmsContainer = this._filmsContainer.getTopMostCommentedContainer();
@@ -46,7 +46,9 @@ export class PageController {
       remove(this._showButton);
       filmsContainer.innerHTML = ``;
 
-      this._renderFilmDesk(this._getSortedFilms(this._films, sortType), filmsContainer);
+      const sortedFilms = this._getSortedFilms(sortType);
+
+      this._renderFilmDesk(sortedFilms, filmsContainer);
     });
 
     this._renderFilms(0, this._topRatedFilmsCount, topRatedFilmsContainer, this._films);
@@ -90,9 +92,9 @@ export class PageController {
   }
 
 
-  _getSortedFilms(films, sortType) {
+  _getSortedFilms(sortType) {
     let sortedFilms = [];
-    const showingFilms = films.slice();
+    const showingFilms = this._films.slice();
 
     switch (sortType) {
       case SortType.DEFAULT:
@@ -110,12 +112,12 @@ export class PageController {
   }
 
   _onDataChange(filmController, oldData, newData) {
-    const index = this._films.findIndex((it) => it === oldData);
-    if (index === -1) {
-      return;
+    const isSuccess = this._filmsModel.updateTask(oldData.id, newData);
+
+
+    if (isSuccess) {
+      filmController.render(newData);
     }
-    this._films = [].concat(this._films.slice(0, index - 1), newData, this._films.slice(index + 1));
-    filmController.render(this._films[index]);
   }
 
   _onViewChange() {
