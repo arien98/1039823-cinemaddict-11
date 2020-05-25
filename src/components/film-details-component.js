@@ -2,7 +2,7 @@ import {CommentsComponent} from "./comments-component.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import moment from "moment";
 
-const emojis = [`smile`, `sleeping`, `puke`, `angry`];
+const emojisType = [`smile`, `sleeping`, `puke`, `angry`];
 
 const createGenresTemplate = (genres) => {
   return genres
@@ -12,8 +12,8 @@ const createGenresTemplate = (genres) => {
     .join(`\n`);
 };
 
-const createEmojiMarkup = (newComment) => {
-  emojis.map((emoji) => {
+const createEmojiMarkup = (emojis, newComment) => {
+  return emojis.map((emoji) => {
     const isChecked = (newComment.emoji === emoji) ? `checked` : ``;
     return (
       `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${isChecked}>
@@ -31,9 +31,9 @@ const createFilmDetailsTemplate = (film, newComment) => {
   } = film;
   const genresMarkup = createGenresTemplate(genres);
   const commentsMarkup = new CommentsComponent(comments).getTemplate();
-  const releaseDateMarkup = moment(releaseDate).format("MMMM Do YYYY");
+  const releaseDateMarkup = moment(releaseDate).format(`MMMM Do YYYY`);
 
-  const emojisMarkup = createEmojiMarkup(newComment);
+  const emojisMarkup = createEmojiMarkup(emojisType, newComment);
 
   return (
     `<section class="film-details">
@@ -212,8 +212,7 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     return `<img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji" dataset-emoji-type = ${emoji}>`;
   }
 
-  reset() {
-    // const film = this._film;
-    // film.
+  rerender() {
+    super.rerender();
   }
 }
