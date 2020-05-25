@@ -7,7 +7,7 @@ import {MenuComponent} from "./components/menu-component.js";
 import {generateMenu} from "./mocks/menu.js";
 import FilmsModel from "./models/films-model.js";
 
-export const TOTAL_FILMS_NUMBER = 20;
+const TOTAL_FILMS_NUMBER = 20;
 
 const filmsData = generateFilms(TOTAL_FILMS_NUMBER);
 const menuItems = generateMenu();

@@ -31,7 +31,7 @@ const createFilmDetailsTemplate = (film, newComment) => {
   } = film;
   const genresMarkup = createGenresTemplate(genres);
   const commentsMarkup = new CommentsComponent(comments).getTemplate();
-  const releaseDateMarkup = moment(releaseDate, `YYYYMMDD`).fromNow();
+  const releaseDateMarkup = moment(releaseDate).format("MMMM Do YYYY");
 
   const emojisMarkup = createEmojiMarkup(newComment);
 
@@ -158,17 +158,9 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     this._closeButtonClickHandler = handler;
   }
 
-  removeCloseButtonHandler(handler) {
-    this.getElement().querySelector(`.film-details__close-btn`).removeEventListener(`click`, handler);
-  }
-
   setEscButtonHandler(handler) {
     document.addEventListener(`keydown`, handler);
     this._escClickHandler = handler;
-  }
-
-  removeEscButtonHandler(handler) {
-    document.removeEventListener(`keydown`, handler);
   }
 
   setWatchlistButtonClickHandler(handler) {
@@ -192,14 +184,14 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     this._favoriteClickHandler = handler;
   }
 
-  setEmojiClickHandler(handler) {
+  setEmojiClickHandler() {
     this.getElement()
       .querySelector(`.film-details__emoji-list`)
-      .addEventListener(`click`, handler);
-    this._emojiClickHandler = handler;
+      .addEventListener(`click`, this._emojiClickHandler);
   }
 
-  setEmoji(emoji) {
+  _emojiClickHandler(evt) {
+    const emoji = evt.target.datasetEmojiType;
     this._newComment = {emoji: `${emoji}`};
     this.rerender();
     this.recoveryListeners();

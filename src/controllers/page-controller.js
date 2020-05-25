@@ -114,7 +114,7 @@ export class PageController {
     if (index === -1) {
       return;
     }
-    this._films = [].concat(this._films.slice(0, index - 1), newData, this._films.slice(index + 1));
+    this._films = [].concat(this._films.slice(0, index), newData, this._films.slice(index + 1));
     filmController.render(this._films[index]);
   }
 

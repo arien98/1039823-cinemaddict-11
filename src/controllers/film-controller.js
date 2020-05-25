@@ -9,20 +9,20 @@ export class FilmController {
     this._closeDetailsButtonHandler = this._closeDetailsButtonHandler.bind(this);
     this._escPressHandler = this._escPressHandler.bind(this);
     this._onDataChange = onDataChange;
-    this._EmojiClickHandler = this._emojiClickHandler.bind(this);
     this._onViewChange = onViewChange;
     this._film = null;
-    this._filmDetails = null;
+    this._filmComponent = null;
+    this._filmDetailsComponent = null;
   }
 
   render(film) {
     this._film = film;
     this._filmComponent = new FilmCardComponent(this._film);
-    this._filmDetails = new FilmDetailsComponent(this._film);
+    this._filmDetailsComponent = new FilmDetailsComponent(this._film);
 
     renderElement(this._container, this._filmComponent);
 
-    this._filmComponent.setClickHandler(this._filmClickHandler(this._film));
+    this._filmComponent.setClickHandler(this._filmClickHandler);
 
     this._filmComponent.setWatchlistButtonClickHandler((evt) => {
       evt.preventDefault();
@@ -31,7 +31,7 @@ export class FilmController {
 
     this._filmComponent.setWatchedButtonClickHandler((evt) => {
       evt.preventDefault();
-      this._onDataChange(this, this._film, Object.assign({}, this._film, {isHistor: !this._film.isHistor}));
+      this._onDataChange(this, this._film, Object.assign({}, this._film, {isHistor: !this._film.isHistory}));
     });
 
     this._filmComponent.setFavoriteButtonClickHandler((evt) => {
@@ -40,43 +40,34 @@ export class FilmController {
     });
   }
 
-  _filmClickHandler(film) {
-    return () => {
-      this._onViewChange();
+  _filmClickHandler() {
+    this._onViewChange();
 
-      renderElement(document.body, this._filmDetails);
+    renderElement(document.body, this._filmDetailsComponent);
 
-      this._filmDetails.setCloseButtonHandler(this._closeDetailsButtonHandler);
-      this._filmDetails.setEscButtonHandler(this._escPressHandler);
-      this._filmDetails.setEmojiClickHandler(this._emojiClickHandler);
+    this._filmDetailsComponent.setCloseButtonHandler(this._closeDetailsButtonHandler);
+    this._filmDetailsComponent.setEscButtonHandler(this._escPressHandler);
+    this._filmDetailsComponent.setEmojiClickHandler();
 
-      this._filmDetails.setWatchlistButtonClickHandler(() => {
-        this._onDataChange(this, film, Object.assign({}, film, {isInWatchlist: !film.isInWatchlist}));
-      });
-      this._filmDetails.setWatchedButtonClickHandler(() => {
-        this._onDataChange(this, film, Object.assign({}, film, {isHistor: !film.isHistor}));
-      });
-      this._filmDetails.setFavoriteButtonClickHandler(() => {
-        this._onDataChange(this, film, Object.assign({}, film, {isFavorite: !film.isFavorite}));
-      });
-    };
+    this._filmDetailsComponent.setWatchlistButtonClickHandler(() => {
+      this._onDataChange(this, this._film, Object.assign({}, this._film, {isInWatchlist: !this._film.isInWatchlist}));
+    });
+    this._filmDetailsComponent.setWatchedButtonClickHandler(() => {
+      this._onDataChange(this, this._film, Object.assign({}, this._film, {isHistor: !this._film.isHistory}));
+    });
+    this._filmDetailsComponent.setFavoriteButtonClickHandler(() => {
+      this._onDataChange(this, this._film, Object.assign({}, this._film, {isFavorite: !this._film.isFavorite}));
+    });
   }
 
   _closeDetailsButtonHandler() {
-    remove(this._filmDetails);
-    this._filmDetails.removeCloseButtonHandler(this._closeDetailsButtonHandler);
-    this._filmDetails.removeEscButtonHandler(this._escPressHandler);
+    remove(this._filmDetailsComponent);
   }
 
   _escPressHandler(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       this._closeDetailsButtonHandler();
     }
-  }
-
-  _emojiClickHandler(evt) {
-    const emoji = evt.target.datasetEmojiType;
-    this._filmDetails.setEmoji(emoji);
   }
 
   setDefaultView() {
