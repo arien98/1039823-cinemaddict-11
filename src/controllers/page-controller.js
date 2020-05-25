@@ -22,6 +22,8 @@ export class PageController {
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
     this._filmsModel = filmsModel;
+    this._onFilterChange = this._onFilterChange.bind(this);
+    this._filmsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
 
@@ -42,9 +44,9 @@ export class PageController {
 
     this._renderFilmDesk(this._films, filmsContainer);
 
-    this._sorting.setSortTypeChengeHandler((sortType) => {
+    this._sorting.setSortTypeChangeHandler((sortType) => {
       remove(this._showButton);
-      filmsContainer.innerHTML = ``;
+      this._removeFilms();
 
       const sortedFilms = this._getSortedFilms(sortType);
 
@@ -114,7 +116,6 @@ export class PageController {
   _onDataChange(filmController, oldData, newData) {
     const isSuccess = this._filmsModel.updateTask(oldData.id, newData);
 
-
     if (isSuccess) {
       filmController.render(newData);
     }
@@ -122,5 +123,20 @@ export class PageController {
 
   _onViewChange() {
     this._showedFilmControllers.forEach((it) => it.setDefaultView());
+  }
+
+  _removeFilms() {
+    this._showedFilmControllers.forEach((filmController) => filmController.destroy());
+    this._showedFilmControllers = [];
+  }
+
+  _updateFilms(count) {
+    this._removeFilms();
+    this._renderFilms(this._tasksModel.getTasks().slice(0, count));
+    this._renderLoadMoreButton();
+  }
+
+  _onFilterChange() {
+    this._updateFilms(this._onStartFilmsCount);
   }
 }

@@ -3,14 +3,12 @@ import {FilmCountComponent} from "./components/film-count-component.js";
 import {generateFilms} from "./mocks/film.js";
 import {renderElement, RenderPosition} from "./utils/render.js";
 import {PageController} from "./controllers/page-controller.js";
-import {generateMenu} from "./mocks/menu.js";
 import {FilmsModel} from "./models/films-model.js";
-import {FiltersComponent} from "./components/filters-component.js";
+import {FilterController} from "./controllers/filter-controller.js";
 
 export const TOTAL_FILMS_NUMBER = 20;
 
 const filmsData = generateFilms(TOTAL_FILMS_NUMBER);
-const menuItems = generateMenu();
 
 const siteMain = document.querySelector(`.main`);
 const siteHeader = document.querySelector(`.header`);
@@ -20,11 +18,11 @@ const filmsModel = new FilmsModel();
 filmsModel.setFilms(filmsData);
 
 const pageController = new PageController(siteMain, filmsModel);
-const filterComponent = new FiltersComponent(menuItems);
+const filterController = new FilterController(siteMain, filmsModel);
 
 renderElement(siteHeader, new ProfileComponent());
-renderElement(siteMain, filterComponent, RenderPosition.BEGIN);
 
+filterController.render();
 pageController.render();
 
 renderElement(footerStatisticsContainer, new FilmCountComponent());

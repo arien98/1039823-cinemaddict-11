@@ -24,7 +24,7 @@ export class SortingComponent extends AbstractComponent {
     return this._currentSortType;
   }
 
-  setSortTypeChengeHandler(handler) {
+  setSortTypeChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
 

@@ -219,9 +219,4 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   _createEmojiMarkup(emoji) {
     return `<img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji" dataset-emoji-type = ${emoji}>`;
   }
-
-  reset() {
-    // const film = this._film;
-    // film.
-  }
 }

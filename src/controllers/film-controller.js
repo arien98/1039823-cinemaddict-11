@@ -18,7 +18,7 @@ export class FilmController {
   render(film) {
     this._film = film;
     this._filmComponent = new FilmCardComponent(this._film);
-    this._filmDetails = new FilmDetailsComponent(this._film);
+    this._filmDetailsComponent = new FilmDetailsComponent(this._film);
 
     renderElement(this._container, this._filmComponent);
 
@@ -46,26 +46,26 @@ export class FilmController {
 
       renderElement(document.body, this._filmDetails);
 
-      this._filmDetails.setCloseButtonHandler(this._closeDetailsButtonHandler);
-      this._filmDetails.setEscButtonHandler(this._escPressHandler);
-      this._filmDetails.setEmojiClickHandler(this._emojiClickHandler);
+      this._filmDetailsComponent.setCloseButtonHandler(this._closeDetailsButtonHandler);
+      this._filmDetailsComponent.setEscButtonHandler(this._escPressHandler);
+      this._filmDetailsComponent.setEmojiClickHandler(this._emojiClickHandler);
 
-      this._filmDetails.setWatchlistButtonClickHandler(() => {
+      this._filmDetailsComponent.setWatchlistButtonClickHandler(() => {
         this._onDataChange(this, film, Object.assign({}, film, {isInWatchlist: !film.isInWatchlist}));
       });
-      this._filmDetails.setWatchedButtonClickHandler(() => {
+      this._filmDetailsComponent.setWatchedButtonClickHandler(() => {
         this._onDataChange(this, film, Object.assign({}, film, {isHistor: !film.isHistor}));
       });
-      this._filmDetails.setFavoriteButtonClickHandler(() => {
+      this._filmDetailsComponent.setFavoriteButtonClickHandler(() => {
         this._onDataChange(this, film, Object.assign({}, film, {isFavorite: !film.isFavorite}));
       });
     };
   }
 
   _closeDetailsButtonHandler() {
-    remove(this._filmDetails);
-    this._filmDetails.removeCloseButtonHandler(this._closeDetailsButtonHandler);
-    this._filmDetails.removeEscButtonHandler(this._escPressHandler);
+    remove(this._filmDetailsComponent);
+    this._filmDetailsComponent.removeCloseButtonHandler(this._closeDetailsButtonHandler);
+    this._filmDetailsComponent.removeEscButtonHandler(this._escPressHandler);
   }
 
   _escPressHandler(evt) {
@@ -76,10 +76,16 @@ export class FilmController {
 
   _emojiClickHandler(evt) {
     const emoji = evt.target.datasetEmojiType;
-    this._filmDetails.setEmoji(emoji);
+    this._filmDetailsComponent.setEmoji(emoji);
   }
 
   setDefaultView() {
     this._closeDetailsButtonHandler();
+  }
+
+  destroy() {
+    remove(this._filmDetailsComponent);
+    remove(this._filmComponent);
+    document.removeEventListener(`keydown`, this._escPressHandler);
   }
 }
