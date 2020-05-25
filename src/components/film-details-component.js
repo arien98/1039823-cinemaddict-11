@@ -1,6 +1,7 @@
 import {CommentsComponent} from "./comments-component.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import moment from "moment";
+import {createElement} from "../utils/render.js";
 
 const emojisType = [`smile`, `sleeping`, `puke`, `angry`];
 
@@ -18,7 +19,7 @@ const createEmojiMarkup = (emojis, newComment) => {
     return (
       `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${isChecked}>
       <label class="film-details__emoji-label" for="emoji-${emoji}">
-        <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji" dataset-emoji-type = ${emoji}>
+        <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji" data-emoji-type = ${emoji}>
       </label>`);
   })
     .join(`\n`);
@@ -147,6 +148,7 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     this._closeButtonClickHandler = null;
     this._escClickHandler = null;
     this._newComment = {};
+    this._emojiClickHandler = this._emojiClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -191,12 +193,14 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   }
 
   _emojiClickHandler(evt) {
-    const emoji = evt.target.datasetEmojiType;
+    const emoji = evt.target.dataset.emojiType;
+    console.log(emoji);
     this._newComment = {emoji: `${emoji}`};
     this.rerender();
     this.recoveryListeners();
     const container = this.getElement().querySelector(`.film-details__add-emoji-label`);
-    container.append(this._createEmojiMarkup(emoji).getTemplate());
+    const imageElement = createElement(this._createEmojiMarkup(emoji));
+    container.append(imageElement);
   }
 
   recoveryListeners() {
@@ -209,7 +213,7 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   }
 
   _createEmojiMarkup(emoji) {
-    return `<img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji" dataset-emoji-type = ${emoji}>`;
+    return `<img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji" data-emoji-type = ${emoji}>`;
   }
 
   rerender() {
