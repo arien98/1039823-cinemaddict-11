@@ -1,11 +1,11 @@
 import {AbstractComponent} from "./abstract-component.js";
 import moment from "moment";
 
-const createCommentsTemplate = (comments) => {
-  return comments
+const createCommentsTemplate = (film) => {
+  return film.comments
     .map((comment) => {
       const {emoji, text, author, date} = comment;
-      const dateMarkup = moment(date, `YYYYMMDD`).fromNow();
+      const dateMarkup = moment(date).format(`MMMM Do YYYY`);
 
       return (
         `<li class="film-details__comment">
@@ -27,12 +27,12 @@ const createCommentsTemplate = (comments) => {
 };
 
 export class CommentsComponent extends AbstractComponent {
-  constructor(comments) {
+  constructor(film) {
     super();
-    this._comments = comments;
+    this._film = film;
   }
 
   getTemplate() {
-    return createCommentsTemplate(this._comments);
+    return createCommentsTemplate(this._film);
   }
 }

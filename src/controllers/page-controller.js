@@ -3,7 +3,7 @@ import {NoFilmsComponents} from "../components/no-films-component.js";
 import {renderElement, RenderPosition, remove} from "../utils/render.js";
 import {SortingComponent, SortType} from "../components/sorting-component.js";
 import {FilmsContainerComponent} from "../components/films-container-component.js";
-import {FilmController} from "./film-controller.js";
+import {FilmController, emptyFilm} from "./film-controller.js";
 
 export class PageController {
   constructor(container, filmsModel) {

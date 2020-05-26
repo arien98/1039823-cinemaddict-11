@@ -27,16 +27,19 @@ const createEmojiMarkup = (emojis, newComment) => {
 
 const createFilmDetailsTemplate = (film, newComment) => {
   const {
-    title, originalTitile, rating, duration, genres, posterSrc,
-    description, age, director, writers, actors, releaseDate, country, comments
+    title, originalTitile, rating, duration, genres, posterSrc, description,
+    age, director, writers, actors, releaseDate, country, comments, isInWatchlist, isHistory, isFavorite
   } = film;
   const genresMarkup = createGenresTemplate(genres);
-  const commentsMarkup = new CommentsComponent(comments).getTemplate();
+  const commentsMarkup = new CommentsComponent(film).getTemplate();
   const releaseDateMarkup = moment(releaseDate).format(`MMMM Do YYYY`);
 
   const emojisMarkup = createEmojiMarkup(emojisType, newComment);
   const selectedEmoji = newComment.emoji ? `<img src="./images/emoji/${newComment.emoji}.png" width="30" height="30" alt="emoji" data-emoji-type = ${newComment.emoji}></img>` : ``;
-
+  
+  const watchlistActive = isInWatchlist ? `checked` : ``;
+  const watchedActive = isHistory ? `checked` : ``;
+  const favoriteActive = isFavorite ? `checked` : ``;
 
   return (
     `<section class="film-details">
@@ -104,13 +107,13 @@ const createFilmDetailsTemplate = (film, newComment) => {
           </div>
 
           <section class="film-details__controls">
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchlistActive}>
             <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${watchedActive}>
             <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favoriteActive}>
             <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
           </section>
         </div>
@@ -152,7 +155,8 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     this._closeButtonClickHandler = null;
     this._escClickHandler = null;
     this._newComment = {};
-    this._emojiClickHandler = this._emojiClickHandler.bind(this);
+    this.emojiClickHandler = this._emojiClickHandler.bind(this);
+    this.setEmojiClickHandler(this._emojiClickHandler);
   }
 
   getTemplate() {
@@ -190,16 +194,26 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     this._favoriteClickHandler = handler;
   }
 
-  setEmojiClickHandler() {
+  setEmojiClickHandler(handler) {
     this.getElement()
       .querySelector(`.film-details__emoji-list`)
-      .addEventListener(`click`, this._emojiClickHandler);
+      .addEventListener(`click`, handler);
   }
 
   _emojiClickHandler(evt) {
-    const emoji = evt.target.dataset.emojiType;
-    this._newComment = {emoji: `${emoji}`};
-    this.rerender();
+    if (evt.target.tagName === `IMG`) {
+      const emoji = evt.target.dataset.emojiType;
+      this._newComment = {emoji};
+      this.rerender();
+    } else {
+      return;
+    }
+  }
+
+  setInputChangeHandler(handler) {
+    this.getElement()
+      .querySelector(`.film-details__comment-input`)
+      .addEventListener(`keydown`, handler);
   }
 
   recoveryListeners() {
@@ -209,9 +223,5 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     this.setWatchedButtonClickHandler(this._historyClickHandler);
     this.setFavoriteButtonClickHandler(this._favoriteClickHandler);
     this.setEmojiClickHandler(this._emojiClickHandler);
-  }
-
-  rerender() {
-    super.rerender();
   }
 }

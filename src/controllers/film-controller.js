@@ -1,6 +1,9 @@
 import {FilmDetailsComponent} from "../components/film-details-component.js";
 import {renderElement, remove} from "../utils/render.js";
 import {FilmCardComponent} from "../components/film-card-component.js";
+import {CommentsModel} from "../models/comments-model.js";
+
+export const emptyFilm = {};
 
 export class FilmController {
   constructor(container, onDataChange, onViewChange) {
@@ -13,6 +16,8 @@ export class FilmController {
     this._film = null;
     this._filmComponent = null;
     this._filmDetailsComponent = null;
+    this._commentsModel = new CommentsModel();
+    this._inputChangeHandler = this._inputChangeHandler.bind(this);
   }
 
   render(film) {
@@ -47,7 +52,6 @@ export class FilmController {
 
     this._filmDetailsComponent.setCloseButtonHandler(this._closeDetailsButtonHandler);
     this._filmDetailsComponent.setEscButtonHandler(this._escPressHandler);
-    this._filmDetailsComponent.setEmojiClickHandler();
 
     this._filmDetailsComponent.setWatchlistButtonClickHandler(() => {
       this._onDataChange(this, this._film, Object.assign({}, this._film, {isInWatchlist: !this._film.isInWatchlist}));
@@ -58,6 +62,7 @@ export class FilmController {
     this._filmDetailsComponent.setFavoriteButtonClickHandler(() => {
       this._onDataChange(this, this._film, Object.assign({}, this._film, {isFavorite: !this._film.isFavorite}));
     });
+    this._filmDetailsComponent.setInputChangeHandler(this._inputChangeHandler);
   }
 
   _closeDetailsButtonHandler() {
@@ -67,6 +72,16 @@ export class FilmController {
   _escPressHandler(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       this._closeDetailsButtonHandler();
+    }
+  }
+
+  _inputChangeHandler(evt) {
+    console.log(1);
+    if (evt.key === `Enter`) {
+      const newComment = evt.target.value;
+      console.log(2);
+      // this._filmDetailsComponent.setNewComment(newComment);
+      this._filmDetailsComponent.rerender();
     }
   }
 
