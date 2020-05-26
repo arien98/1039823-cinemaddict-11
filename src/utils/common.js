@@ -9,14 +9,15 @@ export const getRandomArrayItem = (array) => {
 };
 
 export const getRandomArrayItems = (array, number) => {
-  let length = array.length;
+  let oldArray = [...array];
+  let length = oldArray.length;
   let newArray = [];
 
   for (let i = 0; i < number; i++) {
     const randomIndex = getRandomIntegerNumber(0, length);
 
-    newArray.push(array[randomIndex]);
-    array.splice(randomIndex, 1);
+    newArray.push(oldArray[randomIndex]);
+    oldArray.splice(randomIndex, 1);
     length--;
   }
   return newArray;

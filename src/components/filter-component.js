@@ -1,15 +1,4 @@
 import {AbstractComponent} from "./abstract-component.js";
-import {FilterType} from "../constants.js";
-
-export const generateMenu = () => {
-  const menuItems = Object.keys(FilterType);
-  return menuItems.map((element) =>{
-    return {
-      name: element,
-      count: Math.floor(Math.random() * 50)
-    };
-  });
-};
 
 const createMenuItem = (name, count, isActive) => {
   const activeElement = isActive ? `main-navigation__item--active` : ``;
@@ -45,9 +34,8 @@ export class FilterComponent extends AbstractComponent {
   }
 
   setFilterChangeHandler(handler) {
-    this.getElement().addEventListener(`change`, (evt) => {
+    this.getElement().addEventListener(`click`, (evt) => {
       const filterName = evt.target.dataset.filterType;
-      console.log(filterName);
       handler(filterName);
     });
   }

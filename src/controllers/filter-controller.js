@@ -19,12 +19,12 @@ export class FilterController {
 
   render() {
     const container = this._container;
-    const allTasks = this._filmsModel.getFilms();
+    const allFilms = this._filmsModel.getFilms();
 
     const filters = Object.values(FilterType).map((filterType) => {
       return {
         name: filterType,
-        count: getFilmsByFilter(allTasks, filterType).length,
+        count: getFilmsByFilter(allFilms, filterType).length,
         checked: filterType === this._activeFilterType,
       };
     });
@@ -42,7 +42,6 @@ export class FilterController {
   }
 
   _onFilterChange(filterType) {
-    console.log(1);
     this._filmsModel.setFilter(filterType);
     this._activeFilterType = filterType;
   }

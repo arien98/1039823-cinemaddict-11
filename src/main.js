@@ -1,7 +1,7 @@
 import {ProfileComponent} from "./components/profile-component.js";
 import {FilmCountComponent} from "./components/film-count-component.js";
 import {generateFilms} from "./mocks/film.js";
-import {renderElement, RenderPosition} from "./utils/render.js";
+import {renderElement} from "./utils/render.js";
 import {PageController} from "./controllers/page-controller.js";
 import {FilmsModel} from "./models/films-model.js";
 import {FilterController} from "./controllers/filter-controller.js";

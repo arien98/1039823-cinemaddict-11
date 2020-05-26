@@ -13,6 +13,10 @@ export class FilmsModel {
     return getFilmsByFilter(this._films, this._activeFilterType);
   }
 
+  getFilmsAll() {
+    return this._films;
+  }
+
   setFilms(films) {
     this._films = Array.from(films);
     this._callHandlers(this._dataChangeHandlers);
