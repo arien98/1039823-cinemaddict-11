@@ -17,13 +17,14 @@ export class FilmController {
     this._filmComponent = null;
     this._filmDetailsComponent = null;
     this._commentsModel = new CommentsModel();
-    this._inputChangeHandler = this._inputChangeHandler.bind(this);
   }
 
   render(film) {
     this._film = film;
     this._filmComponent = new FilmCardComponent(this._film);
-    this._filmDetailsComponent = new FilmDetailsComponent(this._film);
+    this._commentsModel = new CommentsModel(this._film);
+    this._commentsModel.setComments(this._film.comments);
+    this._filmDetailsComponent = new FilmDetailsComponent(this._film, this._commentsModel);
 
     renderElement(this._container, this._filmComponent);
 
@@ -50,6 +51,12 @@ export class FilmController {
 
     renderElement(document.body, this._filmDetailsComponent);
 
+    this._filmDetailsComponent.setEmojiClickHandler(this._filmDetailsComponent.emojiClickHandler);
+
+    if (this._film.comments.length > 0) {
+      this._filmDetailsComponent.setDeleteClickHandler(this._filmDetailsComponent.deleteClickHandler);
+    }
+
     this._filmDetailsComponent.setCloseButtonHandler(this._closeDetailsButtonHandler);
     this._filmDetailsComponent.setEscButtonHandler(this._escPressHandler);
 
@@ -62,7 +69,7 @@ export class FilmController {
     this._filmDetailsComponent.setFavoriteButtonClickHandler(() => {
       this._onDataChange(this, this._film, Object.assign({}, this._film, {isFavorite: !this._film.isFavorite}));
     });
-    this._filmDetailsComponent.setInputChangeHandler(this._inputChangeHandler);
+    this._filmDetailsComponent.setInputChangeHandler(this._filmDetailsComponent.inputChangeHandler);
   }
 
   _closeDetailsButtonHandler() {
@@ -72,16 +79,6 @@ export class FilmController {
   _escPressHandler(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       this._closeDetailsButtonHandler();
-    }
-  }
-
-  _inputChangeHandler(evt) {
-    console.log(1);
-    if (evt.key === `Enter`) {
-      const newComment = evt.target.value;
-      console.log(2);
-      // this._filmDetailsComponent.setNewComment(newComment);
-      this._filmDetailsComponent.rerender();
     }
   }
 
