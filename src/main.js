@@ -1,29 +1,29 @@
 import {ProfileComponent} from "./components/profile-component.js";
 import {FilmCountComponent} from "./components/film-count-component.js";
 import {generateFilms} from "./mocks/film.js";
-import {renderElement, RenderPosition} from "./utils/render.js";
+import {renderElement} from "./utils/render.js";
 import {PageController} from "./controllers/page-controller.js";
-import {MenuComponent} from "./components/menu-component.js";
-import {generateMenu} from "./mocks/menu.js";
+import {FilmsModel} from "./models/films-model.js";
+import {FilterController} from "./controllers/filter-controller.js";
 
-export const FilmsNumber = {
-  TOTAL: `20`,
-  ON_START: `5`,
-  ON_BUTTON_CLICK: `5`,
-  TOP_RATED: `2`,
-  MOST_COMMENTED: `2`
-};
+const TOTAL_FILMS_NUMBER = 20;
 
-const filmsData = generateFilms(20);
+const filmsData = generateFilms(TOTAL_FILMS_NUMBER);
 const menuItems = generateMenu();
 
 const siteMain = document.querySelector(`.main`);
 const siteHeader = document.querySelector(`.header`);
 const footerStatisticsContainer = document.querySelector(`.footer__statistics`);
 
-renderElement(siteHeader, new ProfileComponent());
-renderElement(siteMain, new MenuComponent(menuItems), RenderPosition.BEGIN);
+const filmsModel = new FilmsModel();
+filmsModel.setFilms(filmsData);
 
-new PageController(siteMain).render(filmsData);
+const pageController = new PageController(siteMain, filmsModel);
+const filterController = new FilterController(siteMain, filmsModel);
+
+renderElement(siteHeader, new ProfileComponent());
+
+filterController.render();
+pageController.render();
 
 renderElement(footerStatisticsContainer, new FilmCountComponent());

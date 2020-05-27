@@ -1,5 +1,8 @@
 import {CommentsComponent} from "./comments-component.js";
-import {AbstractComponent} from "./abstract-component.js";
+import AbstractSmartComponent from "./abstract-smart-component.js";
+import moment from "moment";
+
+const emojisType = [`smile`, `sleeping`, `puke`, `angry`];
 
 const createGenresTemplate = (genres) => {
   return genres
@@ -9,13 +12,34 @@ const createGenresTemplate = (genres) => {
     .join(`\n`);
 };
 
-const createFilmDetailsTemplate = (film) => {
+const createEmojiMarkup = (emojis, newComment) => {
+  return emojis.map((emoji) => {
+    const isChecked = (newComment.emoji === emoji) ? `checked` : ``;
+
+    return (
+      `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${isChecked}>
+      <label class="film-details__emoji-label" for="emoji-${emoji}">
+        <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji" data-emoji-type = ${emoji}>
+      </label>`);
+  })
+    .join(`\n`);
+};
+
+const createFilmDetailsTemplate = (film, newComment) => {
   const {
-    title, originalTitile, rating, duration, genres, posterSrc,
-    description, age, director, writers, actors, releaseDate, country, comments
+    title, originalTitile, rating, duration, genres, posterSrc, description,
+    age, director, writers, actors, releaseDate, country, comments, isInWatchlist, isHistory, isFavorite
   } = film;
   const genresMarkup = createGenresTemplate(genres);
-  const commentsMarkup = new CommentsComponent(comments).getElement();
+  const commentsMarkup = new CommentsComponent(film).getTemplate();
+  const releaseDateMarkup = moment(releaseDate).format(`MMMM Do YYYY`);
+
+  const emojisMarkup = createEmojiMarkup(emojisType, newComment);
+  const selectedEmoji = newComment.emoji ? `<img src="./images/emoji/${newComment.emoji}.png" width="30" height="30" alt="emoji" data-emoji-type = ${newComment.emoji}></img>` : ``;
+  
+  const watchlistActive = isInWatchlist ? `checked` : ``;
+  const watchedActive = isHistory ? `checked` : ``;
+  const favoriteActive = isFavorite ? `checked` : ``;
 
   return (
     `<section class="film-details">
@@ -58,7 +82,7 @@ const createFilmDetailsTemplate = (film) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${releaseDate.getDate()} ${releaseDate.getMonth()}</td>
+                  <td class="film-details__cell">${releaseDateMarkup}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
@@ -83,52 +107,36 @@ const createFilmDetailsTemplate = (film) => {
           </div>
 
           <section class="film-details__controls">
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchlistActive}>
             <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${watchedActive}>
             <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favoriteActive}>
             <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
           </section>
         </div>
 
         <div class="form-details__bottom-container">
           <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>
+            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
             <ul class="film-details__comments-list">
               ${commentsMarkup}
             </ul>
 
             <div class="film-details__new-comment">
-              <div for="add-emoji" class="film-details__add-emoji-label"></div>
+              <div for="add-emoji" class="film-details__add-emoji-label">
+                ${selectedEmoji}
+              </div>
 
               <label class="film-details__comment-label">
                 <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
               </label>
 
               <div class="film-details__emoji-list">
-                <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
-                <label class="film-details__emoji-label" for="emoji-smile">
-                  <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
-                </label>
-
-                <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
-                <label class="film-details__emoji-label" for="emoji-sleeping">
-                  <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-                </label>
-
-                <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
-                <label class="film-details__emoji-label" for="emoji-puke">
-                  <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-                </label>
-
-                <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
-                <label class="film-details__emoji-label" for="emoji-angry">
-                  <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-                </label>
+                ${emojisMarkup}
               </div>
             </div>
           </section>
@@ -137,22 +145,84 @@ const createFilmDetailsTemplate = (film) => {
     </section>`);
 };
 
-export class FilmDetailsComponent extends AbstractComponent {
+export class FilmDetailsComponent extends AbstractSmartComponent {
   constructor(film) {
     super();
     this._film = film;
+    this._watchlistClickHandler = null;
+    this._historyClickHandler = null;
+    this._favoriteClickHandler = null;
+    this._closeButtonClickHandler = null;
+    this._escClickHandler = null;
+    this._newComment = {};
+    this.emojiClickHandler = this._emojiClickHandler.bind(this);
+    this.setEmojiClickHandler(this._emojiClickHandler);
   }
 
   getTemplate() {
-    return createFilmDetailsTemplate(this._film);
+    return createFilmDetailsTemplate(this._film, this._newComment);
   }
 
   setCloseButtonHandler(handler) {
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, handler);
+    this._closeButtonClickHandler = handler;
   }
 
-  removeCloseButtonHandler(handler) {
-    this.getElement().querySelector(`.film-details__close-btn`).removeEventListener(`click`, handler);
+  setEscButtonHandler(handler) {
+    document.addEventListener(`keydown`, handler);
+    this._escClickHandler = handler;
+  }
+
+  setWatchlistButtonClickHandler(handler) {
+    this.getElement()
+      .querySelector(`.film-details__control-label--watchlist`)
+      .addEventListener(`click`, handler);
+    this._watchlistClickHandler = handler;
+  }
+
+  setWatchedButtonClickHandler(handler) {
+    this.getElement()
+      .querySelector(`.film-details__control-label--watched`)
+      .addEventListener(`click`, handler);
+    this._historyClickHandler = handler;
+  }
+
+  setFavoriteButtonClickHandler(handler) {
+    this.getElement()
+      .querySelector(`.film-details__control-label--favorite`)
+      .addEventListener(`click`, handler);
+    this._favoriteClickHandler = handler;
+  }
+
+  setEmojiClickHandler(handler) {
+    this.getElement()
+      .querySelector(`.film-details__emoji-list`)
+      .addEventListener(`click`, handler);
+  }
+
+  _emojiClickHandler(evt) {
+    if (evt.target.tagName === `IMG`) {
+      const emoji = evt.target.dataset.emojiType;
+      this._newComment = {emoji};
+      this.rerender();
+    } else {
+      return;
+    }
+  }
+
+  setInputChangeHandler(handler) {
+    this.getElement()
+      .querySelector(`.film-details__comment-input`)
+      .addEventListener(`keydown`, handler);
+  }
+
+  recoveryListeners() {
+    this.setCloseButtonHandler(this._closeButtonClickHandler);
+    this.setEscButtonHandler(this._escClickHandler);
+    this.setWatchlistButtonClickHandler(this._watchlistClickHandler);
+    this.setWatchedButtonClickHandler(this._historyClickHandler);
+    this.setFavoriteButtonClickHandler(this._favoriteClickHandler);
+    this.setEmojiClickHandler(this._emojiClickHandler);
   }
 
   setWatchlistButtonClickHandler(handler) {

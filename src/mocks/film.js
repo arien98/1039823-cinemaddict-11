@@ -1,7 +1,6 @@
 import {getRandomIntegerNumber, getRandomArrayItem, getRandomArrayItems} from "../utils/common.js";
 import {generateComments} from "./comment.js";
 
-
 const FilmTitles = [
   `Made for each other`,
   `Popeye meets sinbad`,
@@ -69,6 +68,7 @@ const createFilmData = () => {
   let i = getRandomIntegerNumber(0, FilmTitles.length);
 
   return {
+    id: String(new Date() + Math.random()),
     title: FilmTitles[i],
     originalTitile: `Original: ${FilmTitles[i]}`,
     rating: Math.floor(Math.random() * 100) / 10,
@@ -83,7 +83,10 @@ const createFilmData = () => {
     writers: getRandomArrayItems(NAMES, 3),
     actors: getRandomArrayItems(NAMES, 3),
     releaseDate: new Date(),
-    country: getRandomArrayItem(COUNTRIES)
+    country: getRandomArrayItem(COUNTRIES),
+    isInWatchlist: Math.random() > 0.5,
+    isFavorite: Math.random() > 0.5,
+    isHistory: Math.random() > 0.5
   };
 };
 
