@@ -1,5 +1,7 @@
 export class CommentsModel {
-  constructor() {
+  constructor(film, filmsModel) {
+    this._film = film;
+    this._filmsModel = filmsModel;
     this._comments = [];
     this._dataChangeHandlers = [];
   }

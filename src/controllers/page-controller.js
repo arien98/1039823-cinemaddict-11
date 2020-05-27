@@ -54,7 +54,7 @@ export class PageController {
     return films
       .slice(start, end)
       .map((film) => {
-        const filmController = new FilmController(container, this._onDataChange, this._onViewChange);
+        const filmController = new FilmController(container, this._onDataChange, this._onViewChange, this._filmsModel);
         filmController.render(film);
         return filmController;
       });

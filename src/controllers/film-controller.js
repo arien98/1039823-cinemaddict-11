@@ -6,8 +6,9 @@ import {CommentsModel} from "../models/comments-model.js";
 export const emptyFilm = {};
 
 export class FilmController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onDataChange, onViewChange, filmsModel) {
     this._container = container;
+    this._filmsModel = filmsModel;
     this._filmClickHandler = this._filmClickHandler.bind(this);
     this._closeDetailsButtonHandler = this._closeDetailsButtonHandler.bind(this);
     this._escPressHandler = this._escPressHandler.bind(this);
@@ -16,7 +17,9 @@ export class FilmController {
     this._film = null;
     this._filmComponent = null;
     this._filmDetailsComponent = null;
-    this._commentsModel = new CommentsModel();
+    this._deleteClickHandler = this._deleteClickHandler.bind(this);
+    this._inputChangeHandler = this._inputChangeHandler.bind(this);
+    this._onCommentChange = this._onCommentChange.bind(this);
   }
 
   render(film) {
@@ -53,9 +56,6 @@ export class FilmController {
 
     this._filmDetailsComponent.setEmojiClickHandler(this._filmDetailsComponent.emojiClickHandler);
 
-    if (this._film.comments.length > 0) {
-      this._filmDetailsComponent.setDeleteClickHandler(this._filmDetailsComponent.deleteClickHandler);
-    }
 
     this._filmDetailsComponent.setCloseButtonHandler(this._closeDetailsButtonHandler);
     this._filmDetailsComponent.setEscButtonHandler(this._escPressHandler);
@@ -69,7 +69,11 @@ export class FilmController {
     this._filmDetailsComponent.setFavoriteButtonClickHandler(() => {
       this._onDataChange(this, this._film, Object.assign({}, this._film, {isFavorite: !this._film.isFavorite}));
     });
-    this._filmDetailsComponent.setInputChangeHandler(this._filmDetailsComponent.inputChangeHandler);
+    this._filmDetailsComponent.setInputChangeHandler(this._inputChangeHandler);
+
+    if (this._film.comments.length > 0) {
+      this._filmDetailsComponent.setDeleteClickHandler(this._deleteClickHandler);
+    }
   }
 
   _closeDetailsButtonHandler() {
@@ -90,5 +94,32 @@ export class FilmController {
     remove(this._filmDetailsComponent);
     remove(this._filmComponent);
     document.removeEventListener(`keydown`, this._escPressHandler);
+  }
+
+  _inputChangeHandler(evt) {
+    if (evt.key === `Enter`) {
+      const newComment = this._filmDetailsComponent.createNewComment(evt.target.value);
+      this._commentsModel.addComment(newComment);
+      this._onCommentChange();
+    }
+  }
+
+  _deleteClickHandler(evt) {
+    evt.preventDefault();
+    const commentElement = evt.target.closest(`.film-details__comment`);
+    const commentId = commentElement.id;
+    this._commentsModel.removeComment(commentId, this._film);
+    this._onCommentChange();
+  }
+
+  _onCommentChange() {
+    const oldData = this._film;
+    const newData = Object.assign({}, this._film, {comments: this._commentsModel.getComments()});
+    this._film = newData;
+    const isSuccess = this._filmsModel.updateFilm(oldData.id, newData);
+
+    if (isSuccess) {
+      this._filmDetailsComponent.rerender();
+    }
   }
 }

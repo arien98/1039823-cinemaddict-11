@@ -159,8 +159,6 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     this._escClickHandler = null;
     this._newComment = {};
     this.emojiClickHandler = this.emojiClickHandler.bind(this);
-    this.inputChangeHandler = this.inputChangeHandler.bind(this);
-    this.deleteClickHandler = this.deleteClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -220,38 +218,14 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     this.getElement()
       .querySelector(`.film-details__comment-input`)
       .addEventListener(`keydown`, handler);
-    this.inputChangeHandler = handler;
-  }
-
-  inputChangeHandler(evt) {
-    if (evt.key === `Enter`) {
-      this._newComment = Object.assign({}, this._newComment, {
-        id: String(Math.random()),
-        text: encode(evt.target.value),
-        author: null,
-        day: new Date()
-      });
-      this._commentsModel.addComment(this._newComment);
-      this._newComment = {};
-      this._scrollTop = this.getElement().scrollTop;
-      this.rerender();
-    }
+    this._inputChangeHandler = handler;
   }
 
   setDeleteClickHandler(handler) {
     this.getElement()
       .querySelector(`.film-details__comment-delete`)
       .addEventListener(`click`, handler);
-    this.deleteClickHandler = handler;
-  }
-
-  deleteClickHandler(evt) {
-    evt.preventDefault();
-    const comment = evt.target.closest(`.film-details__comment`);
-    const commentId = comment.id;
-    this._commentsModel.removeComment(commentId, this._film);
-    this._scrollTop = this.getElement().scrollTop;
-    this.rerender();
+    this._deleteClickHandler = handler;
   }
 
   recoveryListeners() {
@@ -261,8 +235,10 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     this.setWatchedButtonClickHandler(this._historyClickHandler);
     this.setFavoriteButtonClickHandler(this._favoriteClickHandler);
     this.setEmojiClickHandler(this.emojiClickHandler);
-    this.setInputChangeHandler(this.inputChangeHandler);
-    this.setDeleteClickHandler(this.deleteClickHandler);
+    this.setInputChangeHandler(this._inputChangeHandler);
+    if (this._film.comments.length > 0) {
+      this.setDeleteClickHandler(this._deleteClickHandler);
+    }
   }
 
   rerender() {
@@ -270,21 +246,14 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     this.getElement().scrollTop = this._scrollTop;
   }
 
-  setWatchlistButtonClickHandler(handler) {
-    this.getElement()
-      .querySelector(`.film-card__controls-item--add-to-watchlist`)
-      .addEventListener(`click`, handler);
-  }
-
-  setWatchedButtonClickHandler(handler) {
-    this.getElement()
-      .querySelector(`.film-card__controls-item--mark-as-watched`)
-      .addEventListener(`click`, handler);
-  }
-
-  setFavoriteButtonClickHandler(handler) {
-    this.getElement()
-      .querySelector(`.film-card__controls-item--favorite`)
-      .addEventListener(`click`, handler);
+  createNewComment(newCommentText) {
+    const newComment = Object.assign({}, this._newComment, {
+      id: String(Math.random()),
+      text: encode(newCommentText),
+      author: null,
+      day: new Date()
+    });
+    this._newComment = {};
+    return newComment;
   }
 }
