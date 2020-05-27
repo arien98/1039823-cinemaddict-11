@@ -9,7 +9,6 @@ import {FilterController} from "./controllers/filter-controller.js";
 const TOTAL_FILMS_NUMBER = 20;
 
 const filmsData = generateFilms(TOTAL_FILMS_NUMBER);
-const menuItems = generateMenu();
 
 const siteMain = document.querySelector(`.main`);
 const siteHeader = document.querySelector(`.header`);

@@ -37,7 +37,6 @@ export class CommentsModel {
 
   addComment(comment) {
     this._comments = [].concat(comment, this._comments);
-    console.log(this._comments);
     this._callHandlers(this._dataChangeHandlers);
   }
 }
