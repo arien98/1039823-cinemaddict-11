@@ -61,5 +61,5 @@ export class FilmCardComponent extends AbstractComponent {
           <button class="film-card__controls-item ${favoriteActive} button film-card__controls-item--favorite">Mark as favorite</button>
         </form>
       </article>`);
-  };
+  }
 }
