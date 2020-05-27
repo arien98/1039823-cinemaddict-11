@@ -4,3 +4,5 @@ export const FilterType = {
   HISTORY: `history`,
   FAVORITES: `favorites`
 };
+
+export const HIDDEN_CLASS = `visually-hidden`;

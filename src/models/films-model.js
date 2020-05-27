@@ -1,5 +1,6 @@
 import {FilterType} from "../constants.js";
 import {getFilmsByFilter} from "../utils/filter.js";
+import {getUniqueItems} from "../utils/common.js";
 
 export class FilmsModel {
   constructor() {
@@ -70,5 +71,27 @@ export class FilmsModel {
   addFilm(film) {
     this._films = [].concat(film, this._films);
     this._callHandlers(this._dataChangeHandlers);
+  }
+
+  getWatchedFilms() {
+    return this._films.filter((film) => film.isHistory);
+  }
+
+  getGenreSelectedFilms() {
+    let genres = [];
+    this._films.forEach((film) => {
+      (film.genres.forEach((genre) => genres.push(genre)));
+    });
+    genres = getUniqueItems(genres);
+    const watchedFilms = this.getWatchedFilms();
+    const genresCount = genres.map((genre) => {
+      return {
+        genre,
+        count: watchedFilms.filter((film) => film.genres.includes(genre)).length
+      };
+    });
+    return genresCount.sort((a, b) => {
+      return b.count - a.count;
+    });
   }
 }

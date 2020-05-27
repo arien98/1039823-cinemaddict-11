@@ -11,7 +11,7 @@ const FilmTitles = [
   `The man with the golden arm`
 ];
 
-const FilmGenres = [
+export const FilmGenres = [
   `Romance`,
   `Science`,
   `Horror`,

@@ -7,7 +7,6 @@ export class FilterController {
   constructor(container, filmsModel) {
     this._container = container;
     this._filmsModel = filmsModel;
-
     this._activeFilterType = FilterType.ALL;
     this._filterComponent = null;
 
