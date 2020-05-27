@@ -33,4 +33,4 @@ export const getUniqueItems = (arr) => {
   }
 
   return result;
-}
+};
