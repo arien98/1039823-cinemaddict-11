@@ -28,7 +28,7 @@ export class FilterController {
       };
     });
 
-    const oldComponent = this._filterComponent;
+    let oldComponent = this._filterComponent;
 
     this._filterComponent = new FilterComponent(filters);
     this._filterComponent.setFilterChangeHandler(this._onFilterChange);
@@ -38,6 +38,8 @@ export class FilterController {
     } else {
       renderElement(container, this._filterComponent);
     }
+
+    oldComponent = null;
   }
 
   _onFilterChange(filterType) {

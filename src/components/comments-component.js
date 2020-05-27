@@ -17,7 +17,7 @@ const createCommentsTemplate = (comments) => {
             <p class="film-details__comment-info">
               <span class="film-details__comment-author">${author}</span>
               <span class="film-details__comment-day">${dateMarkup}</span>
-              <button class="film-details__comment-delete">Delete</button>
+              <button class="film-details__comment-delete" data-comment-id=${id}>Delete</button>
             </p>
           </div>
         </li>`

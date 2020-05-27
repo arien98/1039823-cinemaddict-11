@@ -54,20 +54,6 @@ export class FilmsModel {
     this._filterChangeHandlers.push(handler);
   }
 
-  removeFilm(id) {
-    const index = this._films.findIndex((it) => it.id === id);
-
-    if (index === -1) {
-      return false;
-    }
-
-    this._films = [].concat(this._films.slice(0, index), this._films.slice(index + 1));
-
-    this._callHandlers(this._dataChangeHandlers);
-
-    return true;
-  }
-
   addFilm(film) {
     this._films = [].concat(film, this._films);
     this._callHandlers(this._dataChangeHandlers);

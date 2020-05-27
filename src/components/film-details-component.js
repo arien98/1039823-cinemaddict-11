@@ -176,6 +176,11 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     this._escClickHandler = handler;
   }
 
+  removeEscButtonHandler(handler) {
+    document.removeEventListener(`keydown`, handler);
+    this._escClickHandler = handler;
+  }
+
   setWatchlistButtonClickHandler(handler) {
     this.getElement()
       .querySelector(`.film-details__control-label--watchlist`)
@@ -255,5 +260,9 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     });
     this._newComment = {};
     return newComment;
+  }
+
+  setScrollTop(scrollTop) {
+    this._scrollTop = scrollTop;
   }
 }
