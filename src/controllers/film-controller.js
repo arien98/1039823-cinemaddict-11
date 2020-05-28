@@ -26,19 +26,22 @@ export class FilmController {
     this._film = film;
     this._commentsModel = new CommentsModel(this._film);
     this._commentsModel.setComments(this._film.comments);
-    this._filmDetailsComponent = new FilmDetailsComponent(this._film, this._commentsModel);
 
-    let oldComponent = this._filmComponent;
+    let oldFilmComponent = this._filmComponent;
+    let oldFilmDetailsComponent = this._filmDetailsComponent;
 
     this._filmComponent = new FilmCardComponent(this._film);
+    this._filmDetailsComponent = new FilmDetailsComponent(this._film, this._commentsModel);
 
-    if (oldComponent) {
-      replace(this._filmComponent, oldComponent);
+    if (oldFilmComponent && oldFilmDetailsComponent) {
+      replace(this._filmComponent, oldFilmComponent);
+      replace(this._filmDetailsComponent, oldFilmDetailsComponent);
     } else {
       renderElement(this._container, this._filmComponent);
     }
 
-    oldComponent = null;
+    oldFilmComponent = null;
+    oldFilmDetailsComponent = null;
 
     this._setFilmHandlers();
   }
@@ -96,6 +99,7 @@ export class FilmController {
   _closeDetailsButtonHandler() {
     remove(this._filmDetailsComponent);
     this._filmDetailsComponent.removeEscButtonHandler(this._escPressHandler);
+    this._filmDetailsComponent.clearNewComment();
   }
 
   _escPressHandler(evt) {
@@ -118,6 +122,7 @@ export class FilmController {
     if (evt.key === `Enter`) {
       const newComment = this._filmDetailsComponent.createNewComment(evt.target.value);
       this._onCommentsChange(null, newComment);
+      this._filmDetailsComponent.setScrollTop(this._filmDetailsComponent.getElement().scrollTop);
     }
   }
 

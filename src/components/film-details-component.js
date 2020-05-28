@@ -227,10 +227,14 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   }
 
   setDeleteClickHandler(handler) {
+    const realHandler = (evt) => {
+      const commentId = evt.target.dataset.commentId;
+      handler(commentId);
+    };
     this.getElement()
       .querySelector(`.film-details__comment-delete`)
-      .addEventListener(`click`, handler);
-    this._deleteClickHandler = handler;
+      .addEventListener(`click`, realHandler);
+    this._deleteClickHandler = realHandler;
   }
 
   recoveryListeners() {
@@ -264,5 +268,9 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
 
   setScrollTop(scrollTop) {
     this._scrollTop = scrollTop;
+  }
+
+  clearNewComment() {
+    this._newComment = {};
   }
 }
