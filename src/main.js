@@ -9,12 +9,14 @@ import {renderElement} from "./utils/render.js";
 import {StatisticsComponent} from "./components/statistics-component.js";
 
 const AUTHORIZATION = `Basic 90fdsg9f7d9g78fd97g90a=4$jfkd`;
+const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
+export const USER_NAME = `William Terner`;
 
 const siteMain = document.querySelector(`.main`);
 const siteHeader = document.querySelector(`.header`);
 const footerStatisticsContainer = document.querySelector(`.footer__statistics`);
 
-const api = new API(AUTHORIZATION);
+const api = new API(END_POINT, AUTHORIZATION);
 const filmsModel = new FilmsModel();
 const statisticsComponent = new StatisticsComponent(filmsModel);
 const pageController = new PageController(siteMain, filmsModel, api);

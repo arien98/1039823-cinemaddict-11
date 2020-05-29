@@ -2,6 +2,8 @@ import {FilmDetailsComponent} from "../components/film-details-component.js";
 import {renderElement, remove, replace} from "../utils/render.js";
 import {FilmCardComponent} from "../components/film-card-component.js";
 import {CommentsModel} from "../models/comments-model.js";
+import {FilmModel} from "../models/film-model.js";
+import {CommentModel} from "../models/comment-model.js";
 
 export const emptyFilm = {};
 
@@ -85,13 +87,19 @@ export class FilmController {
     this._filmDetailsComponent.setEscButtonHandler(this._escPressHandler);
 
     this._filmDetailsComponent.setWatchlistButtonClickHandler(() => {
-      this._onDataChange(this, this._film, Object.assign({}, this._film, {isInWatchlist: !this._film.isInWatchlist}));
+      const newFilm = FilmModel.clone(this._film);
+      newFilm.isInWatchlist = !this._film.isInWatchlist;
+      this._onDataChange(this, this._film, newFilm);
     });
     this._filmDetailsComponent.setWatchedButtonClickHandler(() => {
-      this._onDataChange(this, this._film, Object.assign({}, this._film, {isHistory: !this._film.isHistory}));
+      const newFilm = FilmModel.clone(this._film);
+      newFilm.isHistory = !this._film.isHistory;
+      this._onDataChange(this, this._film, newFilm);
     });
     this._filmDetailsComponent.setFavoriteButtonClickHandler(() => {
-      this._onDataChange(this, this._film, Object.assign({}, this._film, {isFavorite: !this._film.isFavorite}));
+      const newFilm = FilmModel.clone(this._film);
+      newFilm.isFavorite = !this._film.isFavorite;
+      this._onDataChange(this, this._film, newFilm);
     });
     this._filmDetailsComponent.setInputChangeHandler(this._inputChangeHandler);
 
@@ -143,12 +151,17 @@ export class FilmController {
       this._commentsModel.removeComment(commentId, this._film);
     } else {
       if (oldComment === null) {
-        this._commentsModel.addComment(newComment);
+        const newCommentData = CommentModel.clone(newComment);
+        this._api.createComment(this._film.id, newCommentData);
       } else {
         return;
       }
     }
-    this._onDataChange(this, this._film, Object.assign({}, this._film, {comments: this._commentsModel.getComments()}));
+
+    const newFilm = FilmModel.clone(this._film);
+    newFilm.comments = this._commentsModel.getComments();
+    this._onDataChange(this, this._film, newFilm);
+
     this._filmDetailsComponent.setScrollTop(this._filmDetailsComponent.getElement().scrollTop);
     this._filmDetailsComponent.rerender();
   }

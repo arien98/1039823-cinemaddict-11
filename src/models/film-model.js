@@ -29,4 +29,40 @@ export class FilmModel {
   static parseFilms(data) {
     return data.map(FilmModel.parseFilm);
   }
+
+  static clone(data) {
+    return new FilmModel(data.toRaw());
+  }
+
+  toRaw() {
+    return {
+      "id": this.id,
+      "comments": this.comments.map((comment) => {
+        return comment.id;
+      }),
+      "film_info": {
+        "title": this.title,
+        "alternative_title": this.originalTitile,
+        "total_rating": this.rating,
+        "poster": this.posterSrc,
+        "age_rating": this.age,
+        "director": this.director,
+        "writers": this.writers,
+        "actors": this.actors,
+        "release": {
+          "date": this.releaseDate,
+          "release_country": this.country
+        },
+        "runtime": this.duration,
+        "genre": this.genres,
+        "description": this.description
+      },
+      "user_details": {
+        "watchlist": this.isInWatchlist,
+        "already_watched": this.isHistory,
+        "watching_date": this.watchingDate,
+        "favorite": this.isFavorite
+      }
+    };
+  }
 }

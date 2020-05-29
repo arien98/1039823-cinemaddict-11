@@ -34,6 +34,8 @@ const createFilmDetailsTemplate = (film, commentsTemplate, newComment) => {
   const genresMarkup = createGenresTemplate(genres);
   const commentsMarkup = commentsTemplate;
   const releaseDateMarkup = moment(releaseDate).format(`MMMM Do YYYY`);
+  const ageTemplate = `${age}+`;
+  const durationTemplate = `${Math.floor(duration / 60)}h ${duration % 60}m`;
 
   const emojisMarkup = createEmojiMarkup(emojisType, newComment);
   const selectedEmoji = newComment.emoji ? `<img src="./images/emoji/${newComment.emoji}.png" width="30" height="30" alt="emoji" data-emoji-type = ${newComment.emoji}></img>` : ``;
@@ -53,7 +55,7 @@ const createFilmDetailsTemplate = (film, commentsTemplate, newComment) => {
             <div class="film-details__poster">
               <img class="film-details__poster-img" src="${posterSrc}" alt="">
 
-              <p class="film-details__age">${age}</p>
+              <p class="film-details__age">${ageTemplate}</p>
             </div>
 
             <div class="film-details__info">
@@ -87,7 +89,7 @@ const createFilmDetailsTemplate = (film, commentsTemplate, newComment) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${duration}</td>
+                  <td class="film-details__cell">${durationTemplate}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>

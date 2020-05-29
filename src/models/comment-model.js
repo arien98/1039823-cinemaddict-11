@@ -14,4 +14,18 @@ export class CommentModel {
   static parseComments(data) {
     return data.map(CommentModel.parseComment);
   }
+
+  static clone(data) {
+    return new CommentModel(data.toRaw());
+  }
+
+  toRaw() {
+    return {
+      "id": this.id,
+      "author": this.author,
+      "comment": this.text,
+      "date": this.day,
+      "emotion": this.emoji
+    };
+  }
 }
