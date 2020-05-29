@@ -5,7 +5,7 @@ const createCommentsTemplate = (comments) => {
   return comments
     .map((comment) => {
       const {id, emoji, text, author, date} = comment;
-      const dateMarkup = moment(date).format(`MMMM Do YYYY`);
+      const dateMarkup = moment(date).fromNow();
 
       return (
         `<li class="film-details__comment" id=${id}>

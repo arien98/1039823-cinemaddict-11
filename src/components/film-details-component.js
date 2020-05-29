@@ -2,6 +2,7 @@ import {CommentsComponent} from "./comments-component.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import moment from "moment";
 import {encode} from "he";
+import {USER_NAME} from "../main.js";
 
 const emojisType = [`smile`, `sleeping`, `puke`, `angry`];
 
@@ -261,7 +262,7 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     const newComment = Object.assign({}, this._newComment, {
       id: String(Math.random()),
       text: encode(newCommentText),
-      author: null,
+      author: USER_NAME,
       day: new Date()
     });
     this._newComment = {};

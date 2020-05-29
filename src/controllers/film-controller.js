@@ -4,8 +4,10 @@ import {FilmCardComponent} from "../components/film-card-component.js";
 import {CommentsModel} from "../models/comments-model.js";
 import {FilmModel} from "../models/film-model.js";
 import {CommentModel} from "../models/comment-model.js";
+import moment from "moment";
 
 export const emptyFilm = {};
+const SHAKE_ANIMATION_TIMEOUT = 600;
 
 export class FilmController {
   constructor(container, onDataChange, onViewChange, filmsModel, api) {
@@ -28,6 +30,7 @@ export class FilmController {
   render(film) {
     this._film = film;
     this._commentsModel = new CommentsModel(this._film);
+
 
     let oldFilmComponent = this._filmComponent;
     let oldFilmDetailsComponent = this._filmDetailsComponent;
@@ -148,11 +151,19 @@ export class FilmController {
   _onCommentsChange(oldComment, newComment) {
     if (newComment === null) {
       const commentId = oldComment.id;
-      this._commentsModel.removeComment(commentId, this._film);
+      this._api.deleteComment(commentId)
+        .then(() => this._commentsModel.removeComment(commentId, this._film))
+        .catch(() => {
+          this.shake();
+        });
     } else {
       if (oldComment === null) {
         const newCommentData = CommentModel.clone(newComment);
-        this._api.createComment(this._film.id, newCommentData);
+        this._api.createComment(this._film.id, newCommentData)
+          .then(() => this._commentsModel.addComment(newComment))
+          .catch(() => {
+            this.shake();
+          });
       } else {
         return;
       }
@@ -164,5 +175,15 @@ export class FilmController {
 
     this._filmDetailsComponent.setScrollTop(this._filmDetailsComponent.getElement().scrollTop);
     this._filmDetailsComponent.rerender();
+  }
+
+  shake() {
+    this._filmDetailsComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._filmComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this._taskEditComponent.getElement().style.animation = ``;
+      this._taskComponent.getElement().style.animation = ``;
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 }

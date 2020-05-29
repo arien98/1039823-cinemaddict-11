@@ -124,6 +124,9 @@ export class PageController {
         if (isSuccess) {
           filmController.render(filmModel);
         }
+      })
+      .catch(() => {
+        filmController.shake();
       });
   }
 

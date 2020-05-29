@@ -28,10 +28,11 @@ filterController.render();
 
 api.getFilms()
   .then((films) => filmsModel.setFilms(films))
-  .then(() => pageController.render());
-
-renderElement(siteMain, statisticsComponent);
-statisticsComponent.getChart();
+  .then(() => {
+    pageController.render();
+    renderElement(siteMain, statisticsComponent);
+    statisticsComponent.getChart();
+  });
 
 renderElement(footerStatisticsContainer, new FilmCountComponent());
 
@@ -47,6 +48,11 @@ siteMain.addEventListener(`click`, (evt) => {
     case statsButton:
       pageController.hide();
       statisticsComponent.show();
+      statisticsComponent.setStatButtonClickHandler((e) => {
+        const statFilter = e.target.dataset.filterType;
+        statisticsComponent.setStatFilter(statFilter);
+        statisticsComponent.rerender();
+      });
       filmsModel.setFilter(FilterType.ALL);
       break;
     case filterButton:
