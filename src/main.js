@@ -3,34 +3,30 @@ import {FilterType} from "./constants.js";
 import {FilmCountComponent} from "./components/film-count-component.js";
 import {FilmsModel} from "./models/films-model.js";
 import {FilterController} from "./controllers/filter-controller.js";
-import {generateFilms} from "./mocks/film.js";
 import {PageController} from "./controllers/page-controller.js";
 import {ProfileComponent} from "./components/profile-component.js";
 import {renderElement} from "./utils/render.js";
 import {StatisticsComponent} from "./components/statistics-component.js";
 
-const TOTAL_FILMS_NUMBER = 20;
-
-const filmsData = generateFilms(TOTAL_FILMS_NUMBER);
+const AUTHORIZATION = `Basic 90fdsg9f7d9g78fd97g90a=4$jfkd`;
 
 const siteMain = document.querySelector(`.main`);
 const siteHeader = document.querySelector(`.header`);
 const footerStatisticsContainer = document.querySelector(`.footer__statistics`);
 
+const api = new API(AUTHORIZATION);
 const filmsModel = new FilmsModel();
 const statisticsComponent = new StatisticsComponent(filmsModel);
-const pageController = new PageController(siteMain, filmsModel);
+const pageController = new PageController(siteMain, filmsModel, api);
 const filterController = new FilterController(siteMain, filmsModel);
-const api = new API();
-
-filmsModel.setFilms(filmsData);
 
 renderElement(siteHeader, new ProfileComponent());
 
 filterController.render();
+
 api.getFilms()
-  .then(() => pageController.render())
-  .then;
+  .then((films) => filmsModel.setFilms(films))
+  .then(() => pageController.render());
 
 renderElement(siteMain, statisticsComponent);
 statisticsComponent.getChart();

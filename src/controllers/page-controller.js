@@ -6,11 +6,11 @@ import {FilmsContainerComponent} from "../components/films-container-component.j
 import {FilmController} from "./film-controller.js";
 
 export class PageController {
-  constructor(container, filmsModel, statistics) {
+  constructor(container, filmsModel, api) {
     this._films = [];
     this._showedFilmControllers = [];
     this._container = container;
-    this._statistics = statistics;
+    this._api = api;
     this._showButton = new ShowButtonComponent();
     this._noFilms = new NoFilmsComponents();
     this._sortComponent = new SortingComponent();
@@ -55,7 +55,7 @@ export class PageController {
     return films
       .slice(start, end)
       .map((film) => {
-        const filmController = new FilmController(container, this._onDataChange, this._onViewChange, this._filmsModel);
+        const filmController = new FilmController(container, this._onDataChange, this._onViewChange, this._filmsModel, this._api);
         filmController.render(film);
         return filmController;
       });
@@ -115,11 +115,14 @@ export class PageController {
   }
 
   _onDataChange(filmController, oldData, newData) {
-    const isSuccess = this._filmsModel.updateFilm(oldData.id, newData);
+    this._api.updateFilm(oldData.id, newData)
+      .then((filmModel) => {
+        const isSuccess = this._filmsModel.updateFilm(oldData.id, filmModel);
 
-    if (isSuccess) {
-      filmController.render(newData);
-    }
+        if (isSuccess) {
+          filmController.render(filmModel);
+        }
+      });
   }
 
   _onViewChange() {

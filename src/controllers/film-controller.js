@@ -6,9 +6,10 @@ import {CommentsModel} from "../models/comments-model.js";
 export const emptyFilm = {};
 
 export class FilmController {
-  constructor(container, onDataChange, onViewChange, filmsModel) {
+  constructor(container, onDataChange, onViewChange, filmsModel, api) {
     this._container = container;
     this._filmsModel = filmsModel;
+    this._api = api;
     this._filmClickHandler = this._filmClickHandler.bind(this);
     this._closeDetailsButtonHandler = this._closeDetailsButtonHandler.bind(this);
     this._escPressHandler = this._escPressHandler.bind(this);
@@ -25,7 +26,6 @@ export class FilmController {
   render(film) {
     this._film = film;
     this._commentsModel = new CommentsModel(this._film);
-    this._commentsModel.setComments(this._film.comments);
 
     let oldFilmComponent = this._filmComponent;
     let oldFilmDetailsComponent = this._filmDetailsComponent;
@@ -33,12 +33,16 @@ export class FilmController {
     this._filmComponent = new FilmCardComponent(this._film);
     this._filmDetailsComponent = new FilmDetailsComponent(this._film, this._commentsModel);
 
-    if (oldFilmComponent && oldFilmDetailsComponent) {
-      replace(this._filmComponent, oldFilmComponent);
-      replace(this._filmDetailsComponent, oldFilmDetailsComponent);
-    } else {
-      renderElement(this._container, this._filmComponent);
-    }
+    this._api.getComments(this._film.id)
+      .then((comments) => this._commentsModel.setComments(comments))
+      .then(() => {
+        if (oldFilmComponent && oldFilmDetailsComponent) {
+          replace(this._filmComponent, oldFilmComponent);
+          replace(this._filmDetailsComponent, oldFilmDetailsComponent);
+        } else {
+          renderElement(this._container, this._filmComponent);
+        }
+      });
 
     oldFilmComponent = null;
     oldFilmDetailsComponent = null;
