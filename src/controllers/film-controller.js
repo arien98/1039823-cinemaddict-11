@@ -36,6 +36,7 @@ export class FilmController {
     if (oldFilmComponent && oldFilmDetailsComponent) {
       replace(this._filmComponent, oldFilmComponent);
       replace(this._filmDetailsComponent, oldFilmDetailsComponent);
+      oldFilmDetailsComponent.removeEscButtonHandler(this._escPressHandler);
     } else {
       renderElement(this._container, this._filmComponent);
     }
