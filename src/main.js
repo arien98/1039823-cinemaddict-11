@@ -1,12 +1,13 @@
-import {ProfileComponent} from "./components/profile-component.js";
+import {API} from "./api.js";
+import {FilterType} from "./constants.js";
 import {FilmCountComponent} from "./components/film-count-component.js";
-import {generateFilms} from "./mocks/film.js";
-import {renderElement} from "./utils/render.js";
-import {PageController} from "./controllers/page-controller.js";
 import {FilmsModel} from "./models/films-model.js";
 import {FilterController} from "./controllers/filter-controller.js";
+import {generateFilms} from "./mocks/film.js";
+import {PageController} from "./controllers/page-controller.js";
+import {ProfileComponent} from "./components/profile-component.js";
+import {renderElement} from "./utils/render.js";
 import {StatisticsComponent} from "./components/statistics-component.js";
-import {FilterType} from "./constants.js";
 
 const TOTAL_FILMS_NUMBER = 20;
 
@@ -17,19 +18,24 @@ const siteHeader = document.querySelector(`.header`);
 const footerStatisticsContainer = document.querySelector(`.footer__statistics`);
 
 const filmsModel = new FilmsModel();
-filmsModel.setFilms(filmsData);
-
 const statisticsComponent = new StatisticsComponent(filmsModel);
 const pageController = new PageController(siteMain, filmsModel);
 const filterController = new FilterController(siteMain, filmsModel);
+const api = new API();
+
+filmsModel.setFilms(filmsData);
 
 renderElement(siteHeader, new ProfileComponent());
 
 filterController.render();
-pageController.render();
+api.getFilms()
+  .then(() => pageController.render())
+  .then;
 
 renderElement(siteMain, statisticsComponent);
 statisticsComponent.getChart();
+
+renderElement(footerStatisticsContainer, new FilmCountComponent());
 
 siteMain.addEventListener(`click`, (evt) => {
   const statsButton = evt.target.closest(`.main-navigation__additional`);
@@ -51,5 +57,3 @@ siteMain.addEventListener(`click`, (evt) => {
       break;
   }
 });
-
-renderElement(footerStatisticsContainer, new FilmCountComponent());
