@@ -56,8 +56,8 @@ export class API {
       .then(CommentModel.parseComment);
   }
 
-  deleteComment(filmId, commentId) {
-    return this._load({url: `comment/${filmId}/${commentId}`, method: Method.DELETE});
+  deleteComment(commentId) {
+    return this._load({url: `comment/${commentId}`, method: Method.DELETE});
   }
 
   _load({

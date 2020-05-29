@@ -32,6 +32,8 @@ export class PageController {
 
   render() {
     this._films = this._filmsModel.getFilms();
+    this._topRatedFilms = this._filmsModel.getTopRatedFilms();
+    this._mostCommentedFilms = this._filmsModel.getMostCommentedFilms();
     this._filmsContainer = this._filmsContainerComponent.getFilmsContainer();
     this._topRatedFilmsContainer = this._filmsContainerComponent.getTopRatedFilmsContainer();
     this._mostCommentedFilmsContainer = this._filmsContainerComponent.getTopMostCommentedContainer();
@@ -47,8 +49,8 @@ export class PageController {
 
     this._renderFilmDesk(this._films, this._filmsContainer);
 
-    this._renderFilms(0, this._topRatedFilmsCount, this._topRatedFilmsContainer, this._films);
-    this._renderFilms(0, this._mostCommentedFilmsCount, this._mostCommentedFilmsContainer, this._films);
+    this._renderFilms(0, this._topRatedFilmsCount, this._topRatedFilmsContainer, this._topRatedFilms);
+    this._renderFilms(0, this._mostCommentedFilmsCount, this._mostCommentedFilmsContainer, this._mostCommentedFilms);
   }
 
   _renderFilms(start, end, container, films) {

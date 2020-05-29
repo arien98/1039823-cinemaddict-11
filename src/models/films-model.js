@@ -23,6 +23,18 @@ export class FilmsModel {
     this._callHandlers(this._dataChangeHandlers);
   }
 
+  getTopRatedFilms() {
+    return this._films.slice().sort((a, b) => {
+      return b.rating - a.rating;
+    });
+  }
+
+  getMostCommentedFilms() {
+    return this._films.slice().sort((a, b) => {
+      return b.comments.length - a.comments.length;
+    });
+  }
+
   updateFilm(id, film) {
     const index = this._films.findIndex((it) => it.id === id);
 
@@ -60,7 +72,7 @@ export class FilmsModel {
   }
 
   getWatchedFilms() {
-    return this._films.filter((film) => film.isHistory);
+    return this._films.slice().filter((film) => film.isHistory);
   }
 
   getGenreSelectedFilms() {

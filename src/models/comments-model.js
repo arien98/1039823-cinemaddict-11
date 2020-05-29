@@ -1,5 +1,3 @@
-import {USER_NAME} from "../main";
-
 export class CommentsModel {
   constructor(film, filmsModel) {
     this._film = film;
@@ -38,16 +36,6 @@ export class CommentsModel {
 
     return true;
   }
-
-  // createComment() {
-  //   return {
-  //     id: String(Math.random() * Math.random() * 100),
-  //     emoji: null,
-  //     text: null,
-  //     author: USER_NAME,
-  //     day: new Date()
-  //   };
-  // }
 
   addComment(comment) {
     this._comments = [].concat(comment, this._comments);
