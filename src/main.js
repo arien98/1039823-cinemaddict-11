@@ -9,7 +9,7 @@ import {StatisticsComponent} from "./components/statistics-component.js";
 import {Provider} from "./api/provider.js";
 import {Store} from "./api/store.js";
 
-const AUTHORIZATION = `Basic 90fdsg9f7d9g78fd97g90a=4$jfkd`;
+const AUTHORIZATION = `Basic 90fdsg9f432d9g78fd97g90a=4$jfkd`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 const STORE_PREFIX = `cinemaaddict-localstorage`;
 const STORE_VER = `v1`;

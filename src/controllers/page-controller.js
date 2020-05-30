@@ -49,8 +49,11 @@ export class PageController {
 
     this._renderFilmDesk(this._films, this._filmsContainer);
 
-    this._renderFilms(0, this._topRatedFilmsCount, this._topRatedFilmsContainer, this._topRatedFilms);
-    this._renderFilms(0, this._mostCommentedFilmsCount, this._mostCommentedFilmsContainer, this._mostCommentedFilms);
+    let newFilms = this._renderFilms(0, this._topRatedFilmsCount, this._topRatedFilmsContainer, this._topRatedFilms);
+    this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
+
+    newFilms = this._renderFilms(0, this._mostCommentedFilmsCount, this._mostCommentedFilmsContainer, this._mostCommentedFilms);
+    this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
   }
 
   _renderFilms(start, end, container, films) {
