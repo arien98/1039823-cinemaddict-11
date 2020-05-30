@@ -51,7 +51,6 @@ api.getFilms()
     statButton.addEventListener(`click`, () => {
       pageController.hide();
       statisticsComponent.show();
-      
     });
   });
 
