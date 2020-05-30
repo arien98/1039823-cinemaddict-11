@@ -1,5 +1,7 @@
 export class CommentsModel {
-  constructor() {
+  constructor(film, filmsModel) {
+    this._film = film;
+    this._filmsModel = filmsModel;
     this._comments = [];
     this._dataChangeHandlers = [];
   }
@@ -22,7 +24,7 @@ export class CommentsModel {
   }
 
   removeComment(id) {
-    const index = this._films.findIndex((it) => it.id === id);
+    const index = this._comments.findIndex((it) => it.id === id);
 
     if (index === -1) {
       return false;
@@ -38,9 +40,5 @@ export class CommentsModel {
   addComment(comment) {
     this._comments = [].concat(comment, this._comments);
     this._callHandlers(this._dataChangeHandlers);
-  }
-
-  setNewComment(newComment) {
-    this._newComment = Object.assign({}, this._newComment, {text: newComment});
   }
 }

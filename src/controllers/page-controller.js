@@ -3,14 +3,14 @@ import {NoFilmsComponents} from "../components/no-films-component.js";
 import {renderElement, RenderPosition, remove} from "../utils/render.js";
 import {SortingComponent, SortType} from "../components/sorting-component.js";
 import {FilmsContainerComponent} from "../components/films-container-component.js";
-import {FilmController, emptyFilm} from "./film-controller.js";
 import {FilmController} from "./film-controller.js";
 
 export class PageController {
-  constructor(container, filmsModel) {
+  constructor(container, filmsModel, statistics) {
     this._films = [];
     this._showedFilmControllers = [];
     this._container = container;
+    this._statistics = statistics;
     this._showButton = new ShowButtonComponent();
     this._noFilms = new NoFilmsComponents();
     this._sortComponent = new SortingComponent();
@@ -33,8 +33,8 @@ export class PageController {
   render() {
     this._films = this._filmsModel.getFilms();
     this._filmsContainer = this._filmsContainerComponent.getFilmsContainer();
-    const topRatedFilmsContainer = this._filmsContainerComponent.getTopRatedFilmsContainer();
-    const mostCommentedFilmsContainer = this._filmsContainerComponent.getTopMostCommentedContainer();
+    this._topRatedFilmsContainer = this._filmsContainerComponent.getTopRatedFilmsContainer();
+    this._mostCommentedFilmsContainer = this._filmsContainerComponent.getTopMostCommentedContainer();
 
     renderElement(this._container, this._filmsContainerComponent);
 
@@ -47,15 +47,15 @@ export class PageController {
 
     this._renderFilmDesk(this._films, this._filmsContainer);
 
-    this._renderFilms(0, this._topRatedFilmsCount, topRatedFilmsContainer, this._films);
-    this._renderFilms(0, this._mostCommentedFilmsCount, mostCommentedFilmsContainer, this._films);
+    this._renderFilms(0, this._topRatedFilmsCount, this._topRatedFilmsContainer, this._films);
+    this._renderFilms(0, this._mostCommentedFilmsCount, this._mostCommentedFilmsContainer, this._films);
   }
 
   _renderFilms(start, end, container, films) {
     return films
       .slice(start, end)
       .map((film) => {
-        const filmController = new FilmController(container, this._onDataChange, this._onViewChange);
+        const filmController = new FilmController(container, this._onDataChange, this._onViewChange, this._filmsModel);
         filmController.render(film);
         return filmController;
       });
@@ -138,5 +138,13 @@ export class PageController {
 
   _onFilterChange() {
     this._updateFilms();
+  }
+
+  show() {
+    this._filmsContainerComponent.show();
+  }
+
+  hide() {
+    this._filmsContainerComponent.hide();
   }
 }

@@ -12,6 +12,7 @@ const COMMENT_AUTHORS = [`John Doe`, `Tim Macoveev`, `Jerald Bathler`, `Julie Ro
 
 const generateComment = () => {
   return {
+    id: String(Math.random()),
     emoji: getRandomArrayItem(COMMENT_EMOJIS),
     text: getRandomArrayItem(COMMENT_TEXTS),
     author: getRandomArrayItem(COMMENT_AUTHORS),

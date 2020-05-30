@@ -1,14 +1,14 @@
 import {AbstractComponent} from "./abstract-component.js";
 import moment from "moment";
 
-const createCommentsTemplate = (film) => {
-  return film.comments
+const createCommentsTemplate = (comments) => {
+  return comments
     .map((comment) => {
-      const {emoji, text, author, date} = comment;
+      const {id, emoji, text, author, date} = comment;
       const dateMarkup = moment(date).format(`MMMM Do YYYY`);
 
       return (
-        `<li class="film-details__comment">
+        `<li class="film-details__comment" id=${id}>
           <span class="film-details__comment-emoji">
             <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
           </span>
@@ -17,7 +17,7 @@ const createCommentsTemplate = (film) => {
             <p class="film-details__comment-info">
               <span class="film-details__comment-author">${author}</span>
               <span class="film-details__comment-day">${dateMarkup}</span>
-              <button class="film-details__comment-delete">Delete</button>
+              <button class="film-details__comment-delete" data-comment-id=${id}>Delete</button>
             </p>
           </div>
         </li>`
@@ -27,12 +27,12 @@ const createCommentsTemplate = (film) => {
 };
 
 export class CommentsComponent extends AbstractComponent {
-  constructor(film) {
+  constructor(commentsModel) {
     super();
-    this._film = film;
+    this._commentsModel = commentsModel;
   }
 
   getTemplate() {
-    return createCommentsTemplate(this._film);
+    return createCommentsTemplate(this._commentsModel.getComments());
   }
 }
