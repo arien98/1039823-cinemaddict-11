@@ -1,6 +1,8 @@
 import {FilterType} from "../constants.js";
 import {getFilmsByFilter} from "../utils/filter.js";
 import {getUniqueItems} from "../utils/common.js";
+import moment from "moment";
+import {StatFilter} from "../components/statistics-component.js";
 
 export class FilmsModel {
   constructor() {
@@ -21,6 +23,18 @@ export class FilmsModel {
   setFilms(films) {
     this._films = Array.from(films);
     this._callHandlers(this._dataChangeHandlers);
+  }
+
+  getTopRatedFilms() {
+    return this._films.slice().sort((a, b) => {
+      return b.rating - a.rating;
+    });
+  }
+
+  getMostCommentedFilms() {
+    return this._films.slice().sort((a, b) => {
+      return b.comments.length - a.comments.length;
+    });
   }
 
   updateFilm(id, film) {
@@ -59,17 +73,52 @@ export class FilmsModel {
     this._callHandlers(this._dataChangeHandlers);
   }
 
-  getWatchedFilms() {
-    return this._films.filter((film) => film.isHistory);
+  getWatchedFilms(filter) {
+    const watchedFilms = this._films.slice().filter((film) => film.isHistory);
+    let filteredFilms = [];
+    switch (filter) {
+      case StatFilter.ALL:
+        filteredFilms = watchedFilms;
+        break;
+      case StatFilter.TODAY:
+        filteredFilms = watchedFilms.filter((it) => {
+          const a = moment(it.watchingDate);
+          const b = moment().hours(0).minutes(0).seconds(0);
+          return a.diff(b) > 0;
+        });
+        break;
+      case StatFilter.WEEK:
+        filteredFilms = watchedFilms.filter((it) => {
+          const a = moment(it.watchingDate);
+          const b = moment().subtract(7, `day`);
+          return a.diff(b) > 0;
+        });
+        break;
+      case StatFilter.MONTH:
+        filteredFilms = watchedFilms.filter((it) => {
+          const a = moment(it.watchingDate);
+          const b = moment().subtract(1, `month`);
+          return a.diff(b) > 0;
+        });
+        break;
+      case StatFilter.YEAR:
+        filteredFilms = watchedFilms.filter((it) => {
+          const a = moment(it.watchingDate);
+          const b = moment().subtract(1, `year`);
+          return a.diff(b) > 0;
+        });
+        break;
+    }
+    return filteredFilms;
   }
 
-  getGenreSelectedFilms() {
+  getGenreSelectedFilms(filter) {
     let genres = [];
     this._films.forEach((film) => {
       (film.genres.forEach((genre) => genres.push(genre)));
     });
     genres = getUniqueItems(genres);
-    const watchedFilms = this.getWatchedFilms();
+    const watchedFilms = this.getWatchedFilms(filter);
     const genresCount = genres.map((genre) => {
       return {
         genre,

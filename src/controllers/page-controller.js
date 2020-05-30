@@ -6,11 +6,11 @@ import {FilmsContainerComponent} from "../components/films-container-component.j
 import {FilmController} from "./film-controller.js";
 
 export class PageController {
-  constructor(container, filmsModel, statistics) {
+  constructor(container, filmsModel, api) {
     this._films = [];
     this._showedFilmControllers = [];
     this._container = container;
-    this._statistics = statistics;
+    this._api = api;
     this._showButton = new ShowButtonComponent();
     this._noFilms = new NoFilmsComponents();
     this._sortComponent = new SortingComponent();
@@ -32,6 +32,8 @@ export class PageController {
 
   render() {
     this._films = this._filmsModel.getFilms();
+    this._topRatedFilms = this._filmsModel.getTopRatedFilms();
+    this._mostCommentedFilms = this._filmsModel.getMostCommentedFilms();
     this._filmsContainer = this._filmsContainerComponent.getFilmsContainer();
     this._topRatedFilmsContainer = this._filmsContainerComponent.getTopRatedFilmsContainer();
     this._mostCommentedFilmsContainer = this._filmsContainerComponent.getTopMostCommentedContainer();
@@ -47,15 +49,15 @@ export class PageController {
 
     this._renderFilmDesk(this._films, this._filmsContainer);
 
-    this._renderFilms(0, this._topRatedFilmsCount, this._topRatedFilmsContainer, this._films);
-    this._renderFilms(0, this._mostCommentedFilmsCount, this._mostCommentedFilmsContainer, this._films);
+    this._renderFilms(0, this._topRatedFilmsCount, this._topRatedFilmsContainer, this._topRatedFilms);
+    this._renderFilms(0, this._mostCommentedFilmsCount, this._mostCommentedFilmsContainer, this._mostCommentedFilms);
   }
 
   _renderFilms(start, end, container, films) {
     return films
       .slice(start, end)
       .map((film) => {
-        const filmController = new FilmController(container, this._onDataChange, this._onViewChange, this._filmsModel);
+        const filmController = new FilmController(container, this._onDataChange, this._onViewChange, this._filmsModel, this._api);
         filmController.render(film);
         return filmController;
       });
@@ -115,11 +117,17 @@ export class PageController {
   }
 
   _onDataChange(filmController, oldData, newData) {
-    const isSuccess = this._filmsModel.updateFilm(oldData.id, newData);
+    this._api.updateFilm(oldData.id, newData)
+      .then((filmModel) => {
+        const isSuccess = this._filmsModel.updateFilm(oldData.id, filmModel);
 
-    if (isSuccess) {
-      filmController.render(newData);
-    }
+        if (isSuccess) {
+          filmController.render(filmModel);
+        }
+      })
+      .catch(() => {
+        filmController.shake();
+      });
   }
 
   _onViewChange() {

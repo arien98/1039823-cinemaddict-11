@@ -2,6 +2,7 @@ import {CommentsComponent} from "./comments-component.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import moment from "moment";
 import {encode} from "he";
+import {USER_NAME} from "../main.js";
 
 const emojisType = [`smile`, `sleeping`, `puke`, `angry`];
 
@@ -34,6 +35,8 @@ const createFilmDetailsTemplate = (film, commentsTemplate, newComment) => {
   const genresMarkup = createGenresTemplate(genres);
   const commentsMarkup = commentsTemplate;
   const releaseDateMarkup = moment(releaseDate).format(`MMMM Do YYYY`);
+  const ageTemplate = `${age}+`;
+  const durationTemplate = `${Math.floor(duration / 60)}h ${duration % 60}m`;
 
   const emojisMarkup = createEmojiMarkup(emojisType, newComment);
   const selectedEmoji = newComment.emoji ? `<img src="./images/emoji/${newComment.emoji}.png" width="30" height="30" alt="emoji" data-emoji-type = ${newComment.emoji}></img>` : ``;
@@ -53,7 +56,7 @@ const createFilmDetailsTemplate = (film, commentsTemplate, newComment) => {
             <div class="film-details__poster">
               <img class="film-details__poster-img" src="${posterSrc}" alt="">
 
-              <p class="film-details__age">${age}</p>
+              <p class="film-details__age">${ageTemplate}</p>
             </div>
 
             <div class="film-details__info">
@@ -87,7 +90,7 @@ const createFilmDetailsTemplate = (film, commentsTemplate, newComment) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${duration}</td>
+                  <td class="film-details__cell">${durationTemplate}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
@@ -251,15 +254,19 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   }
 
   rerender() {
-    super.rerender();
-    this.getElement().scrollTop = this._scrollTop;
+    this._api.getComments(this._film.id)
+      .then((comments) => this._commentsModel.setComments(comments))
+      .then(() => {
+        super.rerender();
+        this.getElement().scrollTop = this._scrollTop;
+      });
   }
 
   createNewComment(newCommentText) {
     const newComment = Object.assign({}, this._newComment, {
       id: String(Math.random()),
       text: encode(newCommentText),
-      author: null,
+      author: USER_NAME,
       day: new Date()
     });
     this._newComment = {};

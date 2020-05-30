@@ -26,16 +26,10 @@ export class AbstractComponent {
   }
 
   show() {
-    // if (this._element) {
-    //   this._element.classList.remove(HIDDEN_CLASS);
-    // }
     this.getElement().classList.remove(HIDDEN_CLASS);
   }
 
   hide() {
-    // if (this._element) {
-    //   this._element.classList.add(HIDDEN_CLASS);
-    // }
     this.getElement().classList.add(HIDDEN_CLASS);
   }
 }

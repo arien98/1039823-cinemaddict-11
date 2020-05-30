@@ -1,15 +1,41 @@
-import {AbstractComponent} from "./abstract-component";
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {FilmGenres} from "../mocks/film.js";
+import AbstractSmartComponent from "./abstract-smart-component";
 
-export class StatisticsComponent extends AbstractComponent {
+export const StatFilter = {
+  ALL: `All time`,
+  TODAY: `today`,
+  WEEK: `Week`,
+  MONTH: `Month`,
+  YEAR: `Year`
+};
+
+export class StatisticsComponent extends AbstractSmartComponent {
   constructor(filmsModel) {
     super();
     this._filmsModel = filmsModel;
+    this._statFilter = StatFilter.ALL;
+    this._statButtonClickHandler = null;
   }
 
   getTemplate() {
+    const isShowAll = (this._statFilter === StatFilter.ALL) ? `checked` : ``;
+    const isShowToday = (this._statFilter === StatFilter.TODAY) ? `checked` : ``;
+    const isShowWeek = (this._statFilter === StatFilter.WEEK) ? `checked` : ``;
+    const isShowMonth = (this._statFilter === StatFilter.MONTH) ? `checked` : ``;
+    const isShowYear = (this._statFilter === StatFilter.YEAR) ? `checked` : ``;
+    const wathedFilms = this._filmsModel.getWatchedFilms(this._statFilter);
+    const wathedFilmsCount = wathedFilms.length;
+    const wathedFilmsDuration = wathedFilms.map((it) => {
+      return it.duration;
+    });
+      // .reduce((sum, num) => sum + num);
+    const wathedFilmsDurationTemplate = `${Math.floor(wathedFilmsDuration / 60)}h ${wathedFilmsDuration % 60}m`;
+    const stats = this._filmsModel.getGenreSelectedFilms(this._statFilter);
+    const topGenre = stats[0].genre;
+
+
     return (
       `<section class="statistic visually-hidden">
         <p class="statistic__rank">
@@ -21,34 +47,34 @@ export class StatisticsComponent extends AbstractComponent {
         <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
           <p class="statistic__filters-description">Show stats:</p>
     
-          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time" checked>
-          <label for="statistic-all-time" class="statistic__filters-label">All time</label>
+          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time" ${isShowAll}>
+          <label for="statistic-all-time" class="statistic__filters-label" data-filter-type=${StatFilter.ALL}>All time</label>
     
-          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today">
-          <label for="statistic-today" class="statistic__filters-label">Today</label>
+          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today" ${isShowToday}>
+          <label for="statistic-today" class="statistic__filters-label" data-filter-type=${StatFilter.TODAY}>Today</label>
     
-          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week">
-          <label for="statistic-week" class="statistic__filters-label">Week</label>
+          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week" ${isShowWeek}>
+          <label for="statistic-week" class="statistic__filters-label" data-filter-type=${StatFilter.WEEK}>Week</label>
     
-          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month">
-          <label for="statistic-month" class="statistic__filters-label">Month</label>
+          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month" ${isShowMonth}>
+          <label for="statistic-month" class="statistic__filters-label" data-filter-type=${StatFilter.MONTH}>Month</label>
     
-          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year">
-          <label for="statistic-year" class="statistic__filters-label">Year</label>
+          <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year" ${isShowYear}>
+          <label for="statistic-year" class="statistic__filters-label" data-filter-type=${StatFilter.YEAR}>Year</label>
         </form>
   
         <ul class="statistic__text-list">
           <li class="statistic__text-item">
             <h4 class="statistic__item-title">You watched</h4>
-            <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
+            <p class="statistic__item-text">${wathedFilmsCount} <span class="statistic__item-description">movies</span></p>
           </li>
           <li class="statistic__text-item">
             <h4 class="statistic__item-title">Total duration</h4>
-            <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
+            <p class="statistic__item-text">${wathedFilmsDurationTemplate}</p>
           </li>
           <li class="statistic__text-item">
             <h4 class="statistic__item-title">Top genre</h4>
-            <p class="statistic__item-text">Sci-Fi</p>
+            <p class="statistic__item-text">${topGenre}</p>
           </li>
         </ul>
     
@@ -59,6 +85,24 @@ export class StatisticsComponent extends AbstractComponent {
     );
   }
 
+  setStatFilter(statFilter) {
+    this._statFilter = statFilter;
+  }
+
+  setStatButtonClickHandler(handler) {
+    this.getElement().querySelector(`.statistic__filters`).addEventListener(`click`, handler);
+    this._statButtonClickHandler = handler;
+  }
+
+  recoveryListeners() {
+    this.setStatButtonClickHandler(this._statButtonClickHandler);
+  }
+
+  rerender() {
+    // super.rerender();
+    this.getChart();
+  }
+
   getChart() {
     const BAR_HEIGHT = 50;
     const statisticCtx = document.querySelector(`.statistic__chart`);
@@ -67,7 +111,7 @@ export class StatisticsComponent extends AbstractComponent {
     // Обязательно рассчитайте высоту canvas, она зависит от количества элементов диаграммы
     statisticCtx.height = BAR_HEIGHT * labelTypes.length;
 
-    const stats = this._filmsModel.getGenreSelectedFilms();
+    const stats = this._filmsModel.getGenreSelectedFilms(this._statFilter);
     const genres = stats.map((it) => {
       return it.genre;
     });

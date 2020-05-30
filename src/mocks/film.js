@@ -86,7 +86,8 @@ const createFilmData = () => {
     country: getRandomArrayItem(COUNTRIES),
     isInWatchlist: Math.random() > 0.5,
     isFavorite: Math.random() > 0.5,
-    isHistory: Math.random() > 0.5
+    isHistory: Math.random() > 0.5,
+    watchingDate: new Date(),
   };
 };
 
