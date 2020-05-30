@@ -72,9 +72,14 @@ export class FilmController {
   _filmClickHandler() {
     this._onViewChange();
 
-    renderElement(document.body, this._filmDetailsComponent);
+    this._api.getComments(this._film.id)
+      .then((comments) => {
+        this._commentsModel.setComments(comments);
 
-    this._setPopupHandlers();
+        renderElement(document.body, this._filmDetailsComponent);
+
+        this._setPopupHandlers();
+      });
   }
 
   _setPopupHandlers() {
@@ -129,7 +134,7 @@ export class FilmController {
   }
 
   _inputChangeHandler(evt) {
-    if (evt.key === `Enter`) {
+    if (((evt.key === `Enter`) && (evt.ctrlKey)) || ((evt.key === `Enter`) && (evt.metaKey))) {
       const newComment = this._filmDetailsComponent.createNewComment(evt.target.value);
       this._onCommentsChange(null, newComment);
       this._filmDetailsComponent.setScrollTop(this._filmDetailsComponent.getElement().scrollTop);

@@ -22,7 +22,6 @@ export class CommentModel {
   toRaw() {
     return {
       "id": this.id,
-      "author": this.author,
       "comment": this.text,
       "date": this.day,
       "emotion": this.emoji

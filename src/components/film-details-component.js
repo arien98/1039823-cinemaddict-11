@@ -3,6 +3,7 @@ import AbstractSmartComponent from "./abstract-smart-component.js";
 import moment from "moment";
 import {encode} from "he";
 import {USER_NAME} from "../main.js";
+import {nanoid} from "nanoid";
 
 const emojisType = [`smile`, `sleeping`, `puke`, `angry`];
 
@@ -254,19 +255,14 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   }
 
   rerender() {
-    this._api.getComments(this._film.id)
-      .then((comments) => this._commentsModel.setComments(comments))
-      .then(() => {
-        super.rerender();
-        this.getElement().scrollTop = this._scrollTop;
-      });
+    super.rerender();
+    this.getElement().scrollTop = this._scrollTop;
   }
 
   createNewComment(newCommentText) {
     const newComment = Object.assign({}, this._newComment, {
-      id: String(Math.random()),
+      id: nanoid(10),
       text: encode(newCommentText),
-      author: USER_NAME,
       day: new Date()
     });
     this._newComment = {};

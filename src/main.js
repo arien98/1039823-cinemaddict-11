@@ -11,7 +11,6 @@ import {Store} from "./api/store.js";
 
 const AUTHORIZATION = `Basic 90fdsg9f7d9g78fd97g90a=4$jfkd`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
-export const USER_NAME = `William Terner`;
 const STORE_PREFIX = `cinemaaddict-localstorage`;
 const STORE_VER = `v1`;
 const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
@@ -31,15 +30,15 @@ let pageController = null;
 
 renderElement(siteHeader, new ProfileComponent());
 
-apiWithProvider.getFilms()
+api.getFilms()
   .then((films) => {
     filmsModel.setFilms(films);
-    return Promise.all(films.map((film) => apiWithProvider.getComments(film.id)));
+    return Promise.all(films.map((film) => api.getComments(film.id)));
   })
   .then(() => {
     filterController = new FilterController(siteMain, filmsModel);
     statisticsComponent = new StatisticsComponent(filmsModel);
-    pageController = new PageController(siteMain, filmsModel, apiWithProvider);
+    pageController = new PageController(siteMain, filmsModel, api);
 
     filterController.render();
     pageController.render();
