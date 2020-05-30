@@ -2,21 +2,7 @@ import {FilterType} from "../constants.js";
 import {getFilmsByFilter} from "../utils/filter.js";
 import {getUniqueItems} from "../utils/common.js";
 import moment from "moment";
-
-const StatFilter = {
-  ALL: `All time`,
-  TODAY: `today`,
-  WEEK: `Week`,
-  MONTH: `Month`,
-  YEAR: `Year`
-};
-
-const DaysIn = {
-  DAY: 1,
-  WEEK: 7,
-  MONTH: 31,
-  YEAR: 365
-}
+import {StatFilter} from "../components/statistics-component.js";
 
 export class FilmsModel {
   constructor() {
@@ -88,24 +74,42 @@ export class FilmsModel {
   }
 
   getWatchedFilms(filter) {
-    let watchedFilms = this._films.slice().filter((film) => film.isHistory);
+    const watchedFilms = this._films.slice().filter((film) => film.isHistory);
+    let filteredFilms = [];
     switch (filter) {
       case StatFilter.ALL:
+        filteredFilms = watchedFilms;
         break;
       case StatFilter.TODAY:
-        watchedFilms.filter((it) => moment(it.releaseDate).get(`date`) < moment().subtract(1, `day`).get(`date`));
+        filteredFilms = watchedFilms.filter((it) => {
+          const a = moment(it.watchingDate);
+          const b = moment().hours(0).minutes(0).seconds(0);
+          return a.diff(b) > 0;
+        });
         break;
       case StatFilter.WEEK:
-        watchedFilms.filter((it) => moment(it.releaseDate).get(`date`) < moment().subtract(7, `day`).get(`date`));
+        filteredFilms = watchedFilms.filter((it) => {
+          const a = moment(it.watchingDate);
+          const b = moment().subtract(7, `day`);
+          return a.diff(b) > 0;
+        });
         break;
       case StatFilter.MONTH:
-        watchedFilms.filter((it) => moment(it.releaseDate).get(`date`) < moment().subtract(1, `month`).get(`date`));
+        filteredFilms = watchedFilms.filter((it) => {
+          const a = moment(it.watchingDate);
+          const b = moment().subtract(1, `month`);
+          return a.diff(b) > 0;
+        });
         break;
       case StatFilter.YEAR:
-        watchedFilms.filter((it) => moment(it.releaseDate).get(`second`) < moment().subtract(1, `year`).get(`second`));
+        filteredFilms = watchedFilms.filter((it) => {
+          const a = moment(it.watchingDate);
+          const b = moment().subtract(1, `year`);
+          return a.diff(b) > 0;
+        });
         break;
     }
-    return watchedFilms;
+    return filteredFilms;
   }
 
   getGenreSelectedFilms(filter) {

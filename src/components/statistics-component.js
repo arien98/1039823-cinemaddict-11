@@ -3,7 +3,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {FilmGenres} from "../mocks/film.js";
 import AbstractSmartComponent from "./abstract-smart-component";
 
-const StatFilter = {
+export const StatFilter = {
   ALL: `All time`,
   TODAY: `today`,
   WEEK: `Week`,
@@ -29,11 +29,12 @@ export class StatisticsComponent extends AbstractSmartComponent {
     const wathedFilmsCount = wathedFilms.length;
     const wathedFilmsDuration = wathedFilms.map((it) => {
       return it.duration;
-    })
-      .reduce((sum, num) => sum + num);
+    });
+      // .reduce((sum, num) => sum + num);
     const wathedFilmsDurationTemplate = `${Math.floor(wathedFilmsDuration / 60)}h ${wathedFilmsDuration % 60}m`;
     const stats = this._filmsModel.getGenreSelectedFilms(this._statFilter);
     const topGenre = stats[0].genre;
+
 
     return (
       `<section class="statistic visually-hidden">
@@ -111,7 +112,6 @@ export class StatisticsComponent extends AbstractSmartComponent {
     statisticCtx.height = BAR_HEIGHT * labelTypes.length;
 
     const stats = this._filmsModel.getGenreSelectedFilms(this._statFilter);
-    console.log(stats);
     const genres = stats.map((it) => {
       return it.genre;
     });

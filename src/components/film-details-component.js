@@ -254,8 +254,12 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   }
 
   rerender() {
-    super.rerender();
-    this.getElement().scrollTop = this._scrollTop;
+    this._api.getComments(this._film.id)
+      .then((comments) => this._commentsModel.setComments(comments))
+      .then(() => {
+        super.rerender();
+        this.getElement().scrollTop = this._scrollTop;
+      });
   }
 
   createNewComment(newCommentText) {

@@ -4,7 +4,6 @@ import {FilmCardComponent} from "../components/film-card-component.js";
 import {CommentsModel} from "../models/comments-model.js";
 import {FilmModel} from "../models/film-model.js";
 import {CommentModel} from "../models/comment-model.js";
-import moment from "moment";
 
 export const emptyFilm = {};
 const SHAKE_ANIMATION_TIMEOUT = 600;
@@ -38,16 +37,12 @@ export class FilmController {
     this._filmComponent = new FilmCardComponent(this._film);
     this._filmDetailsComponent = new FilmDetailsComponent(this._film, this._commentsModel);
 
-    this._api.getComments(this._film.id)
-      .then((comments) => this._commentsModel.setComments(comments))
-      .then(() => {
-        if (oldFilmComponent && oldFilmDetailsComponent) {
-          replace(this._filmComponent, oldFilmComponent);
-          replace(this._filmDetailsComponent, oldFilmDetailsComponent);
-        } else {
-          renderElement(this._container, this._filmComponent);
-        }
-      });
+    if (oldFilmComponent && oldFilmDetailsComponent) {
+      replace(this._filmComponent, oldFilmComponent);
+      replace(this._filmDetailsComponent, oldFilmDetailsComponent);
+    } else {
+      renderElement(this._container, this._filmComponent);
+    }
 
     oldFilmComponent = null;
     oldFilmDetailsComponent = null;

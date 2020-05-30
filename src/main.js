@@ -1,5 +1,4 @@
 import {API} from "./api.js";
-import {FilterType} from "./constants.js";
 import {FilmCountComponent} from "./components/film-count-component.js";
 import {FilmsModel} from "./models/films-model.js";
 import {FilterController} from "./controllers/filter-controller.js";
@@ -16,48 +15,44 @@ const siteMain = document.querySelector(`.main`);
 const siteHeader = document.querySelector(`.header`);
 const footerStatisticsContainer = document.querySelector(`.footer__statistics`);
 
+
 const api = new API(END_POINT, AUTHORIZATION);
 const filmsModel = new FilmsModel();
-const statisticsComponent = new StatisticsComponent(filmsModel);
-const pageController = new PageController(siteMain, filmsModel, api);
-const filterController = new FilterController(siteMain, filmsModel);
+let filterController = null;
+let statisticsComponent = null;
+let pageController = null;
 
 renderElement(siteHeader, new ProfileComponent());
 
-filterController.render();
-
 api.getFilms()
-  .then((films) => filmsModel.setFilms(films))
+  .then((films) => {
+    filmsModel.setFilms(films);
+    return Promise.all(films.map((film) => api.getComments(film.id)));
+  })
   .then(() => {
+    filterController = new FilterController(siteMain, filmsModel);
+    statisticsComponent = new StatisticsComponent(filmsModel);
+    pageController = new PageController(siteMain, filmsModel, api);
+
+    filterController.render();
     pageController.render();
     renderElement(siteMain, statisticsComponent);
     statisticsComponent.getChart();
-  });
+    renderElement(footerStatisticsContainer, new FilmCountComponent(filmsModel));
 
-renderElement(footerStatisticsContainer, new FilmCountComponent());
+    const filterNav = siteMain.querySelector(`.main-navigation`);
+    const statButton = siteMain.querySelector(`.main-navigation__additional`);
 
-siteMain.addEventListener(`click`, (evt) => {
-  const statsButton = evt.target.closest(`.main-navigation__additional`);
-  const filterButton = evt.target.closest(`.main-navigation__item`);
-
-  if (!statsButton && !filterButton) {
-    return;
-  }
-
-  switch (evt.target) {
-    case statsButton:
-      pageController.hide();
-      statisticsComponent.show();
-      statisticsComponent.setStatButtonClickHandler((e) => {
-        const statFilter = e.target.dataset.filterType;
-        statisticsComponent.setStatFilter(statFilter);
-        statisticsComponent.rerender();
-      });
-      filmsModel.setFilter(FilterType.ALL);
-      break;
-    case filterButton:
+    filterNav.addEventListener(`click`, () => {
       pageController.show();
       statisticsComponent.hide();
-      break;
-  }
-});
+    });
+
+    statButton.addEventListener(`click`, () => {
+      pageController.hide();
+      statisticsComponent.show();
+      
+    });
+  });
+
+
