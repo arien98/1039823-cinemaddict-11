@@ -149,20 +149,26 @@ export class FilmController {
   }
 
   _onCommentsChange(oldComment, newComment) {
+
     if (newComment === null) {
+      this._filmDetailsComponent.blockDeleteButtons();
       const commentId = oldComment.id;
       this._api.deleteComment(commentId)
         .then(() => this._commentsModel.removeComment(commentId, this._film))
         .catch(() => {
+          this._filmDetailsComponent.unblockDeleteButtons();
           this.shake();
         });
     } else {
       if (oldComment === null) {
+        this._filmDetailsComponent.blockForm();
         const newCommentData = CommentModel.clone(newComment);
         this._api.createComment(this._film.id, newCommentData)
           .then(() => this._commentsModel.addComment(newComment))
           .catch(() => {
+            this._filmDetailsComponent.unblockForm();
             this.shake();
+            this._filmDetailsComponent.colorInput();
           });
       } else {
         return;

@@ -275,4 +275,38 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   clearNewComment() {
     this._newComment = {};
   }
+
+  blockForm() {
+    this.querySlectorAll(`form input, form select, form textarea, form button`)
+      .forEach((elem) => elem.setAttribute(`disabled`, `disabled`));
+  }
+
+  unblockForm() {
+    this.querySlectorAll(`form input, form select, form textarea, form button`)
+      .forEach((elem) => elem.removeAttribute(`disabled`, `false`));
+  }
+
+  colorInput() {
+    this.querySelector(`.film-details__comment-input`).style.boreder = `2px solid crimson`;
+  }
+
+  uncolorInput() {
+    this.querySelector(`.film-details__comment-input`).style.boreder = ``;
+  }
+
+  blockDeleteButtons() {
+    this.querySlectorAll(`.film-details__comment-delete`)
+      .forEach((elem) => {
+        elem.setAttribute(`disabled`, `disabled`);
+        elem.style.textContent = `Deleting...`;
+      });
+  }
+
+  unblockDeleteButtons() {
+    this.querySlectorAll(`.film-details__comment-delete`)
+      .forEach((elem) => {
+        elem.removeAttribute(`disabled`, `disabled`);
+        elem.style.textContent = `Delete`;
+      });
+  }
 }
