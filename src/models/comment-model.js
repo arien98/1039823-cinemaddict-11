@@ -4,7 +4,7 @@ export class CommentModel {
     this.emoji = data.emotion;
     this.text = data.comment;
     this.author = data.author;
-    this.day = data.date;
+    this.date = new Date(data.date);
   }
 
   static parseComment(data) {

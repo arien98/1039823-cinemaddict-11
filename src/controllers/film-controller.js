@@ -8,6 +8,12 @@ import {CommentModel} from "../models/comment-model.js";
 export const emptyFilm = {};
 const SHAKE_ANIMATION_TIMEOUT = 600;
 
+const UserProperty = {
+  WATCHLIST: `isInWatchlist`,
+  WATCHED: `isHistory`,
+  FAVORITE: `isFavorite`
+};
+
 export class FilmController {
   constructor(container, onDataChange, onViewChange, filmsModel, api) {
     this._container = container;
@@ -24,9 +30,11 @@ export class FilmController {
     this._deleteClickHandler = this._deleteClickHandler.bind(this);
     this._inputChangeHandler = this._inputChangeHandler.bind(this);
     this._onCommentsChange = this._onCommentsChange.bind(this);
+    this._userPropertiesClickHandler = this._userPropertiesClickHandler.bind(this);
   }
 
   render(film) {
+    debugger;
     this._film = film;
     this._commentsModel = new CommentsModel(this._film);
 
@@ -52,21 +60,9 @@ export class FilmController {
 
   _setFilmHandlers() {
     this._filmComponent.setClickHandler(this._openPopup);
-
-    this._filmComponent.setWatchlistButtonClickHandler((evt) => {
-      evt.preventDefault();
-      this._onDataChange(this, this._film, Object.assign({}, this._film, {isInWatchlist: !this._film.isInWatchlist}));
-    });
-
-    this._filmComponent.setWatchedButtonClickHandler((evt) => {
-      evt.preventDefault();
-      this._onDataChange(this, this._film, Object.assign({}, this._film, {isHistory: !this._film.isHistory}));
-    });
-
-    this._filmComponent.setFavoriteButtonClickHandler((evt) => {
-      evt.preventDefault();
-      this._onDataChange(this, this._film, Object.assign({}, this._film, {isFavorite: !this._film.isFavorite}));
-    });
+    this._filmComponent.setWatchlistButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHLIST));
+    this._filmComponent.setWatchedButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHED));
+    this._filmComponent.setFavoriteButtonClickHandler(this._userPropertiesClickHandler(UserProperty.FAVORITE));
   }
 
   _openPopup() {
@@ -82,28 +78,25 @@ export class FilmController {
       });
   }
 
+  _userPropertiesClickHandler(property) {
+    return (evt) => {
+      debugger;
+      evt.preventDefault();
+      const newFilm = FilmModel.clone(this._film);
+      newFilm[property] = !newFilm[property];
+      this._onDataChange(this, this._film, newFilm);
+      this._filmDetailsComponent.setScrollTop(this._filmDetailsComponent.getElement().scrollTop);
+    };
+  }
+
   _setPopupHandlers() {
     this._filmDetailsComponent.setEmojiClickHandler(this._filmDetailsComponent.emojiClickHandler);
 
-
     this._filmDetailsComponent.setCloseButtonHandler(this._closeDetailsButtonHandler);
     this._filmDetailsComponent.setEscButtonHandler(this._escPressHandler);
-
-    this._filmDetailsComponent.setWatchlistButtonClickHandler(() => {
-      const newFilm = FilmModel.clone(this._film);
-      newFilm.isInWatchlist = !this._film.isInWatchlist;
-      this._onDataChange(this, this._film, newFilm);
-    });
-    this._filmDetailsComponent.setWatchedButtonClickHandler(() => {
-      const newFilm = FilmModel.clone(this._film);
-      newFilm.isHistory = !this._film.isHistory;
-      this._onDataChange(this, this._film, newFilm);
-    });
-    this._filmDetailsComponent.setFavoriteButtonClickHandler(() => {
-      const newFilm = FilmModel.clone(this._film);
-      newFilm.isFavorite = !this._film.isFavorite;
-      this._onDataChange(this, this._film, newFilm);
-    });
+    this._filmDetailsComponent.setWatchlistButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHLIST));
+    this._filmDetailsComponent.setWatchedButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHLIST));
+    this._filmDetailsComponent.setFavoriteButtonClickHandler(this._userPropertiesClickHandler(UserProperty.FAVORITE));
     this._filmDetailsComponent.setInputChangeHandler(this._inputChangeHandler);
 
     if (this._film.comments.length > 0) {

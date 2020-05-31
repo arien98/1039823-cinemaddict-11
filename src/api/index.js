@@ -42,7 +42,7 @@ export class API {
       headers: new Headers({"Content-type": `application/json`})
     })
       .then((response) => response.json()
-      .then(FilmModel.parseFilms));
+      .then(FilmModel.parseFilm));
   }
 
   createComment(filmId, comment) {

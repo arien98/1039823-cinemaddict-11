@@ -4,7 +4,7 @@ export class FilmModel {
     this.title = data.film_info.title;
     this.originalTitile = data.film_info.alternative_title;
     this.rating = data.film_info.total_rating;
-    this.year = data.film_info.release.date;
+    this.year = new Date(data.film_info.release.date).getFullYear();
     this.duration = data.film_info.runtime;
     this.genres = data.film_info.genre;
     this.posterSrc = data.film_info.poster;
@@ -14,12 +14,12 @@ export class FilmModel {
     this.director = data.film_info.director;
     this.writers = data.film_info.writers;
     this.actors = data.film_info.actors;
-    this.releaseDate = data.film_info.release.date;
+    this.releaseDate = new Date(data.film_info.release.date);
     this.country = data.film_info.release.release_country;
-    this.isInWatchlist = Boolean(data.user_details.watchlist);
-    this.isFavorite = Boolean(data.user_details.favorite);
-    this.isHistory = Boolean(data.user_details.already_watched);
-    this.watchingDate = data.user_details.watching_date;
+    this.isInWatchlist = data.user_details.watchlist;
+    this.isFavorite = data.user_details.favorite;
+    this.isHistory = data.user_details.already_watched;
+    this.watchingDate = new Date(data.user_details.watching_date);
   }
 
   static parseFilm(data) {
@@ -48,7 +48,7 @@ export class FilmModel {
         "writers": this.writers,
         "actors": this.actors,
         "release": {
-          "date": this.releaseDate,
+          "date": this.releaseDate.toISOString(),
           "release_country": this.country
         },
         "runtime": this.duration,
@@ -58,7 +58,7 @@ export class FilmModel {
       "user_details": {
         "watchlist": this.isInWatchlist,
         "already_watched": this.isHistory,
-        "watching_date": this.watchingDate,
+        "watching_date": this.watchingDate.toISOString(),
         "favorite": this.isFavorite
       }
     };

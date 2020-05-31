@@ -120,16 +120,20 @@ export class PageController {
   }
 
   _onDataChange(filmController, oldData, newData) {
+    debugger;
     this._api.updateFilm(oldData.id, newData)
       .then((filmModel) => {
+        debugger;
         const isSuccess = this._filmsModel.updateFilm(oldData.id, filmModel);
 
         if (isSuccess) {
           filmController.render(filmModel);
         }
       })
-      .catch(() => {
-        filmController.shake();
+      .catch((err) => {
+        console.log(err);
+        console.log(`filmController.shake()`);
+        // filmController.shake();
       });
   }
 
