@@ -33,16 +33,18 @@ const filmsModel = new FilmsModel();
 let filterController = null;
 let statisticsComponent = null;
 let pageController = null;
-
-renderElement(siteHeader, new ProfileComponent());
+let profileComponent = null;
 
 api.getFilms()
   .then((films) => {
     filmsModel.setFilms(films);
 
+    profileComponent = new ProfileComponent(filmsModel);
     filterController = new FilterController(siteMain, filmsModel);
-    statisticsComponent = new StatisticsComponent(filmsModel);
+    statisticsComponent = new StatisticsComponent(filmsModel, profileComponent);
     pageController = new PageController(siteMain, filmsModel, apiWithProvider);
+
+    renderElement(siteHeader, profileComponent);
 
     filterController.render();
     pageController.render();

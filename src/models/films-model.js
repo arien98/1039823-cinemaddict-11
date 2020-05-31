@@ -73,8 +73,12 @@ export class FilmsModel {
     this._callHandlers(this._dataChangeHandlers);
   }
 
-  getWatchedFilms(filter) {
-    const watchedFilms = this._films.slice().filter((film) => film.isHistory);
+  getWatchedFilms() {
+    return this._films.slice().filter((film) => film.isHistory);
+  }
+
+  getWatchedFilteredFilms(filter) {
+    const watchedFilms = this.getWatchedFilms();
     let filteredFilms = [];
     switch (filter) {
       case StatFilter.ALL:
@@ -118,7 +122,7 @@ export class FilmsModel {
       (film.genres.forEach((genre) => genres.push(genre)));
     });
     genres = getUniqueItems(genres);
-    const watchedFilms = this.getWatchedFilms(filter);
+    const watchedFilms = this.getWatchedFilteredFilms(filter);
     const genresCount = genres.map((genre) => {
       return {
         genre,

@@ -11,11 +11,12 @@ export const StatFilter = {
 };
 
 export class StatisticsComponent extends AbstractSmartComponent {
-  constructor(filmsModel) {
+  constructor(filmsModel, profileComponent) {
     super();
     this._filmsModel = filmsModel;
     this._statFilter = StatFilter.ALL;
     this._statButtonClickHandler = null;
+    this._profileComponent = profileComponent;
   }
   setStatFilter(statFilter) {
     this._statFilter = statFilter;
@@ -53,7 +54,7 @@ export class StatisticsComponent extends AbstractSmartComponent {
     const isShowWeek = (this._statFilter === StatFilter.WEEK) ? `checked` : ``;
     const isShowMonth = (this._statFilter === StatFilter.MONTH) ? `checked` : ``;
     const isShowYear = (this._statFilter === StatFilter.YEAR) ? `checked` : ``;
-    const wathedFilms = this._filmsModel.getWatchedFilms(this._statFilter);
+    const wathedFilms = this._filmsModel.getWatchedFilteredFilms(this._statFilter);
     const wathedFilmsCount = wathedFilms.length;
     const wathedFilmsDuration = wathedFilms.map((it) => +it.duration).reduce((sum, elem) => (sum + elem), 0);
     const wathedFilmsDurationTemplate = `${Math.floor(wathedFilmsDuration / 60)}h ${wathedFilmsDuration % 60}m`;
@@ -69,13 +70,15 @@ export class StatisticsComponent extends AbstractSmartComponent {
 
     const topGenre = (stats.length > 0) ? stats[0].genre : ``;
 
+    const userRank = this._profileComponent.getUserRank();
+
 
     return (
       `<section class="statistic">
         <p class="statistic__rank">
           Your rank
           <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-          <span class="statistic__rank-label">Sci-Fighter</span>
+          <span class="statistic__rank-label">${userRank}</span>
         </p>
     
         <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
