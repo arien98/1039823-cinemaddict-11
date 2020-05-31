@@ -52,19 +52,27 @@ api.getFilms()
     statisticsComponent.getChart();
     renderElement(footerStatisticsContainer, new FilmCountComponent(filmsModel));
 
-    const filterNav = siteMain.querySelector(`.main-navigation`);
+    const filterNav = siteMain.querySelector(`.main-navigation__items`);
     const statButton = siteMain.querySelector(`.main-navigation__additional`);
 
     filterNav.addEventListener(`click`, () => {
       pageController.show();
       statisticsComponent.hide();
+      statisticsComponent.removeStatFilterClickHandler(statFilterClickHandler);
     });
 
     statButton.addEventListener(`click`, () => {
       pageController.hide();
       statisticsComponent.show();
+      statisticsComponent.setStatFilterClickHandler(statFilterClickHandler);
     });
   });
+
+const statFilterClickHandler = (evt) => {
+  const filterType = evt.target.dataset.filterType;
+  statisticsComponent.setStatFilter(filterType);
+  statisticsComponent.rerender();
+};
 
 window.addEventListener(`online`, () => {
   document.title = document.title.replace(` [offline]`, ``);

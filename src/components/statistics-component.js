@@ -95,9 +95,14 @@ export class StatisticsComponent extends AbstractSmartComponent {
     this._statFilterClickHandler = handler;
   }
 
+  removeStatFilterClickHandler(handler) {
+    this.getElement().querySelector(`.statistic__filters`).addEventListener(`click`, handler);
+    this._statFilterClickHandler = handler;
+  }
+
+
   recoveryListeners() {
     this.setStatFilterClickHandler(this._statFilterClickHandler);
-    this.setStatButtonClickHandler(this.__statButtonClickHandler);
   }
 
   rerender() {
