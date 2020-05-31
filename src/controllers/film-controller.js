@@ -32,17 +32,20 @@ export class FilmController {
 
 
     let oldFilmComponent = this._filmComponent;
-    
+    let oldFilmDetailsComponent = this._filmDetailsComponent;
 
     this._filmComponent = new FilmCardComponent(this._film);
+    this._filmDetailsComponent = new FilmDetailsComponent(this._film, this._commentsModel);
 
-    if (oldFilmComponent) {
+    if (oldFilmComponent && oldFilmDetailsComponent) {
       replace(this._filmComponent, oldFilmComponent);
+      replace(this._filmDetailsComponent, oldFilmDetailsComponent);
     } else {
       renderElement(this._container, this._filmComponent);
     }
 
     oldFilmComponent = null;
+    oldFilmDetailsComponent = null;
 
     this._setFilmHandlers();
   }
@@ -73,22 +76,9 @@ export class FilmController {
       .then((comments) => {
         this._commentsModel.setComments(comments);
 
-        let oldFilmDetailsComponent = this._filmDetailsComponent;
-
-        this._filmDetailsComponent = new FilmDetailsComponent(this._film, this._commentsModel);
-
-        if (oldFilmDetailsComponent) {
-          replace(this._filmDetailsComponent, oldFilmDetailsComponent);
-        } else {
-          renderElement(document.body, this._filmComponent);
-        }
-
-        oldFilmDetailsComponent = null;
+        renderElement(document.body, this._filmDetailsComponent);
 
         this._setPopupHandlers();
-      })
-      .catch((err) => {
-        throw new Error(err);
       });
   }
 

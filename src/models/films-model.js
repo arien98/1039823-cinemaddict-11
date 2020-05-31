@@ -124,7 +124,8 @@ export class FilmsModel {
         genre,
         count: watchedFilms.filter((film) => film.genres.includes(genre)).length
       };
-    });
+    })
+      .filter((it) => it.count > 0);
     return genresCount.sort((a, b) => {
       return b.count - a.count;
     });

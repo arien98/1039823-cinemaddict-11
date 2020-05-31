@@ -26,14 +26,14 @@ export class StatisticsComponent extends AbstractSmartComponent {
     const isShowYear = (this._statFilter === StatFilter.YEAR) ? `checked` : ``;
     const wathedFilms = this._filmsModel.getWatchedFilms(this._statFilter);
     const wathedFilmsCount = wathedFilms.length;
-    const wathedFilmsDuration = wathedFilms.reduce((sum, it) => sum + it.duration);
+    const wathedFilmsDuration = wathedFilms.map((it) => it.duration).reduce((sum, elem) => sum + elem);
     const wathedFilmsDurationTemplate = `${Math.floor(wathedFilmsDuration / 60)}h ${wathedFilmsDuration % 60}m`;
     const stats = this._filmsModel.getGenreSelectedFilms(this._statFilter);
     const topGenre = stats[0].genre;
 
 
     return (
-      `<section class="statistic visually-hidden">
+      `<section class="statistic">
         <p class="statistic__rank">
           Your rank
           <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
@@ -86,12 +86,18 @@ export class StatisticsComponent extends AbstractSmartComponent {
   }
 
   setStatButtonClickHandler(handler) {
-    this.getElement().querySelector(`.statistic__filters`).addEventListener(`click`, handler);
+    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, handler);
     this._statButtonClickHandler = handler;
   }
 
+  setStatFilterClickHandler(handler) {
+    this.getElement().querySelector(`.statistic__filters`).addEventListener(`click`, handler);
+    this._statFilterClickHandler = handler;
+  }
+
   recoveryListeners() {
-    this.setStatButtonClickHandler(this._statButtonClickHandler);
+    this.setStatFilterClickHandler(this._statFilterClickHandler);
+    this.setStatButtonClickHandler(this.__statButtonClickHandler);
   }
 
   rerender() {

@@ -277,7 +277,7 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   }
 
   blockForm() {
-    this.querySlectorAll(`form input, form select, form textarea, form button`)
+    this.getElement().querySlectorAll(`input, select, textarea,  button`)
       .forEach((elem) => elem.setAttribute(`disabled`, `disabled`));
   }
 

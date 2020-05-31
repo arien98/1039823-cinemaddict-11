@@ -1,19 +1,25 @@
 import {FilmModel} from "../models/film-model.js";
 import {nanoid} from "nanoid";
+import {CommentModel} from "../models/comment-model.js";
+
+export const DataType = {
+  FILM: `film`,
+  COMMENT: `commment`
+};
 
 const isOnline = () => {
   return window.navigator.onLine;
 };
 
-const getSyncedFilms = (items) => {
+const getSyncedData = (items, dataType) => {
   return items.filter(({success}) => success)
-    .map(({payload}) => payload.film);
+    .map(({payload}) => payload[dataType]);
 };
 
-const createStoreStructure = (items) => {
+const createStoreStructure = (items, dataType) => {
   return items.reduce((acc, current) => {
     return Object.assign({}, acc, {
-      [current.id]: current,
+      [dataType + current.id]: current
     });
   }, {});
 };
@@ -28,7 +34,7 @@ export class Provider {
     if (isOnline()) {
       return this._api.getFilms()
         .then((films) => {
-          const items = createStoreStructure(films.map((film) => film.toRAW()));
+          const items = createStoreStructure(films.map((film) => film.toRaw()), DataType.FILM);
 
           this._store.setItems(items);
 
@@ -40,11 +46,11 @@ export class Provider {
     return Promise.resolve(FilmModel.parseFilms(storeFilms));
   }
 
-  getComments() {
+  getComments(id) {
     if (isOnline()) {
-      return this._api.getComments()
+      return this._api.getComments(id)
         .then((comments) => {
-          const items = createStoreStructure(comments.map((comment) => comment.toRAW()));
+          const items = createStoreStructure(comments.map((comment) => comment.toRaw()), DataType.COMMENT);
 
           this._store.setItems(items);
 
@@ -56,20 +62,20 @@ export class Provider {
     return Promise.resolve(FilmModel.parseFilms(storeFilms));
   }
 
-  createComment(film) {
+  createComment(comment) {
     if (isOnline()) {
-      return this._api.createComment(film)
+      return this._api.createComment(comment)
         .then((newComment) => {
-          this._store.setItem(newComment.id, newComment.toRAW());
+          this._store.setItem(newComment.id, newComment.toRaw());
 
           return newComment;
         });
     }
 
     const localNewFilmId = nanoid();
-    const localNewFilm = FilmModel.clone(Object.assign(film, {id: localNewFilmId}));
+    const localNewFilm = CommentModel.clone(Object.assign(comment, {id: localNewFilmId}));
 
-    this._store.setItem(localNewFilm.id, localNewFilm.toRAW());
+    this._store.setItem(localNewFilm.id, localNewFilm.toRaw());
 
     return Promise.resolve(localNewFilm);
   }
@@ -78,7 +84,7 @@ export class Provider {
     if (isOnline()) {
       return this._api.updateFilm(id, film)
         .then((newFilm) => {
-          this._store.setItem(newFilm.id, newFilm.toRAW());
+          this._store.setItem(newFilm.id, newFilm.toRaw());
 
           return newFilm;
         });
@@ -86,7 +92,7 @@ export class Provider {
 
     const localTask = FilmModel.clone(Object.assign(film, {id}));
 
-    this._store.setItem(id, localTask.toRAW());
+    this._store.setItem(id, localTask.toRaw());
 
     return Promise.resolve(localTask);
   }
@@ -94,7 +100,7 @@ export class Provider {
   deleteComment(id) {
     if (isOnline()) {
       return this._api.deleteComment(id)
-        .then(() => this._store.removeItem(id));
+        .then(() => this._store.removeItem(`comment${id}`));
     }
 
     this._store.removeItem(id);
@@ -109,8 +115,8 @@ export class Provider {
       return this._api.sync(storeFilms)
         .then((response) => {
           // Забираем из ответа синхронизированные задачи
-          const createdFilms = getSyncedFilms(response.created);
-          const updatedFilms = getSyncedFilms(response.updated);
+          const createdFilms = getSyncedData(response.created);
+          const updatedFilms = getSyncedData(response.updated);
 
           // Добавляем синхронизированные задачи в хранилище.
           // Хранилище должно быть актуальным в любой момент.

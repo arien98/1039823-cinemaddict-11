@@ -36,7 +36,7 @@ export class API {
 
   updateFilm(id, data) {
     return this._load({
-      url: `movies`,
+      url: `movies/${id}`,
       method: Method.PUT,
       body: JSON.stringify(data.toRaw()),
       headers: new Headers({"Content-type": `application/json`})
@@ -47,7 +47,7 @@ export class API {
 
   createComment(filmId, comment) {
     return this._load({
-      url: `comment/${filmId}`,
+      url: `comments/${filmId}`,
       method: Method.POST,
       body: JSON.stringify(comment.toRAW()),
       headers: new Headers({"Content-Type": `application/json`})
@@ -57,7 +57,7 @@ export class API {
   }
 
   deleteComment(commentId) {
-    return this._load({url: `comment/${commentId}`, method: Method.DELETE});
+    return this._load({url: `comments/${commentId}`, method: Method.DELETE});
   }
 
   sync(data) {

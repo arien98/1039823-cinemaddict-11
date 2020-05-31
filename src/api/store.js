@@ -1,3 +1,10 @@
+import {DataType} from "./provider.js";
+
+const RegExps = {
+  FILM: `\^${DataType.FILM}`,
+  COMMENTS: `\^${DataType.COMMENT}`
+};
+
 export class Store {
   constructor(key, storage) {
     this._storage = storage;
@@ -10,6 +17,14 @@ export class Store {
     } catch (err) {
       return {};
     }
+  }
+
+  getFilms() {
+    return this.getItems().filter((it) => RegExps.FILM.test(it.id));
+  }
+
+  getComments() {
+    return this.getItems().filter((it) => RegExps.COMMENTS.test(it.id));
   }
 
   setItems(items) {

@@ -37,9 +37,7 @@ export class FilmModel {
   toRaw() {
     return {
       "id": this.id,
-      "comments": this.comments.map((comment) => {
-        return comment.id;
-      }),
+      "comments": this.comments,
       "film_info": {
         "title": this.title,
         "alternative_title": this.originalTitile,
