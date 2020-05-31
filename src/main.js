@@ -9,6 +9,13 @@ import {StatisticsComponent} from "./components/statistics-component.js";
 import {Provider} from "./api/provider.js";
 import {Store} from "./api/store.js";
 
+navigator.serviceWorker.getRegistrations().then((registrations) => {
+  for (let registration of registrations) {
+    registration.unregister();
+  }
+});
+
+
 const AUTHORIZATION = `Basic 90fdsds3f432d9g78fd97g90a=4$jfkd`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 const STORE_PREFIX = `cinemaaddict-localstorage`;
@@ -38,7 +45,7 @@ api.getFilms()
   .then(() => {
     filterController = new FilterController(siteMain, filmsModel);
     statisticsComponent = new StatisticsComponent(filmsModel);
-    pageController = new PageController(siteMain, filmsModel, api);
+    pageController = new PageController(siteMain, filmsModel, apiWithProvider);
 
     filterController.render();
     pageController.render();
