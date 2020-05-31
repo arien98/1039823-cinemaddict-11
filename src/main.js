@@ -39,9 +39,7 @@ renderElement(siteHeader, new ProfileComponent());
 api.getFilms()
   .then((films) => {
     filmsModel.setFilms(films);
-    return Promise.all(films.map((film) => api.getComments(film.id)));
-  })
-  .then(() => {
+
     filterController = new FilterController(siteMain, filmsModel);
     statisticsComponent = new StatisticsComponent(filmsModel);
     pageController = new PageController(siteMain, filmsModel, apiWithProvider);

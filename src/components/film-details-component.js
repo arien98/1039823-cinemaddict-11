@@ -215,7 +215,6 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     if (evt.target.tagName === `IMG`) {
       const emoji = evt.target.dataset.emojiType;
       this._newComment = {emoji};
-      this._scrollTop = this.getElement().scrollTop;
       this.rerender();
     } else {
       return;
@@ -254,8 +253,9 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   }
 
   rerender() {
+    const scrollTop = this.getElement().scrollTop;
     super.rerender();
-    this.getElement().scrollTop = this._scrollTop;
+    this.getElement().scrollTop = scrollTop;
   }
 
   createNewComment(newCommentText) {
@@ -277,7 +277,7 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   }
 
   blockForm() {
-    this.getElement().querySlectorAll(`input, select, textarea,  button`)
+    this.getElement().querySelectorAll(`input, textarea,  button`)
       .forEach((elem) => elem.setAttribute(`disabled`, `disabled`));
   }
 
@@ -294,12 +294,12 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     this.querySelector(`.film-details__comment-input`).style.boreder = ``;
   }
 
-  blockDeleteButtons() {
+  blockDeleteButtons(id) {
     this.querySlectorAll(`.film-details__comment-delete`)
       .forEach((elem) => {
         elem.setAttribute(`disabled`, `disabled`);
-        elem.style.textContent = `Deleting...`;
       });
+    this.querySelector(`button[data-comment-id=${id}`).style.textContent = `Deleting...`;
   }
 
   unblockDeleteButtons() {

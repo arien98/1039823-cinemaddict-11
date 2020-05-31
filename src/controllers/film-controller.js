@@ -18,6 +18,7 @@ export class FilmController {
   constructor(container, onDataChange, onViewChange, filmsModel, api) {
     this._container = container;
     this._filmsModel = filmsModel;
+    this._commentsModel = null;
     this._api = api;
     this._openPopup = this._openPopup.bind(this);
     this._closeDetailsButtonHandler = this._closeDetailsButtonHandler.bind(this);
@@ -31,14 +32,12 @@ export class FilmController {
     this._inputChangeHandler = this._inputChangeHandler.bind(this);
     this._onCommentsChange = this._onCommentsChange.bind(this);
     this._userPropertiesClickHandler = this._userPropertiesClickHandler.bind(this);
+    this._commentsModel = new CommentsModel(this._film);
+    this._popupScrollTop = null;
   }
 
   render(film) {
-    debugger;
     this._film = film;
-    this._commentsModel = new CommentsModel(this._film);
-
-
     let oldFilmComponent = this._filmComponent;
     let oldFilmDetailsComponent = this._filmDetailsComponent;
 
@@ -48,6 +47,9 @@ export class FilmController {
     if (oldFilmComponent && oldFilmDetailsComponent) {
       replace(this._filmComponent, oldFilmComponent);
       replace(this._filmDetailsComponent, oldFilmDetailsComponent);
+      this._filmDetailsComponent.getElement().scrollTop = this._popupScrollTop;
+      oldFilmDetailsComponent.removeEscButtonHandler(this._escPressHandler);
+      this._setPopupHandlers();
     } else {
       renderElement(this._container, this._filmComponent);
     }
@@ -80,12 +82,11 @@ export class FilmController {
 
   _userPropertiesClickHandler(property) {
     return (evt) => {
-      debugger;
       evt.preventDefault();
       const newFilm = FilmModel.clone(this._film);
       newFilm[property] = !newFilm[property];
+      this._popupScrollTop = this._filmDetailsComponent.getElement().scrollTop;
       this._onDataChange(this, this._film, newFilm);
-      this._filmDetailsComponent.setScrollTop(this._filmDetailsComponent.getElement().scrollTop);
     };
   }
 
@@ -95,11 +96,11 @@ export class FilmController {
     this._filmDetailsComponent.setCloseButtonHandler(this._closeDetailsButtonHandler);
     this._filmDetailsComponent.setEscButtonHandler(this._escPressHandler);
     this._filmDetailsComponent.setWatchlistButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHLIST));
-    this._filmDetailsComponent.setWatchedButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHLIST));
+    this._filmDetailsComponent.setWatchedButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHED));
     this._filmDetailsComponent.setFavoriteButtonClickHandler(this._userPropertiesClickHandler(UserProperty.FAVORITE));
     this._filmDetailsComponent.setInputChangeHandler(this._inputChangeHandler);
 
-    if (this._film.comments.length > 0) {
+    if (this._commentsModel.getComments().length > 0) {
       this._filmDetailsComponent.setDeleteClickHandler(this._deleteClickHandler);
     }
   }
@@ -135,15 +136,16 @@ export class FilmController {
   }
 
   _deleteClickHandler(evt) {
+    evt.preventDefault();
     const commentId = evt.target.dataset.commentId;
     const oldComment = this._commentsModel.getComments().find((comment) => comment.id === commentId);
+    this._filmDetailsComponent.blockDeleteButtons(commentId);
     this._onCommentsChange(oldComment, null);
   }
 
   _onCommentsChange(oldComment, newComment) {
 
     if (newComment === null) {
-      this._filmDetailsComponent.blockDeleteButtons();
       const commentId = oldComment.id;
       this._api.deleteComment(commentId)
         .then(() => this._commentsModel.removeComment(commentId, this._film))
@@ -169,6 +171,8 @@ export class FilmController {
 
     const newFilm = FilmModel.clone(this._film);
     newFilm.comments = this._commentsModel.getComments();
+    this._popupScrollTop = this._filmDetailsComponent.getElement().scrollTop;
+
     this._onDataChange(this, this._film, newFilm);
 
     this._filmDetailsComponent.setScrollTop(this._filmDetailsComponent.getElement().scrollTop);

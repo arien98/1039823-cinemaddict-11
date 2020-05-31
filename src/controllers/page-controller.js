@@ -120,10 +120,8 @@ export class PageController {
   }
 
   _onDataChange(filmController, oldData, newData) {
-    debugger;
     this._api.updateFilm(oldData.id, newData)
       .then((filmModel) => {
-        debugger;
         const isSuccess = this._filmsModel.updateFilm(oldData.id, filmModel);
 
         if (isSuccess) {

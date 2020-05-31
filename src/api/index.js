@@ -49,7 +49,7 @@ export class API {
     return this._load({
       url: `comments/${filmId}`,
       method: Method.POST,
-      body: JSON.stringify(comment.toRAW()),
+      body: JSON.stringify(comment.toRaw()),
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then((response) => response.json())
