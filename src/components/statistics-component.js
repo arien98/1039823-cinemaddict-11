@@ -1,6 +1,5 @@
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {FilmGenres} from "../mocks/film.js";
 import AbstractSmartComponent from "./abstract-smart-component";
 
 export const StatFilter = {
@@ -27,10 +26,7 @@ export class StatisticsComponent extends AbstractSmartComponent {
     const isShowYear = (this._statFilter === StatFilter.YEAR) ? `checked` : ``;
     const wathedFilms = this._filmsModel.getWatchedFilms(this._statFilter);
     const wathedFilmsCount = wathedFilms.length;
-    const wathedFilmsDuration = wathedFilms.map((it) => {
-      return it.duration;
-    });
-      // .reduce((sum, num) => sum + num);
+    const wathedFilmsDuration = wathedFilms.reduce((sum, it) => sum + it.duration);
     const wathedFilmsDurationTemplate = `${Math.floor(wathedFilmsDuration / 60)}h ${wathedFilmsDuration % 60}m`;
     const stats = this._filmsModel.getGenreSelectedFilms(this._statFilter);
     const topGenre = stats[0].genre;
@@ -99,25 +95,26 @@ export class StatisticsComponent extends AbstractSmartComponent {
   }
 
   rerender() {
-    // super.rerender();
+    super.rerender();
     this.getChart();
   }
 
   getChart() {
     const BAR_HEIGHT = 50;
     const statisticCtx = document.querySelector(`.statistic__chart`);
-    const labelTypes = [...FilmGenres];
-
-    // Обязательно рассчитайте высоту canvas, она зависит от количества элементов диаграммы
-    statisticCtx.height = BAR_HEIGHT * labelTypes.length;
 
     const stats = this._filmsModel.getGenreSelectedFilms(this._statFilter);
+
     const genres = stats.map((it) => {
       return it.genre;
     });
+
     const genreCount = stats.map((it) => {
       return it.count;
     });
+
+    // Обязательно рассчитайте высоту canvas, она зависит от количества элементов диаграммы
+    statisticCtx.height = BAR_HEIGHT * genres.length;
 
     return new Chart(statisticCtx, {
       plugins: [ChartDataLabels],

@@ -37,16 +37,32 @@ export class Provider {
     }
 
     const storeFilms = Object.values(this._store.getItems());
-    return Promise.resolve(FilmModel.parseTasks(storeFilms));
+    return Promise.resolve(FilmModel.parseFilms(storeFilms));
   }
 
-  createFilm(film) {
+  getComments() {
     if (isOnline()) {
-      return this._api.createFilm(film)
-        .then((newFilm) => {
-          this._store.setItem(newFilm.id, newFilm.toRAW());
+      return this._api.getComments()
+        .then((comments) => {
+          const items = createStoreStructure(comments.map((comment) => comment.toRAW()));
 
-          return newFilm;
+          this._store.setItems(items);
+
+          return comments;
+        });
+    }
+
+    const storeFilms = Object.values(this._store.getItems());
+    return Promise.resolve(FilmModel.parseFilms(storeFilms));
+  }
+
+  createComment(film) {
+    if (isOnline()) {
+      return this._api.createComment(film)
+        .then((newComment) => {
+          this._store.setItem(newComment.id, newComment.toRAW());
+
+          return newComment;
         });
     }
 
@@ -58,7 +74,7 @@ export class Provider {
     return Promise.resolve(localNewFilm);
   }
 
-  updateTask(id, film) {
+  updateFilm(id, film) {
     if (isOnline()) {
       return this._api.updateFilm(id, film)
         .then((newFilm) => {
@@ -75,9 +91,9 @@ export class Provider {
     return Promise.resolve(localTask);
   }
 
-  deleteFilm(id) {
+  deleteComment(id) {
     if (isOnline()) {
-      return this._api.deleteFilm(id)
+      return this._api.deleteComment(id)
         .then(() => this._store.removeItem(id));
     }
 
