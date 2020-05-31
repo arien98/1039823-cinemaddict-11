@@ -16,6 +16,7 @@ export class CommentModel {
   }
 
   static clone(data) {
+    debugger;
     return new CommentModel(data.toRaw());
   }
 
@@ -23,7 +24,7 @@ export class CommentModel {
     return {
       "id": this.id,
       "comment": this.text,
-      "date": this.day,
+      "date": this.date.toISOString(),
       "emotion": this.emoji
     };
   }

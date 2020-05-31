@@ -17,6 +17,35 @@ export class StatisticsComponent extends AbstractSmartComponent {
     this._statFilter = StatFilter.ALL;
     this._statButtonClickHandler = null;
   }
+  setStatFilter(statFilter) {
+    this._statFilter = statFilter;
+  }
+
+  setStatButtonClickHandler(handler) {
+    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, handler);
+    this._statButtonClickHandler = handler;
+  }
+
+  setStatFilterClickHandler(handler) {
+    this.getElement().querySelector(`.statistic__filters`).addEventListener(`click`, handler);
+    this._statFilterClickHandler = handler;
+  }
+
+  removeStatFilterClickHandler(handler) {
+    this.getElement().querySelector(`.statistic__filters`).addEventListener(`click`, handler);
+    this._statFilterClickHandler = handler;
+  }
+
+  recoveryListeners() {
+    this.setStatFilterClickHandler(this._statFilterClickHandler);
+  }
+
+  rerender() {
+    super.rerender();
+    if (!this._noFilm) {
+      this.getChart();
+    }
+  }
 
   getTemplate() {
     const isShowAll = (this._statFilter === StatFilter.ALL) ? `checked` : ``;
@@ -26,10 +55,19 @@ export class StatisticsComponent extends AbstractSmartComponent {
     const isShowYear = (this._statFilter === StatFilter.YEAR) ? `checked` : ``;
     const wathedFilms = this._filmsModel.getWatchedFilms(this._statFilter);
     const wathedFilmsCount = wathedFilms.length;
-    const wathedFilmsDuration = wathedFilms.map((it) => it.duration).reduce((sum, elem) => sum + elem);
+    const wathedFilmsDuration = wathedFilms.map((it) => +it.duration).reduce((sum, elem) => (sum + elem), 0);
     const wathedFilmsDurationTemplate = `${Math.floor(wathedFilmsDuration / 60)}h ${wathedFilmsDuration % 60}m`;
     const stats = this._filmsModel.getGenreSelectedFilms(this._statFilter);
-    const topGenre = stats[0].genre;
+
+    this._noFilm = Boolean(stats.length === 0);
+
+    const chartTemplate = this._noFilm
+      ? ``
+      : `<div class="statistic__chart-wrap">
+          <canvas class="statistic__chart" width="1000" aria-label="Statistics' chart" role="img"></canvas>
+        </div>`;
+
+    const topGenre = (stats.length > 0) ? stats[0].genre : ``;
 
 
     return (
@@ -74,40 +112,9 @@ export class StatisticsComponent extends AbstractSmartComponent {
           </li>
         </ul>
     
-        <div class="statistic__chart-wrap">
-          <canvas class="statistic__chart" width="1000" aria-label="Statistics' chart" role="img"></canvas>
-        </div>
+        ${chartTemplate}
       </section>`
     );
-  }
-
-  setStatFilter(statFilter) {
-    this._statFilter = statFilter;
-  }
-
-  setStatButtonClickHandler(handler) {
-    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, handler);
-    this._statButtonClickHandler = handler;
-  }
-
-  setStatFilterClickHandler(handler) {
-    this.getElement().querySelector(`.statistic__filters`).addEventListener(`click`, handler);
-    this._statFilterClickHandler = handler;
-  }
-
-  removeStatFilterClickHandler(handler) {
-    this.getElement().querySelector(`.statistic__filters`).addEventListener(`click`, handler);
-    this._statFilterClickHandler = handler;
-  }
-
-
-  recoveryListeners() {
-    this.setStatFilterClickHandler(this._statFilterClickHandler);
-  }
-
-  rerender() {
-    super.rerender();
-    this.getChart();
   }
 
   getChart() {
@@ -119,7 +126,7 @@ export class StatisticsComponent extends AbstractSmartComponent {
     const genres = stats.map((it) => {
       return it.genre;
     });
-
+    
     const genreCount = stats.map((it) => {
       return it.count;
     });

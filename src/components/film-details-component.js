@@ -260,11 +260,11 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
 
   createNewComment(newCommentText) {
     const newComment = Object.assign({}, this._newComment, {
-      id: nanoid(10),
-      text: encode(newCommentText),
-      day: new Date()
+      "id": nanoid(10),
+      "text": encode(newCommentText),
     });
     this._newComment = {};
+    console.log(newComment);
     return newComment;
   }
 
@@ -282,7 +282,7 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   }
 
   unblockForm() {
-    this.querySlectorAll(`form input, form select, form textarea, form button`)
+    this.querySlectorAll(`input, textarea, button`)
       .forEach((elem) => elem.removeAttribute(`disabled`, `false`));
   }
 

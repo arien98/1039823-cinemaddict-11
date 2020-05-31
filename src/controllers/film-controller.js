@@ -18,7 +18,6 @@ export class FilmController {
   constructor(container, onDataChange, onViewChange, filmsModel, api) {
     this._container = container;
     this._filmsModel = filmsModel;
-    this._commentsModel = null;
     this._api = api;
     this._openPopup = this._openPopup.bind(this);
     this._closeDetailsButtonHandler = this._closeDetailsButtonHandler.bind(this);
@@ -158,7 +157,7 @@ export class FilmController {
         this._filmDetailsComponent.blockForm();
         const newCommentData = CommentModel.clone(newComment);
         this._api.createComment(this._film.id, newCommentData)
-          .then(() => this._commentsModel.addComment(newComment))
+          .then((response) => this._commentsModel.addComment(response))
           .catch(() => {
             this._filmDetailsComponent.unblockForm();
             this.shake();
