@@ -129,7 +129,7 @@ export class StatisticsComponent extends AbstractSmartComponent {
     const genres = stats.map((it) => {
       return it.genre;
     });
-    
+
     const genreCount = stats.map((it) => {
       return it.count;
     });

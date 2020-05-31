@@ -16,7 +16,6 @@ export class CommentModel {
   }
 
   static clone(data) {
-    debugger;
     return new CommentModel(data.toRaw());
   }
 

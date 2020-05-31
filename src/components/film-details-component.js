@@ -264,7 +264,6 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
       "text": encode(newCommentText),
     });
     this._newComment = {};
-    console.log(newComment);
     return newComment;
   }
 

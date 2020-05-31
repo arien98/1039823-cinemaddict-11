@@ -6,11 +6,12 @@ import {FilmsContainerComponent} from "../components/films-container-component.j
 import {FilmController} from "./film-controller.js";
 
 export class PageController {
-  constructor(container, filmsModel, api) {
+  constructor(container, filmsModel, api, loadingComponent) {
     this._films = [];
     this._showedFilmControllers = [];
     this._container = container;
     this._api = api;
+    this._loadingComponent = loadingComponent;
     this._showButton = new ShowButtonComponent();
     this._noFilms = new NoFilmsComponents();
     this._sortComponent = new SortingComponent();
@@ -120,8 +121,11 @@ export class PageController {
   }
 
   _onDataChange(filmController, oldData, newData) {
+    this._loadingComponent.render(this._filmsContainer);
     this._api.updateFilm(oldData.id, newData)
       .then((filmModel) => {
+        remove(this._loadingComponent);
+
         const isSuccess = this._filmsModel.updateFilm(oldData.id, filmModel);
 
         if (isSuccess) {

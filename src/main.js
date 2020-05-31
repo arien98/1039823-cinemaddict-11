@@ -4,10 +4,11 @@ import {FilmsModel} from "./models/films-model.js";
 import {FilterController} from "./controllers/filter-controller.js";
 import {PageController} from "./controllers/page-controller.js";
 import {ProfileComponent} from "./components/profile-component.js";
-import {renderElement} from "./utils/render.js";
+import {renderElement, remove} from "./utils/render.js";
 import {StatisticsComponent} from "./components/statistics-component.js";
 import {Provider} from "./api/provider.js";
 import {Store} from "./api/store.js";
+import LoadingTitleComponent from "./components/loading-title-component.js";
 
 navigator.serviceWorker.getRegistrations().then((registrations) => {
   for (let registration of registrations) {
@@ -34,15 +35,20 @@ let filterController = null;
 let statisticsComponent = null;
 let pageController = null;
 let profileComponent = null;
+const loadingComponent = new LoadingTitleComponent();
+
+loadingComponent.render(siteMain);
 
 api.getFilms()
   .then((films) => {
     filmsModel.setFilms(films);
 
+    remove(loadingComponent);
+
     profileComponent = new ProfileComponent(filmsModel);
     filterController = new FilterController(siteMain, filmsModel);
     statisticsComponent = new StatisticsComponent(filmsModel, profileComponent);
-    pageController = new PageController(siteMain, filmsModel, apiWithProvider);
+    pageController = new PageController(siteMain, filmsModel, apiWithProvider, loadingComponent);
 
     renderElement(siteHeader, profileComponent);
 
