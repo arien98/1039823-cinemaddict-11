@@ -237,6 +237,7 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
 
   setDeleteClickHandler(handler) {
     const realHandler = (evt) => {
+      evt.preventDefault();
       const commentId = evt.target.dataset.commentId;
       handler(commentId);
     };
@@ -270,7 +271,7 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
       "id": nanoid(10),
       "comment": encode(newCommentText),
       "emotion": this._newComment.emoji,
-      "date": new Date()
+      "date": new Date().toISOString()
     };
 
     this._newComment = {};
@@ -291,28 +292,28 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   }
 
   unblockForm() {
-    this.querySelectorAll(`input, textarea, button`)
+    this.getElement().querySelectorAll(`input, textarea, button`)
       .forEach((elem) => elem.removeAttribute(`disabled`, `false`));
   }
 
   colorInput() {
-    this.querySelector(`.film-details__comment-input`).style.border = STYLE_BORDER_CRIMSON;
+    this.getElement().querySelector(`.film-details__comment-input`).style.border = STYLE_BORDER_CRIMSON;
   }
 
   uncolorInput() {
-    this.querySelector(`.film-details__comment-input`).style.border = ``;
+    this.getElement().querySelector(`.film-details__comment-input`).style.border = ``;
   }
 
   blockDeleteButtons(id) {
-    this.querySlectorAll(`.film-details__comment-delete`)
+    this.getElement().querySelectorAll(`.film-details__comment-delete`)
       .forEach((elem) => {
         elem.setAttribute(`disabled`, `disabled`);
       });
-    this.querySelector(`button[data-comment-id=${id}`).style.textContent = DeleteButtonText.LOADING;
+    this.getElement().querySelector(`button[data-comment-id="${id}"]`).style.textContent = DeleteButtonText.LOADING;
   }
 
   unblockDeleteButtons() {
-    this.querySlectorAll(`.film-details__comment-delete`)
+    this.getElement().querySelectorAll(`.film-details__comment-delete`)
       .forEach((elem) => {
         elem.removeAttribute(`disabled`, `disabled`);
         elem.style.textContent = DeleteButtonText.NOT_LOADING;

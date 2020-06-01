@@ -10,6 +10,16 @@ export class CommentsModel {
     return this._comments;
   }
 
+  getCommentById(id) {
+    return this._comments.find((it) => it.id === id);
+  }
+
+  getCommentsId() {
+    return this._comments.map((it) => {
+      return it.id;
+    });
+  }
+
   setComments(comments) {
     this._comments = Array.from(comments);
     this._callHandlers(this._dataChangeHandlers);

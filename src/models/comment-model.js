@@ -19,16 +19,6 @@ export class CommentModel {
     return new CommentModel(incomeData);
   }
 
-  // static createEmptyComment() {
-  //   return new CommentModel({
-  //     "id": `unknown`,
-  //     "comment": `unknown`,
-  //     "date": `unknown`,
-  //     "emotion": `unknown`,
-  //     "author": `unknown`
-  //   });
-  // }
-
   toRaw() {
     return {
       "id": this.id,

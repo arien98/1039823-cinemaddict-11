@@ -99,7 +99,7 @@ export class FilmController {
     this._filmDetailsComponent.setInputChangeHandler(this._inputChangeHandler);
 
     if (this._commentsModel.getComments().length > 0) {
-      this._filmDetailsComponent.setDeleteClickHandler(this._deleteClickHandler);
+      this._filmDetailsComponent.setDeleteClickHandler((this._deleteClickHandler));
     }
   }
 
@@ -108,8 +108,15 @@ export class FilmController {
       case (newComment === null):
         const commentId = oldComment.id;
         this._api.deleteComment(commentId)
-          .then(() => this._commentsModel.removeComment(commentId, this._film))
-          .catch(() => {
+          .then(() => {
+            this._commentsModel.removeComment(commentId, this._film);
+            this._film.comments = this._commentsModel.getCommentsId();
+
+            this._popupScrollTop = this._filmDetailsComponent.getElement().scrollTop;
+            this.render(this._film);
+          })
+          .catch((err) => {
+            console.log(err);
             this._filmDetailsComponent.unblockDeleteButtons();
             this.shake();
           });
@@ -124,50 +131,28 @@ export class FilmController {
 
             this._film.comments.push(String(addedComment.id));
             this._commentsModel.addComment(addedComment);
+
+            const newFilmData = response.movie;
+            const newFilm = FilmModel.parseFilm(newFilmData);
+            const isSuccess = this._filmsModel.updateFilm(this._film.id, newFilmData);
+            this._popupScrollTop = this._filmDetailsComponent.getElement().scrollTop;
+
+            if (isSuccess) {
+              this.render(newFilm);
+            }
           })
-          .catch(() => {
-            this._filmDetailsComponent.unblockForm();
-            this.shake();
-            this._filmDetailsComponent.colorInput();
+          .catch((err) => {
+            console.log(err);
+            // this._filmDetailsComponent.unblockForm();
+            // this.shake();
+            // this._filmDetailsComponent.colorInput();
           });
         break;
       default:
         break;
     }
 
-
-    // if (newComment === null) {
-    //   const commentId = oldComment.id;
-    //   this._api.deleteComment(commentId)
-    //     .then(() => this._commentsModel.removeComment(commentId, this._film))
-    //     .catch(() => {
-    //       this._filmDetailsComponent.unblockDeleteButtons();
-    //       this.shake();
-    //     });
-    // } else {
-    //   if (oldComment === null) {
-    //     this._filmDetailsComponent.blockForm();
-    //     const newCommentData = CommentModel.clone(newComment);
-    //     this._api.createComment(this._film.id, newCommentData)
-    //       .then((response) => this._commentsModel.addComment(response))
-    //       .catch(() => {
-    //         this._filmDetailsComponent.unblockForm();
-    //         this.shake();
-    //         this._filmDetailsComponent.colorInput();
-    //       });
-    //   } else {
-    //     return;
-    //   }
-    // }
-
-    const newFilm = FilmModel.clone(this._film);
-    newFilm.comments = this._commentsModel.getComments();
-    this._popupScrollTop = this._filmDetailsComponent.getElement().scrollTop;
-
-    this._onDataChange(this, this._film, newFilm);
-
-    this._filmDetailsComponent.setScrollTop(this._filmDetailsComponent.getElement().scrollTop);
-    this._openPopup();
+    
   }
 
   setDefaultView() {
@@ -185,13 +170,12 @@ export class FilmController {
     this._filmComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
 
     setTimeout(() => {
-      this._taskEditComponent.getElement().style.animation = ``;
-      this._taskComponent.getElement().style.animation = ``;
+      this._filmDetailsComponent.getElement().style.animation = ``;
+      this._filmComponent.getElement().style.animation = ``;
     }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   _inputChangeHandler(evt) {
-    console.log(1);
     if (((evt.key === `Enter`) && (evt.ctrlKey)) || ((evt.key === `Enter`) && (evt.metaKey))) {
       const newComment = this._filmDetailsComponent.createNewComment(evt.target.value);
       this._onCommentsChange(null, newComment);
@@ -199,12 +183,10 @@ export class FilmController {
     }
   }
 
-  _deleteClickHandler(evt) {
-    console.log(1);
-    // const commentId = evt.target.dataset.commentId;
-    // const oldComment = this._commentsModel.getComments().find((comment) => comment.id === commentId);
-    // this._filmDetailsComponent.blockDeleteButtons(commentId);
-    // this._onCommentsChange(oldComment, null);
+  _deleteClickHandler(commentId) {
+    const oldComment = this._commentsModel.getCommentById(commentId);
+    this._filmDetailsComponent.blockDeleteButtons(commentId);
+    this._onCommentsChange(oldComment, null);
   }
 
   _closeDetailsButtonHandler() {

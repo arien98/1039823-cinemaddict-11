@@ -121,10 +121,8 @@ export class PageController {
   }
 
   _onDataChange(filmController, oldFilm, newFilm) {
-    this._loadingComponent.render(this._filmsContainer);
     this._api.updateFilm(oldFilm.id, newFilm)
       .then((filmModel) => {
-        remove(this._loadingComponent);
 
         const isSuccess = this._filmsModel.updateFilm(oldFilm.id, filmModel);
 
