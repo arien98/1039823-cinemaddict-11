@@ -266,10 +266,13 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   }
 
   createNewComment(newCommentText) {
-    const newComment = Object.assign({}, this._newComment, {
+    const newComment = {
       "id": nanoid(10),
-      "text": encode(newCommentText),
-    });
+      "comment": encode(newCommentText),
+      "emotion": this._newComment.emoji,
+      "date": new Date()
+    };
+
     this._newComment = {};
     return newComment;
   }
@@ -288,7 +291,7 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   }
 
   unblockForm() {
-    this.querySlectorAll(`input, textarea, button`)
+    this.querySelectorAll(`input, textarea, button`)
       .forEach((elem) => elem.removeAttribute(`disabled`, `false`));
   }
 

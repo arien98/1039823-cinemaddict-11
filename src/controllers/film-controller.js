@@ -5,7 +5,6 @@ import {CommentsModel} from "../models/comments-model.js";
 import {FilmModel} from "../models/film-model.js";
 import {CommentModel} from "../models/comment-model.js";
 
-export const emptyFilm = {};
 const SHAKE_ANIMATION_TIMEOUT = 600;
 
 const UserProperty = {
@@ -59,13 +58,6 @@ export class FilmController {
     this._setFilmHandlers();
   }
 
-  _setFilmHandlers() {
-    this._filmComponent.setClickHandler(this._openPopup);
-    this._filmComponent.setWatchlistButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHLIST));
-    this._filmComponent.setWatchedButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHED));
-    this._filmComponent.setFavoriteButtonClickHandler(this._userPropertiesClickHandler(UserProperty.FAVORITE));
-  }
-
   _openPopup() {
     this._onViewChange();
 
@@ -89,6 +81,13 @@ export class FilmController {
     };
   }
 
+  _setFilmHandlers() {
+    this._filmComponent.setClickHandler(this._openPopup);
+    this._filmComponent.setWatchlistButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHLIST));
+    this._filmComponent.setWatchedButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHED));
+    this._filmComponent.setFavoriteButtonClickHandler(this._userPropertiesClickHandler(UserProperty.FAVORITE));
+  }
+
   _setPopupHandlers() {
     this._filmDetailsComponent.setEmojiClickHandler(this._filmDetailsComponent.emojiClickHandler);
 
@@ -104,16 +103,66 @@ export class FilmController {
     }
   }
 
-  _closeDetailsButtonHandler() {
-    remove(this._filmDetailsComponent);
-    this._filmDetailsComponent.removeEscButtonHandler(this._escPressHandler);
-    this._filmDetailsComponent.clearNewComment();
-  }
-
-  _escPressHandler(evt) {
-    if (evt.key === `Escape` || evt.key === `Esc`) {
-      this._closeDetailsButtonHandler();
+  _onCommentsChange(oldComment, newComment) {
+    switch (true) {
+      case (newComment === null):
+        const commentId = oldComment.id;
+        debugger;
+        this._api.deleteComment(commentId)
+          .then(() => this._commentsModel.removeComment(commentId, this._film))
+          .catch(() => {
+            this._filmDetailsComponent.unblockDeleteButtons();
+            this.shake();
+          });
+        break;
+      case (oldComment === null):
+        this._filmDetailsComponent.blockForm();
+        const newCommentData = CommentModel.clone(newComment);
+        this._api.createComment(this._film.id, newCommentData)
+          .then((response) => this._commentsModel.addComment(response))
+          .catch(() => {
+            this._filmDetailsComponent.unblockForm();
+            this.shake();
+            this._filmDetailsComponent.colorInput();
+          });
+        break;
+      default:
+        break;
     }
+
+
+    // if (newComment === null) {
+    //   const commentId = oldComment.id;
+    //   this._api.deleteComment(commentId)
+    //     .then(() => this._commentsModel.removeComment(commentId, this._film))
+    //     .catch(() => {
+    //       this._filmDetailsComponent.unblockDeleteButtons();
+    //       this.shake();
+    //     });
+    // } else {
+    //   if (oldComment === null) {
+    //     this._filmDetailsComponent.blockForm();
+    //     const newCommentData = CommentModel.clone(newComment);
+    //     this._api.createComment(this._film.id, newCommentData)
+    //       .then((response) => this._commentsModel.addComment(response))
+    //       .catch(() => {
+    //         this._filmDetailsComponent.unblockForm();
+    //         this.shake();
+    //         this._filmDetailsComponent.colorInput();
+    //       });
+    //   } else {
+    //     return;
+    //   }
+    // }
+
+    const newFilm = FilmModel.clone(this._film);
+    newFilm.comments = this._commentsModel.getComments();
+    this._popupScrollTop = this._filmDetailsComponent.getElement().scrollTop;
+
+    this._onDataChange(this, this._film, newFilm);
+
+    this._filmDetailsComponent.setScrollTop(this._filmDetailsComponent.getElement().scrollTop);
+    this._openPopup();
   }
 
   setDefaultView() {
@@ -126,58 +175,6 @@ export class FilmController {
     document.removeEventListener(`keydown`, this._escPressHandler);
   }
 
-  _inputChangeHandler(evt) {
-    if (((evt.key === `Enter`) && (evt.ctrlKey)) || ((evt.key === `Enter`) && (evt.metaKey))) {
-      const newComment = this._filmDetailsComponent.createNewComment(evt.target.value);
-      this._onCommentsChange(null, newComment);
-      this._filmDetailsComponent.setScrollTop(this._filmDetailsComponent.getElement().scrollTop);
-    }
-  }
-
-  _deleteClickHandler(evt) {
-    evt.preventDefault();
-    const commentId = evt.target.dataset.commentId;
-    const oldComment = this._commentsModel.getComments().find((comment) => comment.id === commentId);
-    this._filmDetailsComponent.blockDeleteButtons(commentId);
-    this._onCommentsChange(oldComment, null);
-  }
-
-  _onCommentsChange(oldComment, newComment) {
-
-    if (newComment === null) {
-      const commentId = oldComment.id;
-      this._api.deleteComment(commentId)
-        .then(() => this._commentsModel.removeComment(commentId, this._film))
-        .catch(() => {
-          this._filmDetailsComponent.unblockDeleteButtons();
-          this.shake();
-        });
-    } else {
-      if (oldComment === null) {
-        this._filmDetailsComponent.blockForm();
-        const newCommentData = CommentModel.clone(newComment);
-        this._api.createComment(this._film.id, newCommentData)
-          .then((response) => this._commentsModel.addComment(response))
-          .catch(() => {
-            this._filmDetailsComponent.unblockForm();
-            this.shake();
-            this._filmDetailsComponent.colorInput();
-          });
-      } else {
-        return;
-      }
-    }
-
-    const newFilm = FilmModel.clone(this._film);
-    newFilm.comments = this._commentsModel.getComments();
-    this._popupScrollTop = this._filmDetailsComponent.getElement().scrollTop;
-
-    this._onDataChange(this, this._film, newFilm);
-
-    this._filmDetailsComponent.setScrollTop(this._filmDetailsComponent.getElement().scrollTop);
-    this._openPopup();
-  }
-
   shake() {
     this._filmDetailsComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
     this._filmComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
@@ -186,5 +183,34 @@ export class FilmController {
       this._taskEditComponent.getElement().style.animation = ``;
       this._taskComponent.getElement().style.animation = ``;
     }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
+  _inputChangeHandler(evt) {
+    console.log(1);
+    if (((evt.key === `Enter`) && (evt.ctrlKey)) || ((evt.key === `Enter`) && (evt.metaKey))) {
+      const newComment = this._filmDetailsComponent.createNewComment(evt.target.value);
+      this._onCommentsChange(null, newComment);
+      this._filmDetailsComponent.setScrollTop(this._filmDetailsComponent.getElement().scrollTop);
+    }
+  }
+
+  _deleteClickHandler(evt) {
+    console.log(1);
+    // const commentId = evt.target.dataset.commentId;
+    // const oldComment = this._commentsModel.getComments().find((comment) => comment.id === commentId);
+    // this._filmDetailsComponent.blockDeleteButtons(commentId);
+    // this._onCommentsChange(oldComment, null);
+  }
+
+  _closeDetailsButtonHandler() {
+    remove(this._filmDetailsComponent);
+    this._filmDetailsComponent.removeEscButtonHandler(this._escPressHandler);
+    this._filmDetailsComponent.clearNewComment();
+  }
+
+  _escPressHandler(evt) {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      this._closeDetailsButtonHandler();
+    }
   }
 }

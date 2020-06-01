@@ -8,6 +8,10 @@ const Method = {
   DELETE: `DELETE`
 };
 
+const SERVER_PATH = `https://11.ecmascript.pages.academy/cinemaddict`;
+const MOVIES_SUBPATH = `movies`;
+const COMMENTS_SUBPATH = `comments`;
+
 const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
     return response;
@@ -45,15 +49,31 @@ export class API {
       .then(FilmModel.parseFilm));
   }
 
-  createComment(filmId, comment) {
-    return this._load({
-      url: `comments/${filmId}`,
-      method: Method.POST,
-      body: JSON.stringify(comment.toRaw()),
-      headers: new Headers({"Content-Type": `application/json`})
-    })
+  // createComment(filmId, comment) {
+  //   debugger;
+  //   return this._load({
+  //     url: `comments/${filmId}`,
+  //     method: Method.POST,
+  //     body: JSON.stringify(comment.toRaw()),
+  //     headers: new Headers({"Content-Type": `application/json`})
+  //   })
+  //     .then((response) => response.json())
+  //     .then(CommentModel.parseComment);
+  // }
+
+  createComment(filmId, commentData) {
+    const headers = new Headers();
+    headers.append(`Authorization`, this._authorization);
+    headers.append(`Content-Type`, `application/json`);
+
+    return fetch(`${SERVER_PATH}/${COMMENTS_SUBPATH}/${filmId}`, {method: Method.POST, body: JSON.stringify(commentData), headers})
+      .then(checkStatus)
       .then((response) => response.json())
-      .then(CommentModel.parseComment);
+      .then((response) => {
+        const movie = Movie.parseMovie(response.movie);
+        const comments = Comment.parseComments(response.comments);
+        return {movie, comments};
+      });
   }
 
   deleteComment(commentId) {
@@ -77,7 +97,6 @@ export class API {
     headers = new Headers()
   }) {
     headers.append(`Authorization`, this._authorization);
-
     return fetch(`${this._endPoint}/${url}`, {method, body, headers})
       .then(checkStatus)
       .catch((err) => {

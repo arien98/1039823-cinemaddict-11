@@ -16,7 +16,7 @@ navigator.serviceWorker.getRegistrations().then((registrations) => {
   }
 });
 
-const AUTHORIZATION = `Basic 90fdsds3f432d9g78fd97g90a=4$jfkd`;
+const AUTHORIZATION = `Basic 90fdsdf8d943jfd97g90a=4$jfkd`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 const STORE_PREFIX = `cinemaaddict-localstorage`;
 const STORE_VER = `v1`;

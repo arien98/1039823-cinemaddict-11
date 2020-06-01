@@ -1,23 +1,33 @@
 export class CommentModel {
-  constructor(incomedata) {
-    this.id = incomedata.id;
-    this.emoji = incomedata.emotion;
-    this.text = incomedata.comment;
-    this.author = incomedata.author;
-    this.date = new Date(incomedata.date);
+  constructor(incomeData) {
+    this.id = incomeData.id;
+    this.emoji = incomeData.emotion;
+    this.text = incomeData.comment;
+    this.author = incomeData.author;
+    this.date = new Date(incomeData.date);
   }
 
-  static parseComment(incomedata) {
-    return new CommentModel(incomedata);
+  static parseComment(incomeData) {
+    return new CommentModel(incomeData);
   }
 
-  static parseComments(incomedata) {
-    return incomedata.map(CommentModel.parseComment);
+  static parseComments(incomeData) {
+    return incomeData.map(CommentModel.parseComment);
   }
 
-  static clone(incomedata) {
-    return new CommentModel(incomedata.toRaw());
+  static clone(incomeData) {
+    return new CommentModel(incomeData);
   }
+
+  // static createEmptyComment() {
+  //   return new CommentModel({
+  //     "id": `unknown`,
+  //     "comment": `unknown`,
+  //     "date": `unknown`,
+  //     "emotion": `unknown`,
+  //     "author": `unknown`
+  //   });
+  // }
 
   toRaw() {
     return {
