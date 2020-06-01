@@ -62,7 +62,6 @@ export class Provider {
     if (isOnline()) {
       return this._api.createComment(filmId, comment)
         .then((response) => {
-          console.log(response);
           const newComments = response.comments;
           const commentsToStore = createStoreStructure(newComments.map((elem) => elem.toRaw()), DataType.COMMENT);
           this._store.setItems(commentsToStore);

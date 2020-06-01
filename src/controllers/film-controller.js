@@ -115,8 +115,7 @@ export class FilmController {
             this._popupScrollTop = this._filmDetailsComponent.getElement().scrollTop;
             this.render(this._film);
           })
-          .catch((err) => {
-            console.log(err);
+          .catch(() => {
             this._filmDetailsComponent.unblockDeleteButtons();
             this.shake();
           });
@@ -139,8 +138,7 @@ export class FilmController {
               this.render(newFilm);
             }
           })
-          .catch((err) => {
-            console.log(err);
+          .catch(() => {
             this._filmDetailsComponent.unblockForm();
             this.shake();
             this._filmDetailsComponent.colorInput();

@@ -2,7 +2,6 @@ import {CommentsComponent} from "./comments-component.js";
 import AbstractSmartComponent from "./abstract-smart-component.js";
 import moment from "moment";
 import {encode} from "he";
-import {nanoid} from "nanoid";
 
 const emojisType = [`smile`, `sleeping`, `puke`, `angry`];
 
