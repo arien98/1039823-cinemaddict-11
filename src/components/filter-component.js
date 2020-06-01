@@ -34,9 +34,10 @@ export class FilterComponent extends AbstractComponent {
   }
 
   setFilterChangeHandler(handler) {
-    this.getElement().querySelector(`.main-navigation__items`).addEventListener(`click`, (evt) => {
-      const filterName = evt.target.dataset.filterType;
-      handler(filterName);
-    });
+    this.getElement().querySelectorAll(`.main-navigation__items`)
+      .forEach((elem) => elem.addEventListener(`click`, (evt) => {
+        const filterName = evt.target.dataset.filterType;
+        handler(filterName);
+      }));
   }
 }

@@ -45,11 +45,11 @@ export class API {
       .then(FilmModel.parseFilm));
   }
 
-  createComment(filmId, comment) {
+  createComment(filmId, newComment) {
     return this._load({
       url: `comments/${filmId}`,
       method: Method.POST,
-      body: JSON.stringify(comment.toRaw()),
+      body: JSON.stringify(newComment),
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then((response) => response.json())

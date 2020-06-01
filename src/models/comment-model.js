@@ -19,6 +19,13 @@ export class CommentModel {
     return new CommentModel(incomeData);
   }
 
+  static createNewComment(data) {
+    return {
+      "comment": data.text,
+      "emotion": data.emoji
+    };
+  }
+
   toRaw() {
     return {
       "id": this.id,

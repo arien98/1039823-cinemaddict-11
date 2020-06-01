@@ -224,18 +224,30 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   emojiClickHandler(evt) {
     if (evt.target.tagName === `IMG`) {
       const emoji = evt.target.dataset.emojiType;
-      this._newComment = {emoji};
+      this._newComment.emoji = emoji;
       this.rerender();
     } else {
       return;
     }
   }
 
-  setInputChangeHandler(handler) {
+  setEnterHandler(handler) {
+    const realHandler = (evt) => {
+      console.log(evt);
+      this._newComment.text = evt.target.value;
+
+      if ((evt.key === `Enter` && evt.ctrlKey) || (evt.key === `Enter` && evt.metaKey)) {
+        debugger;
+        
+        handler(this._newComment);
+      }
+    };
+
     this.getElement()
       .querySelector(`.film-details__comment-input`)
-      .addEventListener(`keydown`, handler);
-    this._inputChangeHandler = handler;
+      .addEventListener(`keydown`, realHandler);
+
+    this._filmDetailsNewCommentHandler = realHandler;
   }
 
   setDeleteClickHandler(handler) {
@@ -245,8 +257,8 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
       handler(commentId);
     };
     this.getElement()
-      .querySelector(`.film-details__comment-delete`)
-      .addEventListener(`click`, realHandler);
+      .querySelectorAll(`.film-details__comment-delete`)
+        .forEach((elem) => elem.addEventListener(`click`, realHandler));
     this._deleteClickHandler = realHandler;
   }
 
@@ -257,7 +269,7 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     this.setWatchedButtonClickHandler(this._historyClickHandler);
     this.setFavoriteButtonClickHandler(this._favoriteClickHandler);
     this.setEmojiClickHandler(this.emojiClickHandler);
-    this.setInputChangeHandler(this._inputChangeHandler);
+    this.setEnterHandler(this._filmDetailsNewCommentHandler);
     if (this._film.comments.length > 0) {
       this.setDeleteClickHandler(this._deleteClickHandler);
     }
@@ -269,10 +281,9 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     this.getElement().scrollTop = scrollTop;
   }
 
-  createNewComment(newCommentText) {
+  _createNewComment() {
     const newComment = {
-      "id": nanoid(10),
-      "comment": encode(newCommentText),
+      "comment": encode(this._newComment.text),
       "emotion": this._newComment.emoji,
       "date": new Date().toISOString()
     };

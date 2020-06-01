@@ -27,7 +27,7 @@ export class FilmController {
     this._filmComponent = null;
     this._filmDetailsComponent = null;
     this._deleteClickHandler = this._deleteClickHandler.bind(this);
-    this._inputChangeHandler = this._inputChangeHandler.bind(this);
+    this._filmDetailsNewCommentHandler = this._filmDetailsNewCommentHandler.bind(this);
     this._onCommentsChange = this._onCommentsChange.bind(this);
     this._userPropertiesClickHandler = this._userPropertiesClickHandler.bind(this);
     this._commentsModel = new CommentsModel(this._film);
@@ -90,13 +90,13 @@ export class FilmController {
 
   _setPopupHandlers() {
     this._filmDetailsComponent.setEmojiClickHandler(this._filmDetailsComponent.emojiClickHandler);
+    this._filmDetailsComponent.setEnterHandler(this._filmDetailsNewCommentHandler);
 
     this._filmDetailsComponent.setCloseButtonHandler(this._closeDetailsButtonHandler);
     this._filmDetailsComponent.setEscButtonHandler(this._escPressHandler);
     this._filmDetailsComponent.setWatchlistButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHLIST));
     this._filmDetailsComponent.setWatchedButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHED));
     this._filmDetailsComponent.setFavoriteButtonClickHandler(this._userPropertiesClickHandler(UserProperty.FAVORITE));
-    this._filmDetailsComponent.setInputChangeHandler(this._inputChangeHandler);
 
     if (this._commentsModel.getComments().length > 0) {
       this._filmDetailsComponent.setDeleteClickHandler((this._deleteClickHandler));
@@ -123,7 +123,7 @@ export class FilmController {
         break;
       case (oldComment === null):
         this._filmDetailsComponent.blockForm();
-        const newCommentData = CommentModel.clone(newComment);
+        const newCommentData = CommentModel.createNewComment(newComment);
         this._api.createComment(this._film.id, newCommentData)
           .then((response) => {
             const addedComment = response.comments[response.comments.length - 1];
@@ -149,8 +149,6 @@ export class FilmController {
       default:
         break;
     }
-
-    
   }
 
   setDefaultView() {
@@ -173,12 +171,9 @@ export class FilmController {
     }, SHAKE_ANIMATION_TIMEOUT);
   }
 
-  _inputChangeHandler(evt) {
-    if (((evt.key === `Enter`) && (evt.ctrlKey)) || ((evt.key === `Enter`) && (evt.metaKey))) {
-      const newComment = this._filmDetailsComponent.createNewComment(evt.target.value);
-      this._onCommentsChange(null, newComment);
-      this._filmDetailsComponent.setScrollTop(this._filmDetailsComponent.getElement().scrollTop);
-    }
+  _filmDetailsNewCommentHandler(newComment) {
+    this._onCommentsChange(null, newComment);
+    this._filmDetailsComponent.setScrollTop(this._filmDetailsComponent.getElement().scrollTop);
   }
 
   _deleteClickHandler(commentId) {
