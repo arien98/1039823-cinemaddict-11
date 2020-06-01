@@ -141,9 +141,9 @@ export class FilmController {
           })
           .catch((err) => {
             console.log(err);
-            // this._filmDetailsComponent.unblockForm();
-            // this.shake();
-            // this._filmDetailsComponent.colorInput();
+            this._filmDetailsComponent.unblockForm();
+            this.shake();
+            this._filmDetailsComponent.colorInput();
           });
         break;
       default:

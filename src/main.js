@@ -16,7 +16,7 @@ navigator.serviceWorker.getRegistrations().then((registrations) => {
   }
 });
 
-const AUTHORIZATION = `Basic 90fdsgfdg5943jfd97g90a=4$jfkd`;
+const AUTHORIZATION = `Basic 90fdsgfdg5978f9dsd97g90a=4$jfkd`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 const STORE_PREFIX = `cinemaaddict-localstorage`;
 const STORE_VER = `v1`;
@@ -48,7 +48,7 @@ api.getFilms()
     profileComponent = new ProfileComponent(filmsModel);
     filterController = new FilterController(siteMain, filmsModel);
     statisticsComponent = new StatisticsComponent(filmsModel, profileComponent);
-    pageController = new PageController(siteMain, filmsModel, api, loadingComponent);
+    pageController = new PageController(siteMain, filmsModel, apiWithProvider, loadingComponent);
 
     renderElement(siteHeader, profileComponent);
 

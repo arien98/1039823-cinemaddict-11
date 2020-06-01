@@ -8,10 +8,6 @@ const Method = {
   DELETE: `DELETE`
 };
 
-const SERVER_PATH = `https://11.ecmascript.pages.academy/cinemaddict`;
-const MOVIES_SUBPATH = `movies`;
-const COMMENTS_SUBPATH = `comments`;
-
 const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
     return response;
@@ -58,7 +54,6 @@ export class API {
     })
       .then((response) => response.json())
       .then((response) => {
-        console.log(response.movie);
         const movie = FilmModel.parseFilm(response.movie);
         const comments = CommentModel.parseComments(response.comments);
         return {movie, comments};

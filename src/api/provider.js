@@ -58,13 +58,20 @@ export class Provider {
     return Promise.resolve(FilmModel.parseFilms(storeFilms));
   }
 
-  createComment(comment) {
+  createComment(filmId, comment) {
     if (isOnline()) {
-      return this._api.createComment(comment)
-        .then((newComment) => {
-          this._store.setItem(newComment.id, newComment.toRaw());
+      return this._api.createComment(filmId, comment)
+        .then((response) => {
+          console.log(response);
+          const newComments = response.comments;
+          const commentsToStore = createStoreStructure(newComments.map((comment) => comment.toRaw()), DataType.COMMENT);
+          this._store.setItems(commentsToStore);
 
-          return newComment;
+          const newFilm = response.movie;
+          const filmsToStore = createStoreStructure(response.movie.map((film) => film.toRaw()), DataType.FILM);
+          this._store.setItems(filmsToStore);
+
+          return {newFilm, newComments};
         });
     }
 

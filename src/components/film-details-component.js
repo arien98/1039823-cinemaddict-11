@@ -49,8 +49,11 @@ const createFilmDetailsTemplate = (film, commentsTemplate, newComment) => {
   const selectedEmoji = newComment.emoji ? `<img src="./images/emoji/${newComment.emoji}.png" width="30" height="30" alt="emoji" data-emoji-type = ${newComment.emoji}></img>` : ``;
 
   const watchlistActive = isInWatchlist ? `checked` : ``;
+  const watchlistText = isInWatchlist ? `Remove from watchlist` : `Add to watchlist`;
   const watchedActive = isHistory ? `checked` : ``;
+  const watchedText = isHistory ? `Not watched` : `Already watched`;
   const favoriteActive = isFavorite ? `checked` : ``;
+  const favoriteText = isFavorite ? `Remove from favorites` : `Add to favorites`;
 
   return (
     `<section class="film-details">
@@ -119,13 +122,13 @@ const createFilmDetailsTemplate = (film, commentsTemplate, newComment) => {
 
           <section class="film-details__controls">
             <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchlistActive}>
-            <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
+            <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">${watchlistText}</label>
 
             <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${watchedActive}>
-            <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
+            <label for="watched" class="film-details__control-label film-details__control-label--watched">${watchedText}</label>
 
             <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favoriteActive}>
-            <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
+            <label for="favorite" class="film-details__control-label film-details__control-label--favorite">${favoriteText}</label>
           </section>
         </div>
 
