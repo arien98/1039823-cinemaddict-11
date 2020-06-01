@@ -49,29 +49,17 @@ export class API {
       .then(FilmModel.parseFilm));
   }
 
-  // createComment(filmId, comment) {
-  //   debugger;
-  //   return this._load({
-  //     url: `comments/${filmId}`,
-  //     method: Method.POST,
-  //     body: JSON.stringify(comment.toRaw()),
-  //     headers: new Headers({"Content-Type": `application/json`})
-  //   })
-  //     .then((response) => response.json())
-  //     .then(CommentModel.parseComment);
-  // }
-
-  createComment(filmId, commentData) {
-    const headers = new Headers();
-    headers.append(`Authorization`, this._authorization);
-    headers.append(`Content-Type`, `application/json`);
-
-    return fetch(`${SERVER_PATH}/${COMMENTS_SUBPATH}/${filmId}`, {method: Method.POST, body: JSON.stringify(commentData), headers})
-      .then(checkStatus)
+  createComment(filmId, comment) {
+    return this._load({
+      url: `comments/${filmId}`,
+      method: Method.POST,
+      body: JSON.stringify(comment.toRaw()),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
       .then((response) => response.json())
       .then((response) => {
-        const movie = Movie.parseMovie(response.movie);
-        const comments = Comment.parseComments(response.comments);
+        const movie = FilmModel.parseFilm(response.movie);
+        const comments = CommentModel.parseComments(response.comments);
         return {movie, comments};
       });
   }

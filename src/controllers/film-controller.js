@@ -107,7 +107,6 @@ export class FilmController {
     switch (true) {
       case (newComment === null):
         const commentId = oldComment.id;
-        debugger;
         this._api.deleteComment(commentId)
           .then(() => this._commentsModel.removeComment(commentId, this._film))
           .catch(() => {
@@ -119,7 +118,13 @@ export class FilmController {
         this._filmDetailsComponent.blockForm();
         const newCommentData = CommentModel.clone(newComment);
         this._api.createComment(this._film.id, newCommentData)
-          .then((response) => this._commentsModel.addComment(response))
+          .then((response) => {
+            const addedCommentData = response.comments[response.comments.length - 1];
+            const addedComment = CommentModel.clone(addedCommentData);
+
+            this._film.comments.push(String(addedComment.id));
+            this._commentsModel.addComment(addedComment);
+          })
           .catch(() => {
             this._filmDetailsComponent.unblockForm();
             this.shake();
