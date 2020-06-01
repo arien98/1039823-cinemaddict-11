@@ -80,7 +80,7 @@ export class PageController {
 
   _showButtonClickHandler(films, filmsContainer) {
     return () => {
-      let prevFilmsNumber = this._filmsOnPageNumber;
+      const prevFilmsNumber = this._filmsOnPageNumber;
       this._filmsOnPageNumber += this._onButtonClickFilmsCount;
 
       const newFilms = this._renderFilms(prevFilmsNumber, this._filmsOnPageNumber, filmsContainer, films);

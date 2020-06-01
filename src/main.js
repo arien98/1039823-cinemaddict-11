@@ -10,12 +10,6 @@ import {Provider} from "./api/provider.js";
 import {Store} from "./api/store.js";
 import LoadingTitleComponent from "./components/loading-title-component.js";
 
-navigator.serviceWorker.getRegistrations().then((registrations) => {
-  for (let registration of registrations) {
-    registration.unregister();
-  }
-});
-
 const AUTHORIZATION = `Basic 90fdsgfdg576dsd97g90a=4$jfkd`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 const STORE_PREFIX = `cinemaaddict-localstorage`;

@@ -9,9 +9,9 @@ export const getRandomArrayItem = (array) => {
 };
 
 export const getRandomArrayItems = (array, number) => {
-  let oldArray = [...array];
+  const oldArray = [...array];
   let length = oldArray.length;
-  let newArray = [];
+  const newArray = [];
 
   for (let i = 0; i < number; i++) {
     const randomIndex = getRandomIntegerNumber(0, length);
@@ -24,9 +24,9 @@ export const getRandomArrayItems = (array, number) => {
 };
 
 export const getUniqueItems = (arr) => {
-  let result = [];
+  const result = [];
 
-  for (let str of arr) {
+  for (const str of arr) {
     if (!result.includes(str)) {
       result.push(str);
     }
