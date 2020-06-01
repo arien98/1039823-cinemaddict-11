@@ -16,7 +16,7 @@ navigator.serviceWorker.getRegistrations().then((registrations) => {
   }
 });
 
-const AUTHORIZATION = `Basic 90fdsgfdg5978f9dsd97g90a=4$jfkd`;
+const AUTHORIZATION = `Basic 90fdsgfdg576dsd97g90a=4$jfkd`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 const STORE_PREFIX = `cinemaaddict-localstorage`;
 const STORE_VER = `v1`;
@@ -56,6 +56,7 @@ api.getFilms()
     pageController.render();
     renderElement(siteMain, statisticsComponent);
     statisticsComponent.getChart();
+    statisticsComponent.hide();
     renderElement(footerStatisticsContainer, new FilmCountComponent(filmsModel));
 
     const filterNav = siteMain.querySelector(`.main-navigation__items`);
@@ -64,7 +65,6 @@ api.getFilms()
     filterNav.addEventListener(`click`, () => {
       pageController.show();
       statisticsComponent.hide();
-      statisticsComponent.removeStatFilterClickHandler(statFilterClickHandler);
     });
 
     statButton.addEventListener(`click`, () => {

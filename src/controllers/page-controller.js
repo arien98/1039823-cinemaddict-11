@@ -88,7 +88,6 @@ export class PageController {
 
       if (this._filmsOnPageNumber >= this._films.length) {
         remove(this._showButton);
-        this._showButton.removeClickHandler(this._showButtonClickHandler(films, filmsContainer));
       }
     };
   }
@@ -115,7 +114,6 @@ export class PageController {
   _onSortTypeChange(sortType) {
     const sortedFilms = this._getSortedFilms(sortType);
 
-    remove(this._showButton);
     this._removeFilms();
     this._renderFilmDesk(sortedFilms, this._filmsContainer);
   }
@@ -130,10 +128,9 @@ export class PageController {
           filmController.render(filmModel);
         }
       })
-      .catch((err) => {
-        console.log(err);
-        console.log(`filmController.shake()`);
-        // filmController.shake();
+      .catch(() => {
+        filmController.shake();
+        filmController.shake();
       });
   }
 
@@ -144,6 +141,8 @@ export class PageController {
   _removeFilms() {
     this._showedFilmControllers.forEach((filmController) => filmController.destroy());
     this._showedFilmControllers = [];
+    remove(this._showButton);
+    remove(this._noFilms);
   }
 
   _updateFilms() {

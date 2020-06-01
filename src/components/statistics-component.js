@@ -176,12 +176,10 @@ export class StatisticsComponent extends AbstractSmartComponent {
   }
 
   setStatFilterClickHandler(handler) {
-    this.getElement().querySelector(`.statistic__filters`).addEventListener(`click`, handler);
-    this._statFilterClickHandler = handler;
-  }
+    this.getElement()
+      .querySelectorAll(`.statistic__filters-label`)
+      .forEach((elem) => elem.addEventListener(`click`, handler));
 
-  removeStatFilterClickHandler(handler) {
-    this.getElement().querySelector(`.statistic__filters`).addEventListener(`click`, handler);
     this._statFilterClickHandler = handler;
   }
 

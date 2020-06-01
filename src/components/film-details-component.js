@@ -55,6 +55,8 @@ const createFilmDetailsTemplate = (film, commentsTemplate, newComment) => {
   const favoriteActive = isFavorite ? `checked` : ``;
   const favoriteText = isFavorite ? `Remove from favorites` : `Add to favorites`;
 
+  const inputText = newComment.text ? newComment.text : ``;
+
   return (
     `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
@@ -146,7 +148,7 @@ const createFilmDetailsTemplate = (film, commentsTemplate, newComment) => {
               </div>
 
               <label class="film-details__comment-label">
-                <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+                <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${inputText}</textarea>
               </label>
 
               <div class="film-details__emoji-list">
@@ -233,12 +235,11 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
 
   setEnterHandler(handler) {
     const realHandler = (evt) => {
-      console.log(evt);
-      this._newComment.text = evt.target.value;
+      if (evt.target.value) {
+        this._newComment.text = evt.target.value;
+      }
 
       if ((evt.key === `Enter` && evt.ctrlKey) || (evt.key === `Enter` && evt.metaKey)) {
-        debugger;
-        
         handler(this._newComment);
       }
     };
@@ -247,7 +248,7 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
       .querySelector(`.film-details__comment-input`)
       .addEventListener(`keydown`, realHandler);
 
-    this._filmDetailsNewCommentHandler = realHandler;
+    this._filmDetailsNewCommentHandler = handler;
   }
 
   setDeleteClickHandler(handler) {

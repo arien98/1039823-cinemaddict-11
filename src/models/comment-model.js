@@ -22,7 +22,8 @@ export class CommentModel {
   static createNewComment(data) {
     return {
       "comment": data.text,
-      "emotion": data.emoji
+      "emotion": data.emoji,
+      "date": new Date().toISOString(),
     };
   }
 
