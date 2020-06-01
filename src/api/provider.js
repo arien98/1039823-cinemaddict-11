@@ -64,7 +64,7 @@ export class Provider {
         .then((response) => {
           console.log(response);
           const newComments = response.comments;
-          const commentsToStore = createStoreStructure(newComments.map((comment) => comment.toRaw()), DataType.COMMENT);
+          const commentsToStore = createStoreStructure(newComments.map((elem) => elem.toRaw()), DataType.COMMENT);
           this._store.setItems(commentsToStore);
 
           const newFilm = response.movie;
