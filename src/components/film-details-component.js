@@ -6,6 +6,13 @@ import {nanoid} from "nanoid";
 
 const emojisType = [`smile`, `sleeping`, `puke`, `angry`];
 
+const DeleteButtonText = {
+  LOADING: `Deleting...`,
+  NOT_LOADING: `Delete`
+};
+
+const STYLE_BORDER_CRIMSON = `2px solid crimson`;
+
 const createGenresTemplate = (genres) => {
   return genres
     .map((genre) => {
@@ -286,11 +293,11 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   }
 
   colorInput() {
-    this.querySelector(`.film-details__comment-input`).style.boreder = `2px solid crimson`;
+    this.querySelector(`.film-details__comment-input`).style.border = STYLE_BORDER_CRIMSON;
   }
 
   uncolorInput() {
-    this.querySelector(`.film-details__comment-input`).style.boreder = ``;
+    this.querySelector(`.film-details__comment-input`).style.border = ``;
   }
 
   blockDeleteButtons(id) {
@@ -298,14 +305,14 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
       .forEach((elem) => {
         elem.setAttribute(`disabled`, `disabled`);
       });
-    this.querySelector(`button[data-comment-id=${id}`).style.textContent = `Deleting...`;
+    this.querySelector(`button[data-comment-id=${id}`).style.textContent = DeleteButtonText.LOADING;
   }
 
   unblockDeleteButtons() {
     this.querySlectorAll(`.film-details__comment-delete`)
       .forEach((elem) => {
         elem.removeAttribute(`disabled`, `disabled`);
-        elem.style.textContent = `Delete`;
+        elem.style.textContent = DeleteButtonText.NOT_LOADING;
       });
   }
 }

@@ -1,11 +1,7 @@
 import {FilmModel} from "../models/film-model.js";
 import {nanoid} from "nanoid";
 import {CommentModel} from "../models/comment-model.js";
-
-export const DataType = {
-  FILM: `film`,
-  COMMENT: `commment`
-};
+import {DataType} from "../constants";
 
 const isOnline = () => {
   return window.navigator.onLine;
@@ -108,19 +104,34 @@ export class Provider {
     return Promise.resolve();
   }
 
-  sync() {
+  syncFilms() {
     if (isOnline()) {
-      const storeFilms = Object.values(this._store.getItems());
+      const storeFilms = this._store.getFilms();
 
       return this._api.sync(storeFilms)
         .then((response) => {
-          // Забираем из ответа синхронизированные задачи
-          const createdFilms = getSyncedData(response.created);
+
           const updatedFilms = getSyncedData(response.updated);
 
-          // Добавляем синхронизированные задачи в хранилище.
-          // Хранилище должно быть актуальным в любой момент.
-          const items = createStoreStructure([...createdFilms, ...updatedFilms]);
+          const items = createStoreStructure(updatedFilms, DataType.FILM);
+
+          this._store.setItems(items);
+        });
+    }
+
+    return Promise.reject(new Error(`Sync data failed`));
+  }
+
+  syncComments() {
+    if (isOnline()) {
+      const storeComments = this._store.getComments();
+
+      return this._api.sync(storeComments)
+        .then((response) => {
+
+          const createdComments = getSyncedData(response.created);
+
+          const items = createStoreStructure(createdComments, DataType.COMMENT);
 
           this._store.setItems(items);
         });

@@ -1,4 +1,4 @@
-import {DataType} from "./provider.js";
+import {DataType} from "../constants";
 
 const RegExps = {
   FILM: `\^${DataType.FILM}`,
@@ -20,11 +20,21 @@ export class Store {
   }
 
   getFilms() {
-    return this.getItems().filter((it) => RegExps.FILM.test(it.id));
+    return this
+      .getItems()
+      .filter((it) => RegExps.FILM.test(it.id))
+      .forEach((element) => {
+        element.id.slice(DataType.FILM.length);
+      });
   }
 
   getComments() {
-    return this.getItems().filter((it) => RegExps.COMMENTS.test(it.id));
+    return this
+      .getItems()
+      .filter((it) => RegExps.FILM.test(it.id))
+      .forEach((element) => {
+        element.id.slice(DataType.COMMENT.length);
+      });
   }
 
   setItems(items) {

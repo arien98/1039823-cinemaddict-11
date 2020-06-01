@@ -83,7 +83,9 @@ const statFilterClickHandler = (evt) => {
 window.addEventListener(`online`, () => {
   document.title = document.title.replace(` [offline]`, ``);
 
-  apiWithProvider.sync();
+  apiWithProvider.syncFilms();
+
+  apiWithProvider.syncComments();
 });
 
 window.addEventListener(`load`, () => {

@@ -34,11 +34,11 @@ export class API {
       .then(CommentModel.parseComments);
   }
 
-  updateFilm(id, data) {
+  updateFilm(id, newFilm) {
     return this._load({
       url: `movies/${id}`,
       method: Method.PUT,
-      body: JSON.stringify(data.toRaw()),
+      body: JSON.stringify(newFilm.toRaw()),
       headers: new Headers({"Content-type": `application/json`})
     })
       .then((response) => response.json()
@@ -60,11 +60,11 @@ export class API {
     return this._load({url: `comments/${commentId}`, method: Method.DELETE});
   }
 
-  sync(data) {
+  sync(films) {
     return this._load({
       url: `movies/sync`,
       method: Method.POST,
-      body: JSON.stringify(data),
+      body: JSON.stringify(films),
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then((response) => response.json());

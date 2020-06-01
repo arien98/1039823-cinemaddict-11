@@ -3,7 +3,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import AbstractSmartComponent from "./abstract-smart-component";
 
 export const StatFilter = {
-  ALL: `All time`,
+  ALL: `All`,
   TODAY: `today`,
   WEEK: `Week`,
   MONTH: `Month`,
@@ -17,35 +17,6 @@ export class StatisticsComponent extends AbstractSmartComponent {
     this._statFilter = StatFilter.ALL;
     this._statButtonClickHandler = null;
     this._profileComponent = profileComponent;
-  }
-  setStatFilter(statFilter) {
-    this._statFilter = statFilter;
-  }
-
-  setStatButtonClickHandler(handler) {
-    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, handler);
-    this._statButtonClickHandler = handler;
-  }
-
-  setStatFilterClickHandler(handler) {
-    this.getElement().querySelector(`.statistic__filters`).addEventListener(`click`, handler);
-    this._statFilterClickHandler = handler;
-  }
-
-  removeStatFilterClickHandler(handler) {
-    this.getElement().querySelector(`.statistic__filters`).addEventListener(`click`, handler);
-    this._statFilterClickHandler = handler;
-  }
-
-  recoveryListeners() {
-    this.setStatFilterClickHandler(this._statFilterClickHandler);
-  }
-
-  rerender() {
-    super.rerender();
-    if (!this._noFilm) {
-      this.getChart();
-    }
   }
 
   getTemplate() {
@@ -193,5 +164,35 @@ export class StatisticsComponent extends AbstractSmartComponent {
         }
       }
     });
+  }
+
+  setStatFilter(statFilter) {
+    this._statFilter = statFilter;
+  }
+
+  setStatButtonClickHandler(handler) {
+    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, handler);
+    this._statButtonClickHandler = handler;
+  }
+
+  setStatFilterClickHandler(handler) {
+    this.getElement().querySelector(`.statistic__filters`).addEventListener(`click`, handler);
+    this._statFilterClickHandler = handler;
+  }
+
+  removeStatFilterClickHandler(handler) {
+    this.getElement().querySelector(`.statistic__filters`).addEventListener(`click`, handler);
+    this._statFilterClickHandler = handler;
+  }
+
+  recoveryListeners() {
+    this.setStatFilterClickHandler(this._statFilterClickHandler);
+  }
+
+  rerender() {
+    super.rerender();
+    if (!this._noFilm) {
+      this.getChart();
+    }
   }
 }

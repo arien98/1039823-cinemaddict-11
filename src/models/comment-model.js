@@ -1,22 +1,22 @@
 export class CommentModel {
-  constructor(data) {
-    this.id = data.id;
-    this.emoji = data.emotion;
-    this.text = data.comment;
-    this.author = data.author;
-    this.date = new Date(data.date);
+  constructor(incomedata) {
+    this.id = incomedata.id;
+    this.emoji = incomedata.emotion;
+    this.text = incomedata.comment;
+    this.author = incomedata.author;
+    this.date = new Date(incomedata.date);
   }
 
-  static parseComment(data) {
-    return new CommentModel(data);
+  static parseComment(incomedata) {
+    return new CommentModel(incomedata);
   }
 
-  static parseComments(data) {
-    return data.map(CommentModel.parseComment);
+  static parseComments(incomedata) {
+    return incomedata.map(CommentModel.parseComment);
   }
 
-  static clone(data) {
-    return new CommentModel(data.toRaw());
+  static clone(incomedata) {
+    return new CommentModel(incomedata.toRaw());
   }
 
   toRaw() {

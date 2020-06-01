@@ -120,13 +120,13 @@ export class PageController {
     this._renderFilmDesk(sortedFilms, this._filmsContainer);
   }
 
-  _onDataChange(filmController, oldData, newData) {
+  _onDataChange(filmController, oldFilm, newFilm) {
     this._loadingComponent.render(this._filmsContainer);
-    this._api.updateFilm(oldData.id, newData)
+    this._api.updateFilm(oldFilm.id, newFilm)
       .then((filmModel) => {
         remove(this._loadingComponent);
 
-        const isSuccess = this._filmsModel.updateFilm(oldData.id, filmModel);
+        const isSuccess = this._filmsModel.updateFilm(oldFilm.id, filmModel);
 
         if (isSuccess) {
           filmController.render(filmModel);

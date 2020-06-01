@@ -11,6 +11,7 @@ export class SortingComponent extends AbstractComponent {
     super();
     this._currentSortType = SortType.DEFAULT;
   }
+
   getTemplate() {
     return (
       `<ul class="sort">

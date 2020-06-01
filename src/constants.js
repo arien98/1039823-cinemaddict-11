@@ -6,3 +6,8 @@ export const FilterType = {
 };
 
 export const HIDDEN_CLASS = `visually-hidden`;
+
+export const DataType = {
+  FILM: `film`,
+  COMMENT: `commment`
+};
