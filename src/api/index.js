@@ -58,6 +58,7 @@ export class API {
     })
       .then((response) => response.json())
       .then((response) => {
+        console.log(response.movie);
         const movie = FilmModel.parseFilm(response.movie);
         const comments = CommentModel.parseComments(response.comments);
         return {movie, comments};
