@@ -13,11 +13,15 @@ export class SortingComponent extends AbstractComponent {
   }
 
   getTemplate() {
+    const isDefaultSortActive = (this._currentSortType === SortType.DEFAULT) ? `sort__button--active` : ``;
+    const isDateSortActive = (this._currentSortType === SortType.DATE) ? `sort__button--active` : ``;
+    const isDatingSortActive = (this._currentSortType === SortType.RATING) ? `sort__button--active` : ``;
+
     return (
       `<ul class="sort">
-        <li><a href="#" data-sort-type=${SortType.DEFAULT} class="sort__button sort__button--active">Sort by default</a></li>
-        <li><a href="#" data-sort-type=${SortType.DATE} class="sort__button">Sort by date</a></li>
-        <li><a href="#" data-sort-type=${SortType.RATING} class="sort__button">Sort by rating</a></li>
+        <li><a href="#" data-sort-type=${SortType.DEFAULT} class="sort__button ${isDefaultSortActive}">Sort by default</a></li>
+        <li><a href="#" data-sort-type=${SortType.DATE} class="sort__button ${isDateSortActive}">Sort by date</a></li>
+        <li><a href="#" data-sort-type=${SortType.RATING} class="sort__button ${isDatingSortActive}">Sort by rating</a></li>
       </ul>`);
   }
 
@@ -41,10 +45,11 @@ export class SortingComponent extends AbstractComponent {
 
       this._currentSortType = sortType;
 
-      this.getElement().querySelector(`.sort__button--active`).classList.remove(`sort__button--active`);
-      evt.target.classList.add(`sort__button--active`);
-
       handler(this._currentSortType);
     });
+  }
+
+  setDefaultSortType() {
+    this._currentSortType = SortType.DEFAULT;
   }
 }

@@ -30,7 +30,6 @@ export class PageController {
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
   }
 
-
   render() {
     this._films = this._filmsModel.getFilms();
     this._topRatedFilms = this._filmsModel.getTopRatedFilms();
@@ -45,7 +44,6 @@ export class PageController {
       renderElement(this._filmsContainer, this._noFilms);
       return;
     }
-
     renderElement(this._filmsContainer, this._sortComponent, RenderPosition.BEFORE);
 
     this._renderFilmDesk(this._films, this._filmsContainer);
@@ -112,6 +110,11 @@ export class PageController {
   }
 
   _onSortTypeChange(sortType) {
+    remove(this._sortComponent);
+
+    renderElement(this._filmsContainer, this._sortComponent, RenderPosition.BEFORE);
+    this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
+
     const sortedFilms = this._getSortedFilms(sortType);
 
     this._removeFilms();
@@ -130,7 +133,6 @@ export class PageController {
       })
       .catch(() => {
         filmController.shake();
-        filmController.shake();
       });
   }
 
@@ -146,11 +148,17 @@ export class PageController {
   }
 
   _updateFilms() {
+    remove(this._sortComponent);
+
     this._removeFilms();
     this.render();
+
+    this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
   }
 
   _onFilterChange() {
+    
+    this._sortComponent.setDefaultSortType();
     this._updateFilms();
   }
 
