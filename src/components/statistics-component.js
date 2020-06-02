@@ -1,6 +1,7 @@
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import AbstractSmartComponent from "./abstract-smart-component";
+import {renderElement} from '../utils/render';
 
 export const StatFilter = {
   ALL: `All`,
@@ -11,12 +12,14 @@ export const StatFilter = {
 };
 
 export class StatisticsComponent extends AbstractSmartComponent {
-  constructor(filmsModel, profileComponent) {
+  constructor(container, filmsModel, profileComponent) {
     super();
+    this._container = container;
     this._filmsModel = filmsModel;
     this._statFilter = StatFilter.ALL;
     this._statButtonClickHandler = null;
     this._profileComponent = profileComponent;
+    this._statFilterClickHandler = this._statFilterClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -166,21 +169,10 @@ export class StatisticsComponent extends AbstractSmartComponent {
     });
   }
 
-  setStatFilter(statFilter) {
-    this._statFilter = statFilter;
-  }
-
-  setStatButtonClickHandler(handler) {
-    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, handler);
-    this._statButtonClickHandler = handler;
-  }
-
-  setStatFilterClickHandler(handler) {
-    this.getElement()
-      .querySelectorAll(`.statistic__filters-label`)
-      .forEach((elem) => elem.addEventListener(`click`, handler));
-
-    this._statFilterClickHandler = handler;
+  render() {
+    renderElement(this._container, this);
+    this.getChart();
+    this.setStatFilterClickHandler(this._statFilterClickHandler);
   }
 
   recoveryListeners() {
@@ -192,5 +184,16 @@ export class StatisticsComponent extends AbstractSmartComponent {
     if (!this._noFilm) {
       this.getChart();
     }
+  }
+
+  setStatFilterClickHandler(handler) {
+    this.getElement()
+      .querySelectorAll(`.statistic__filters-label`)
+      .forEach((elem) => elem.addEventListener(`click`, handler));
+  }
+
+  _statFilterClickHandler(evt) {
+    this._statFilter = evt.target.dataset.filterType;
+    this.rerender();
   }
 }

@@ -33,11 +33,16 @@ export class FilterComponent extends AbstractComponent {
     return createMenuTemplate(this._filters);
   }
 
-  setFilterChangeHandler(handler) {
+  setFilterClickHandler(handler) {
     this.getElement().querySelectorAll(`.main-navigation__item`)
       .forEach((elem) => elem.addEventListener(`click`, (evt) => {
         const filterName = evt.target.dataset.filterType;
         handler(filterName);
       }));
+  }
+
+  setStatButtonClickHandler(handler) {
+    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, handler);
+    this._statButtonClickHandler = handler;
   }
 }

@@ -40,7 +40,7 @@ const createFilmDetailsTemplate = (film, commentsTemplate, newComment) => {
   } = film;
   const genresMarkup = createGenresTemplate(genres);
   const commentsMarkup = commentsTemplate;
-  const releaseDateMarkup = moment(releaseDate).format(`MMMM Do YYYY`);
+  const releaseDateMarkup = moment(releaseDate).format(`D MMMM YYYY`);
   const ageTemplate = `${age}+`;
   const durationTemplate = `${Math.floor(duration / 60)}h ${duration % 60}m`;
 
@@ -222,6 +222,12 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
       .addEventListener(`click`, handler);
   }
 
+  removeEmojiClickHandler(handler) {
+    this.getElement()
+      .querySelector(`.film-details__emoji-list`)
+      .removeEventListener(`click`, handler);
+  }
+
   emojiClickHandler(evt) {
     if (evt.target.tagName === `IMG`) {
       const emoji = evt.target.dataset.emojiType;
@@ -303,11 +309,15 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   blockForm() {
     this.getElement().querySelectorAll(`input, textarea,  button`)
       .forEach((elem) => elem.setAttribute(`disabled`, `disabled`));
+
+    this.removeEmojiClickHandler(this.emojiClickHandler);
   }
 
   unblockForm() {
     this.getElement().querySelectorAll(`input, textarea, button`)
       .forEach((elem) => elem.removeAttribute(`disabled`, `false`));
+
+    this.setEmojiClickHandler(this.emojiClickHandler);
   }
 
   colorInput() {
@@ -323,7 +333,7 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
       .forEach((elem) => {
         elem.setAttribute(`disabled`, `disabled`);
       });
-    this.getElement().querySelector(`button[data-comment-id="${id}"]`).style.textContent = DeleteButtonText.LOADING;
+    this.getElement().querySelector(`button[data-comment-id="${id}"]`).textContent = DeleteButtonText.LOADING;
   }
 
   unblockDeleteButtons() {

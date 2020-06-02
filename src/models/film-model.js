@@ -4,7 +4,6 @@ export class FilmModel {
     this.title = filmData.film_info.title;
     this.originalTitile = filmData.film_info.alternative_title;
     this.rating = filmData.film_info.total_rating;
-    this.year = new Date(filmData.film_info.release.date).getFullYear();
     this.duration = filmData.film_info.runtime;
     this.genres = filmData.film_info.genre;
     this.posterSrc = filmData.film_info.poster;

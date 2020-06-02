@@ -48,11 +48,7 @@ export class PageController {
 
     this._renderFilmDesk(this._films, this._filmsContainer);
 
-    let newFilms = this._renderFilms(0, this._topRatedFilmsCount, this._topRatedFilmsContainer, this._topRatedFilms);
-    this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
-
-    newFilms = this._renderFilms(0, this._mostCommentedFilmsCount, this._mostCommentedFilmsContainer, this._mostCommentedFilms);
-    this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
+    this._renderExtraFilms();
   }
 
   _renderFilms(start, end, container, films) {
@@ -69,11 +65,19 @@ export class PageController {
     const newFilms = this._renderFilms(0, this._onStartFilmsCount, filmsContainer, films);
     this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
 
-    renderElement(filmsContainer, this._showButton, RenderPosition.AFTER);
+    if (films.length > this._onStartFilmsCount) {
+      renderElement(filmsContainer, this._showButton, RenderPosition.AFTER);
+      this._filmsOnPageNumber = this._onStartFilmsCount;
+      this._showButton.setClickHandler(this._showButtonClickHandler(films, filmsContainer));
+    }
+  }
 
-    this._filmsOnPageNumber = this._onStartFilmsCount;
+  _renderExtraFilms() {
+    let newFilms = this._renderFilms(0, this._topRatedFilmsCount, this._topRatedFilmsContainer, this._topRatedFilms);
+    this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
 
-    this._showButton.setClickHandler(this._showButtonClickHandler(films, filmsContainer));
+    newFilms = this._renderFilms(0, this._mostCommentedFilmsCount, this._mostCommentedFilmsContainer, this._mostCommentedFilms);
+    this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
   }
 
   _showButtonClickHandler(films, filmsContainer) {
@@ -102,7 +106,7 @@ export class PageController {
         sortedFilms = showingFilms.sort((a, b) => b.rating - a.rating);
         break;
       case SortType.DATE:
-        sortedFilms = showingFilms.sort((a, b) => b.year - a.year);
+        sortedFilms = showingFilms.sort((a, b) => b.releaseDate - a.releaseDate);
         break;
     }
 
@@ -115,10 +119,11 @@ export class PageController {
     renderElement(this._filmsContainer, this._sortComponent, RenderPosition.BEFORE);
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
 
-    const sortedFilms = this._getSortedFilms(sortType);
-
     this._removeFilms();
+
+    const sortedFilms = this._getSortedFilms(sortType);
     this._renderFilmDesk(sortedFilms, this._filmsContainer);
+    this._renderExtraFilms();
   }
 
   _onDataChange(filmController, oldFilm, newFilm) {
@@ -157,7 +162,6 @@ export class PageController {
   }
 
   _onFilterChange() {
-    
     this._sortComponent.setDefaultSortType();
     this._updateFilms();
   }

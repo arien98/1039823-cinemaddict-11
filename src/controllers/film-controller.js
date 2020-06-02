@@ -71,42 +71,11 @@ export class FilmController {
       });
   }
 
-  _userPropertiesClickHandler(property) {
-    return (evt) => {
-      evt.preventDefault();
-      const newFilm = FilmModel.clone(this._film);
-      newFilm[property] = !newFilm[property];
-      this._popupScrollTop = this._filmDetailsComponent.getElement().scrollTop;
-      this._onDataChange(this, this._film, newFilm);
-    };
-  }
-
-  _setFilmHandlers() {
-    this._filmComponent.setClickHandler(this._openPopup);
-    this._filmComponent.setWatchlistButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHLIST));
-    this._filmComponent.setWatchedButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHED));
-    this._filmComponent.setFavoriteButtonClickHandler(this._userPropertiesClickHandler(UserProperty.FAVORITE));
-  }
-
-  _setPopupHandlers() {
-    this._filmDetailsComponent.setEmojiClickHandler(this._filmDetailsComponent.emojiClickHandler);
-    this._filmDetailsComponent.setEnterHandler(this._filmDetailsNewCommentHandler);
-
-    this._filmDetailsComponent.setCloseButtonHandler(this._closeDetailsButtonHandler);
-    this._filmDetailsComponent.setEscButtonHandler(this._escPressHandler);
-    this._filmDetailsComponent.setWatchlistButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHLIST));
-    this._filmDetailsComponent.setWatchedButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHED));
-    this._filmDetailsComponent.setFavoriteButtonClickHandler(this._userPropertiesClickHandler(UserProperty.FAVORITE));
-
-    if (this._commentsModel.getComments().length > 0) {
-      this._filmDetailsComponent.setDeleteClickHandler((this._deleteClickHandler));
-    }
-  }
-
   _onCommentsChange(oldComment, newComment) {
     switch (true) {
       case (newComment === null):
         const commentId = oldComment.id;
+        this._filmDetailsComponent.blockDeleteButtons(commentId);
         this._api.deleteComment(commentId)
           .then(() => {
             this._commentsModel.removeComment(commentId, this._film);
@@ -169,6 +138,28 @@ export class FilmController {
     }, SHAKE_ANIMATION_TIMEOUT);
   }
 
+  _setFilmHandlers() {
+    this._filmComponent.setClickHandler(this._openPopup);
+    this._filmComponent.setWatchlistButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHLIST));
+    this._filmComponent.setWatchedButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHED));
+    this._filmComponent.setFavoriteButtonClickHandler(this._userPropertiesClickHandler(UserProperty.FAVORITE));
+  }
+
+  _setPopupHandlers() {
+    this._filmDetailsComponent.setEmojiClickHandler(this._filmDetailsComponent.emojiClickHandler);
+    this._filmDetailsComponent.setEnterHandler(this._filmDetailsNewCommentHandler);
+
+    this._filmDetailsComponent.setCloseButtonHandler(this._closeDetailsButtonHandler);
+    this._filmDetailsComponent.setEscButtonHandler(this._escPressHandler);
+    this._filmDetailsComponent.setWatchlistButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHLIST));
+    this._filmDetailsComponent.setWatchedButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHED));
+    this._filmDetailsComponent.setFavoriteButtonClickHandler(this._userPropertiesClickHandler(UserProperty.FAVORITE));
+
+    if (this._commentsModel.getComments().length > 0) {
+      this._filmDetailsComponent.setDeleteClickHandler((this._deleteClickHandler));
+    }
+  }
+
   _filmDetailsNewCommentHandler(newComment) {
     this._onCommentsChange(null, newComment);
     this._filmDetailsComponent.setScrollTop(this._filmDetailsComponent.getElement().scrollTop);
@@ -190,5 +181,15 @@ export class FilmController {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       this._closeDetailsButtonHandler();
     }
+  }
+
+  _userPropertiesClickHandler(property) {
+    return (evt) => {
+      evt.preventDefault();
+      const newFilm = FilmModel.clone(this._film);
+      newFilm[property] = !newFilm[property];
+      this._popupScrollTop = this._filmDetailsComponent.getElement().scrollTop;
+      this._onDataChange(this, this._film, newFilm);
+    };
   }
 }

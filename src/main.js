@@ -10,7 +10,7 @@ import {Provider} from "./api/provider.js";
 import {Store} from "./api/store.js";
 import LoadingTitleComponent from "./components/loading-title-component.js";
 
-const AUTHORIZATION = `Basic 90fdsgfdg576dsd97g90a=4$jfkd`;
+const AUTHORIZATION = `Basic 90fdsg76dsd97g90a=4$jfkd`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 const STORE_PREFIX = `cinemaaddict-localstorage`;
 const STORE_VER = `v1`;
@@ -40,39 +40,19 @@ api.getFilms()
     remove(loadingComponent);
 
     profileComponent = new ProfileComponent(filmsModel);
-    filterController = new FilterController(siteMain, filmsModel);
-    statisticsComponent = new StatisticsComponent(filmsModel, profileComponent);
+    statisticsComponent = new StatisticsComponent(siteMain, filmsModel, profileComponent);
+
     pageController = new PageController(siteMain, filmsModel, api, loadingComponent);
+    filterController = new FilterController(siteMain, filmsModel, statisticsComponent, pageController);
 
     renderElement(siteHeader, profileComponent);
 
     filterController.render();
     pageController.render();
-    renderElement(siteMain, statisticsComponent);
-    statisticsComponent.getChart();
+    statisticsComponent.render();
     statisticsComponent.hide();
     renderElement(footerStatisticsContainer, new FilmCountComponent(filmsModel));
-
-    const filterNav = siteMain.querySelector(`.main-navigation__items`);
-    const statButton = siteMain.querySelector(`.main-navigation__additional`);
-
-    filterNav.addEventListener(`click`, () => {
-      pageController.show();
-      statisticsComponent.hide();
-    });
-
-    statButton.addEventListener(`click`, () => {
-      pageController.hide();
-      statisticsComponent.show();
-      statisticsComponent.setStatFilterClickHandler(statFilterClickHandler);
-    });
   });
-
-const statFilterClickHandler = (evt) => {
-  const filterType = evt.target.dataset.filterType;
-  statisticsComponent.setStatFilter(filterType);
-  statisticsComponent.rerender();
-};
 
 window.addEventListener(`online`, () => {
   document.title = document.title.replace(` [offline]`, ``);

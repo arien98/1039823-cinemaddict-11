@@ -38,15 +38,16 @@ export class FilmCardComponent extends AbstractComponent {
   }
 
   _createFilmCardTemplate() {
-    const {title, rating, year, duration, genres, posterSrc, description, comments,
+    const {title, rating, releaseDate, duration, genres, posterSrc, description, comments,
       isInWatchlist, isHistory, isFavorite} = this._film;
     const watchlistActive = isInWatchlist ? `film-card__controls-item--active` : ``;
     const watchedActive = isHistory ? `film-card__controls-item--active` : ``;
     const favoriteActive = isFavorite ? `film-card__controls-item--active` : ``;
     const genreTemplate = genres ? genres[0] : ``;
     const commentsCount = comments ? comments.length : `0`;
-    const yearTemplate = moment(year).format(`YYYY`);
+    const yearTemplate = moment(releaseDate).format(`YYYY`);
     const durationTemplate = `${Math.floor(duration / 60)}h ${duration % 60}m`;
+    const descriptionTemplate = (description.length > 140) ? `${description.slice(0, 139)}...` : description;
 
     return (
       `<article class="film-card">
@@ -58,7 +59,7 @@ export class FilmCardComponent extends AbstractComponent {
           <span class="film-card__genre">${genreTemplate}</span>
         </p>
         <img src=${posterSrc} alt="Постер к фильму ${title}" class="film-card__poster">
-        <p class="film-card__description">${description}</p>
+        <p class="film-card__description">${descriptionTemplate}</p>
         <a class="film-card__comments">${commentsCount} comments</a>
         <form class="film-card__controls">
           <button class="film-card__controls-item ${watchlistActive} button film-card__controls-item--add-to-watchlist">Add to watchlist</button>
