@@ -34,9 +34,9 @@ export class PageController {
     this._films = this._filmsModel.getFilms();
     this._topRatedFilms = this._filmsModel.getTopRatedFilms();
     this._mostCommentedFilms = this._filmsModel.getMostCommentedFilms();
-    this._filmsContainer = this._filmsContainerComponent.getFilmsContainer();
-    this._topRatedFilmsContainer = this._filmsContainerComponent.getTopRatedFilmsContainer();
-    this._mostCommentedFilmsContainer = this._filmsContainerComponent.getTopMostCommentedContainer();
+    this._filmsContainer = this._filmsContainerComponent.getForFilms();
+    this._topRatedFilmsContainer = this._filmsContainerComponent.getForTopRatedFilms();
+    this._mostCommentedFilmsContainer = this._filmsContainerComponent.getForTopMostCommented();
 
     renderElement(this._container, this._filmsContainerComponent);
 
@@ -119,6 +119,7 @@ export class PageController {
         const isSuccess = this._filmsModel.updateFilm(oldFilm.id, filmModel);
 
         if (isSuccess) {
+          this._updateFilms();
           filmController.render(filmModel);
         }
       })
@@ -133,7 +134,9 @@ export class PageController {
 
   _onFilterChange() {
     this._sortComponent.setDefaultSortType();
+    remove(this._sortComponent);
     this._updateFilms();
+    this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
   }
 
   _removeFilms() {
@@ -144,12 +147,8 @@ export class PageController {
   }
 
   _updateFilms() {
-    remove(this._sortComponent);
-
     this._removeFilms();
     this.render();
-
-    this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
   }
 
   show() {

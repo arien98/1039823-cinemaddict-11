@@ -94,12 +94,12 @@ export class FilmController {
         const newCommentData = CommentModel.createNewComment(newComment);
         this._api.createComment(this._film.id, newCommentData)
           .then((response) => {
-            const addedComment = response.comments[response.comments.length - 1];
+            const addedComment = response.newComments[response.newComments.length - 1];
 
             this._film.comments.push(String(addedComment.id));
             this._commentsModel.addComment(addedComment);
 
-            const newFilm = response.movie;
+            const newFilm = response.newFilm;
             const isSuccess = this._filmsModel.updateFilm(this._film.id, newFilm);
             this._popupScrollTop = this._filmDetailsComponent.getElement().scrollTop;
 

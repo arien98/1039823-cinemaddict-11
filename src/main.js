@@ -42,7 +42,7 @@ api.getFilms()
     profileComponent = new ProfileComponent(filmsModel);
     statisticsComponent = new StatisticsComponent(siteMain, filmsModel, profileComponent);
 
-    pageController = new PageController(siteMain, filmsModel, api, loadingComponent);
+    pageController = new PageController(siteMain, filmsModel, apiWithProvider, loadingComponent);
     filterController = new FilterController(siteMain, filmsModel, statisticsComponent, pageController);
 
     renderElement(siteHeader, profileComponent);

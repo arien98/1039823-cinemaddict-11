@@ -67,8 +67,7 @@ export class Provider {
           this._store.setItems(commentsToStore);
 
           const newFilm = response.movie;
-          const filmsToStore = createStoreStructure(response.movie.map((film) => film.toRaw()), DataType.FILM);
-          this._store.setItems(filmsToStore);
+          this._store.setItems(newFilm.id, newFilm.toRaw());
 
           return {newFilm, newComments};
         });

@@ -28,15 +28,15 @@ export class FilmsContainerComponent extends AbstractComponent {
     );
   }
 
-  getFilmsContainer() {
+  getForFilms() {
     return this.getElement().querySelector(`.films-list__container`);
   }
 
-  getTopRatedFilmsContainer() {
+  getForTopRatedFilms() {
     return this.getElement().querySelector(`.top-rated`);
   }
 
-  getTopMostCommentedContainer() {
+  getForTopMostCommented() {
     return this.getElement().querySelector(`.most-commented`);
   }
 }
