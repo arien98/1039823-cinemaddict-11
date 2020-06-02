@@ -1,7 +1,6 @@
 import {FilmModel} from "../models/film-model.js";
 import {nanoid} from "nanoid";
 import {CommentModel} from "../models/comment-model.js";
-import {DataType} from "../constants";
 
 const isOnline = () => {
   return window.navigator.onLine;
@@ -30,7 +29,7 @@ export class Provider {
     if (isOnline()) {
       return this._api.getFilms()
         .then((films) => {
-          const items = createStoreStructure(films.map((film) => film.toRaw()), DataType.FILM);
+          const items = createStoreStructure(films.map((film) => film.toRaw()));
 
           this._store.setItems(items);
 
@@ -46,7 +45,7 @@ export class Provider {
     if (isOnline()) {
       return this._api.getComments(id)
         .then((comments) => {
-          const items = createStoreStructure(comments.map((comment) => comment.toRaw()), DataType.COMMENT);
+          const items = createStoreStructure(comments.map((comment) => comment.toRaw()));
 
           this._store.setItems(items);
 
@@ -63,11 +62,11 @@ export class Provider {
       return this._api.createComment(filmId, comment)
         .then((response) => {
           const newComments = response.comments;
-          const commentsToStore = createStoreStructure(newComments.map((elem) => elem.toRaw()), DataType.COMMENT);
+          const commentsToStore = createStoreStructure(newComments.map((elem) => elem.toRaw()));
           this._store.setItems(commentsToStore);
 
           const newFilm = response.movie;
-          this._store.setItems(newFilm.id, newFilm.toRaw());
+          this._store.setItem(newFilm.id, newFilm.toRaw());
 
           return {newFilm, newComments};
         });
@@ -118,7 +117,7 @@ export class Provider {
 
           const updatedFilms = getSyncedData(response.updated);
 
-          const items = createStoreStructure(updatedFilms, DataType.FILM);
+          const items = createStoreStructure(updatedFilms);
 
           this._store.setItems(items);
         });
@@ -136,7 +135,7 @@ export class Provider {
 
           const createdComments = getSyncedData(response.created);
 
-          const items = createStoreStructure(createdComments, DataType.COMMENT);
+          const items = createStoreStructure(createdComments);
 
           this._store.setItems(items);
         });

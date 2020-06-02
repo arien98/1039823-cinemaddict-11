@@ -1,40 +1,15 @@
-import {DataType} from "../constants";
-
-const RegExps = {
-  FILM: `\^${DataType.FILM}`,
-  COMMENTS: `\^${DataType.COMMENT}`
-};
-
-export class Store {
+export default class Store {
   constructor(key, storage) {
-    this._storage = storage;
     this._storeKey = key;
+    this._storage = storage;
   }
 
   getItems() {
     try {
       return JSON.parse(this._storage.getItem(this._storeKey)) || {};
-    } catch (err) {
+    } catch (error) {
       return {};
     }
-  }
-
-  getFilms() {
-    return this
-      .getItems()
-      .filter((it) => RegExps.FILM.test(it.id))
-      .forEach((element) => {
-        element.id.slice(DataType.FILM.length);
-      });
-  }
-
-  getComments() {
-    return this
-      .getItems()
-      .filter((it) => RegExps.FILM.test(it.id))
-      .forEach((element) => {
-        element.id.slice(DataType.COMMENT.length);
-      });
   }
 
   setItems(items) {
@@ -54,17 +29,6 @@ export class Store {
               [key]: value
             })
         )
-    );
-  }
-
-  removeItem(key) {
-    const store = this.getItems();
-
-    delete store[key];
-
-    this._storage.setItem(
-        this._storeKey,
-        JSON.stringify(store)
     );
   }
 }

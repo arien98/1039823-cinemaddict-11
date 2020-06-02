@@ -334,6 +334,7 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
         elem.setAttribute(`disabled`, `disabled`);
       });
     this.getElement().querySelector(`button[data-comment-id="${id}"]`).textContent = DeleteButtonText.LOADING;
+    this.removeEmojiClickHandler(this.emojiClickHandler);
   }
 
   unblockDeleteButtons() {
@@ -342,5 +343,6 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
         elem.removeAttribute(`disabled`, `disabled`);
         elem.style.textContent = DeleteButtonText.NOT_LOADING;
       });
+    this.setEmojiClickHandler(this.emojiClickHandler);
   }
 }
