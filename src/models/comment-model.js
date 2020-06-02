@@ -7,6 +7,15 @@ export class CommentModel {
     this.date = new Date(incomeData.date);
   }
 
+  toRaw() {
+    return {
+      "id": this.id,
+      "comment": this.text,
+      "date": this.date.toISOString(),
+      "emotion": this.emoji
+    };
+  }
+
   static parseComment(incomeData) {
     return new CommentModel(incomeData);
   }
@@ -24,15 +33,6 @@ export class CommentModel {
       "comment": data.text,
       "emotion": data.emoji,
       "date": new Date().toISOString(),
-    };
-  }
-
-  toRaw() {
-    return {
-      "id": this.id,
-      "comment": this.text,
-      "date": this.date.toISOString(),
-      "emotion": this.emoji
     };
   }
 }

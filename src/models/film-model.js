@@ -21,18 +21,6 @@ export class FilmModel {
     this.watchingDate = new Date(filmData.user_details.watching_date);
   }
 
-  static parseFilm(filmData) {
-    return new FilmModel(filmData);
-  }
-
-  static parseFilms(filmData) {
-    return filmData.map(FilmModel.parseFilm);
-  }
-
-  static clone(filmData) {
-    return new FilmModel(filmData.toRaw());
-  }
-
   toRaw() {
     return {
       "id": this.id,
@@ -61,5 +49,17 @@ export class FilmModel {
         "favorite": this.isFavorite
       }
     };
+  }
+
+  static parseFilm(filmData) {
+    return new FilmModel(filmData);
+  }
+
+  static parseFilms(filmData) {
+    return filmData.map(FilmModel.parseFilm);
+  }
+
+  static clone(filmData) {
+    return new FilmModel(filmData.toRaw());
   }
 }
