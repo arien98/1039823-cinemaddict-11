@@ -76,7 +76,7 @@ export class FilmController {
       case (newComment === null):
         const commentId = oldComment.id;
         this._filmDetailsComponent.blockDeleteButtons(commentId);
-        this._api.deleteComment(commentId)
+        this._api.deleteComment(this._film.id, commentId)
           .then(() => {
             this._commentsModel.removeComment(commentId, this._film);
             this._film.comments = this._commentsModel.getCommentsId();

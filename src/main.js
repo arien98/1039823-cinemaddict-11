@@ -10,11 +10,18 @@ import {Provider} from "./api/provider.js";
 import {Store} from "./api/store.js";
 import LoadingTitleComponent from "./components/loading-title-component.js";
 
-const AUTHORIZATION = `Basic 90fdsegfdsd97g90a=4$jfkd`;
+const AUTHORIZATION = `Basic 90fdsegfdgfdg667g90a=4$jfkd`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 const STORE_PREFIX = `cinemaaddict-localstorage`;
-const STORE_VER = `v1`;
-const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
+const StoreDataType = {
+  FILMS: `films`,
+  COMMENTS: `comments`
+};
+const STORE_VER = `v5`;
+const StoreNames = {
+  FILMS: `${STORE_PREFIX}-${StoreDataType.FILMS}-${STORE_VER}`,
+  COMMENTS: `${STORE_PREFIX}-${StoreDataType.COMMENTS}-${STORE_VER}`
+};
 
 const siteMain = document.querySelector(`.main`);
 const siteHeader = document.querySelector(`.header`);
@@ -22,8 +29,9 @@ const footerStatisticsContainer = document.querySelector(`.footer__statistics`);
 
 
 const api = new API(END_POINT, AUTHORIZATION);
-const store = new Store(STORE_NAME, window.localStorage);
-const apiWithProvider = new Provider(api, store);
+const storeFilms = new Store(StoreNames.FILMS, window.localStorage);
+const storeComments = new Store(StoreNames.COMMENTS, window.localStorage);
+const apiWithProvider = new Provider(api, storeFilms, storeComments);
 const filmsModel = new FilmsModel();
 let filterController = null;
 let statisticsComponent = null;
@@ -33,7 +41,7 @@ const loadingComponent = new LoadingTitleComponent();
 
 loadingComponent.render(siteMain);
 
-api.getFilms()
+apiWithProvider.getFilms()
   .then((films) => {
     filmsModel.setFilms(films);
 
@@ -56,21 +64,20 @@ api.getFilms()
 
 window.addEventListener(`online`, () => {
   document.title = document.title.replace(` [offline]`, ``);
-
-  apiWithProvider.syncFilms();
-
-  apiWithProvider.syncComments();
+  if (apiWithProvider.getSyncStatus()) {
+    apiWithProvider.sync();
+  }
 });
 
-window.addEventListener(`load`, () => {
-  navigator.serviceWorker.register(`/sw.js`)
-    .then(() => {
-      // Действие, в случае успешной регистрации ServiceWorker
-    }).catch(() => {
-      // Действие, в случае ошибки при регистрации ServiceWorker
-    });
-});
+// window.addEventListener(`load`, () => {
+//   navigator.serviceWorker.register(`/sw.js`)
+//     .then(() => {
+//       // Действие, в случае успешной регистрации ServiceWorker
+//     }).catch(() => {
+//       // Действие, в случае ошибки при регистрации ServiceWorker
+//     });
+// });
 
-window.addEventListener(`offline`, () => {
-  document.title += ` [offline]`;
-});
+// window.addEventListener(`offline`, () => {
+//   document.title += ` [offline]`;
+// });

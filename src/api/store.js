@@ -1,13 +1,13 @@
 export class Store {
   constructor(key, storage) {
-    this._storeKey = key;
     this._storage = storage;
+    this._storeKey = key;
   }
 
   getItems() {
     try {
       return JSON.parse(this._storage.getItem(this._storeKey)) || {};
-    } catch (error) {
+    } catch (err) {
       return {};
     }
   }
@@ -32,7 +32,14 @@ export class Store {
     );
   }
 
-  removeItem(id) {
-    this._storage.removeItem(id);
+  removeItem(key) {
+    const store = this.getItems();
+
+    delete store[key];
+
+    this._storage.setItem(
+        this._storeKey,
+        JSON.stringify(store)
+    );
   }
 }

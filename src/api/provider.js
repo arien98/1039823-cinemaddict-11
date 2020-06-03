@@ -6,32 +6,53 @@ const isOnline = () => {
   return window.navigator.onLine;
 };
 
-const getSyncedData = (items, dataType) => {
-  return items.filter(({success}) => success)
-    .map(({payload}) => payload[dataType]);
+const getSyncedFilms = (films) => {
+  return films.filter(({success}) => success)
+    .map(({payload}) => payload.film);
 };
 
-const createStoreStructure = (items, dataType) => {
+const createStoreStructure = (items) => {
   return items.reduce((acc, current) => {
     return Object.assign({}, acc, {
-      [dataType + current.id]: current
+      [current.id]: current
     });
   }, {});
 };
 
+const createStoreStructureComment = (filmId, comments) => {
+  return {
+    id: filmId,
+    comments
+  };
+};
+
+const filterLocalComments = (filmId, comments) => {
+  return comments.find((comment) => {
+    return comment.id === filmId;
+  });
+};
+
+const deleteCommentFromLocal = (id, comments) => {
+  const index = comments.findIndex((it) => it.id === id);
+
+  comments = [].concat(comments.slice(0, index), comments.slice(index + 1));
+};
+
 export class Provider {
-  constructor(api, store) {
+  constructor(api, storeFilms, storeComments) {
     this._api = api;
-    this._store = store;
+    this._storeFilms = storeFilms;
+    this._storeComments = storeComments;
+    this._synsRequired = false;
   }
 
   getFilms() {
     if (isOnline()) {
       return this._api.getFilms()
         .then((films) => {
-          const items = createStoreStructure(films.map((film) => film.toRaw()));
+          const locaFilms = createStoreStructure(films.map((film) => film.toRaw()));
 
-          this._store.setItems(items);
+          this._storeFilms.setItems(locaFilms);
 
           return films;
         });
@@ -41,20 +62,24 @@ export class Provider {
     return Promise.resolve(FilmModel.parseFilms(storeFilms));
   }
 
-  getComments(id) {
+  getComments(filmId) {
     if (isOnline()) {
-      return this._api.getComments(id)
+      return this._api.getComments(filmId)
         .then((comments) => {
-          const items = createStoreStructure(comments.map((comment) => comment.toRaw()));
 
-          this._store.setItems(items);
+          const localStoreComments = createStoreStructureComment(filmId, comments);
+
+          this._storeComments.setItem(filmId, localStoreComments);
 
           return comments;
         });
     }
 
-    const storeFilms = Object.values(this._store.getItems());
-    return Promise.resolve(FilmModel.parseFilms(storeFilms));
+    const storeComments = Object.values(this._storeComment.getItems());
+
+    const localCommentsFilm = filterLocalComments(filmId, storeComments);
+
+    return Promise.resolve(CommentModel.parseComments(localCommentsFilm.commentsFilm));
   }
 
   createComment(filmId, comment) {
@@ -62,20 +87,23 @@ export class Provider {
       return this._api.createComment(filmId, comment)
         .then((response) => {
           const newComments = response.comments;
-          const commentsToStore = createStoreStructure(newComments.map((elem) => elem.toRaw()));
-          this._store.setItems(commentsToStore);
+          const commentsToStore = createStoreStructureComment(filmId, (newComments.map((elem) => elem.toRaw())));
+          this._storeComments.setItem(filmId, commentsToStore);
 
           const newFilm = response.movie;
-          this._store.setItem(newFilm.id, newFilm.toRaw());
+          this._storeFilms.setItem(newFilm.id, newFilm.toRaw());
 
           return {newFilm, newComments};
-        });
+        })
+        .catch((err) => console.log(err));
     }
+
+    this._synsRequired = true;
 
     const localNewFilmId = nanoid();
     const localNewFilm = CommentModel.clone(Object.assign(comment, {id: localNewFilmId}));
 
-    this._store.setItem(localNewFilm.id, localNewFilm.toRaw());
+    this._storeComments.setItem(localNewFilm.id, localNewFilm.toRaw());
 
     return Promise.resolve(localNewFilm);
   }
@@ -84,63 +112,66 @@ export class Provider {
     if (isOnline()) {
       return this._api.updateFilm(id, film)
         .then((newFilm) => {
-          this._store.setItem(newFilm.id, newFilm.toRaw());
+          this._storeFilms.setItem(newFilm.id, newFilm.toRaw());
 
           return newFilm;
         });
     }
 
-    const localTask = FilmModel.clone(Object.assign(film, {id}));
+    this._synsRequired = true;
 
-    this._store.setItem(id, localTask.toRaw());
+    const localFilm = FilmModel.clone(Object.assign(film, {id}));
 
-    return Promise.resolve(localTask);
+    this._storeFilms.setItem(id, localFilm.toRaw());
+
+    return Promise.resolve(localFilm);
   }
 
-  deleteComment(id) {
+  deleteComment(filmId, id) {
     if (isOnline()) {
       return this._api.deleteComment(id)
-        .then(() => this._store.removeItem(id));
+        .then(() => {
+          this._storeComments.removeItem(id);
+
+          // const localCommentsAll = this._storeComments.getItems();
+          // const localComments = Object.valueOf(localCommentsAll);
+          // console.log(localCommentsAll);
+          // deleteCommentFromLocal(id, localComments);
+          // console.log(localComments);
+
+          // const commentsToStore = createStoreStructureComment(filmId, (localComments.map((elem) => elem.toRaw())));
+          // this._storeComments.setItem(filmId, commentsToStore);
+        })
+        .catch((err) => console.log(err));
     }
 
-    this._store.removeItem(id);
+    this._synsRequired = true;
+
+    this._storeComments.removeItem(id);
 
     return Promise.resolve();
   }
 
-  syncFilms() {
+  sync() {
     if (isOnline()) {
-      const storeFilms = this._store.getFilms();
+      const storeFilms = Object.values(this._storeFilms.getItems());
 
       return this._api.sync(storeFilms)
         .then((response) => {
+          const updatedFilms = getSyncedFilms(response.updated);
 
-          const updatedFilms = getSyncedData(response.updated);
+          const items = createStoreStructure([...updatedFilms]);
 
-          const items = createStoreStructure(updatedFilms);
+          this._storeFilms.setItems(items);
 
-          this._store.setItems(items);
+          this._synsRequired = false;
         });
     }
 
-    return Promise.reject(new Error(`Sync data failed`));
+    return Promise.reject(new Error(`Синхронизация данных не удалась`));
   }
 
-  syncComments() {
-    if (isOnline()) {
-      const storeComments = this._store.getComments();
-
-      return this._api.sync(storeComments)
-        .then((response) => {
-
-          const createdComments = getSyncedData(response.created);
-
-          const items = createStoreStructure(createdComments);
-
-          this._store.setItems(items);
-        });
-    }
-
-    return Promise.reject(new Error(`Sync data failed`));
+  getSyncStatus() {
+    return this._synsRequired;
   }
 }
