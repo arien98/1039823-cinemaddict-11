@@ -119,11 +119,12 @@ export class PageController {
         const isSuccess = this._filmsModel.updateFilm(oldFilm.id, filmModel);
 
         if (isSuccess) {
-          this._updateFilms();
+          // this._updateFilms();
           filmController.render(filmModel);
         }
       })
-      .catch(() => {
+      .catch((err) => {
+        console.log(err);
         filmController.shake();
       });
   }

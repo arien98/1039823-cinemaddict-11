@@ -1,4 +1,4 @@
-export default class Store {
+export class Store {
   constructor(key, storage) {
     this._storeKey = key;
     this._storage = storage;
@@ -30,5 +30,9 @@ export default class Store {
             })
         )
     );
+  }
+
+  removeItem(id) {
+    this._storage.removeItem(id);
   }
 }

@@ -100,7 +100,7 @@ export class Provider {
   deleteComment(id) {
     if (isOnline()) {
       return this._api.deleteComment(id)
-        .then(() => this._store.removeItem(`comment${id}`));
+        .then(() => this._store.removeItem(id));
     }
 
     this._store.removeItem(id);

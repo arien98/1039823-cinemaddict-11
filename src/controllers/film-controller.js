@@ -43,10 +43,10 @@ export class FilmController {
     this._filmDetailsComponent = new FilmDetailsComponent(this._film, this._commentsModel);
 
     if (oldFilmComponent && oldFilmDetailsComponent) {
+      oldFilmDetailsComponent.removeEscButtonHandler(this._escPressHandler);
       replace(this._filmComponent, oldFilmComponent);
       replace(this._filmDetailsComponent, oldFilmDetailsComponent);
       this._filmDetailsComponent.getElement().scrollTop = this._popupScrollTop;
-      oldFilmDetailsComponent.removeEscButtonHandler(this._escPressHandler);
       this._setPopupHandlers();
     } else {
       renderElement(this._container, this._filmComponent);
