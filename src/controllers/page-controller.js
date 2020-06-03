@@ -34,9 +34,9 @@ export class PageController {
     this._films = this._filmsModel.getFilms();
     this._topRatedFilms = this._filmsModel.getTopRatedFilms();
     this._mostCommentedFilms = this._filmsModel.getMostCommentedFilms();
-    this._filmsContainer = this._filmsContainerComponent.getForFilms();
-    this._topRatedFilmsContainer = this._filmsContainerComponent.getForTopRatedFilms();
-    this._mostCommentedFilmsContainer = this._filmsContainerComponent.getForTopMostCommented();
+    this._filmsContainer = this._filmsContainerComponent.getContainer();
+    this._topRatedFilmsContainer = this._filmsContainerComponent.getTopRatedContainer();
+    this._mostCommentedFilmsContainer = this._filmsContainerComponent.getTopMostCommentedContainer();
 
     renderElement(this._container, this._filmsContainerComponent);
 

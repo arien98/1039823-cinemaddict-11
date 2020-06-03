@@ -10,7 +10,7 @@ import {Provider} from "./api/provider.js";
 import {Store} from "./api/store.js";
 import LoadingTitleComponent from "./components/loading-title-component.js";
 
-const AUTHORIZATION = `Basic 90fdsegfdgfdg667g90a=4$jfkd`;
+const AUTHORIZATION = `Basic 90fdsegfdgfdg67g90a=4$jfkd`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 const STORE_PREFIX = `cinemaaddict-localstorage`;
 const StoreDataType = {
@@ -26,7 +26,6 @@ const StoreNames = {
 const siteMain = document.querySelector(`.main`);
 const siteHeader = document.querySelector(`.header`);
 const footerStatisticsContainer = document.querySelector(`.footer__statistics`);
-
 
 const api = new API(END_POINT, AUTHORIZATION);
 const storeFilms = new Store(StoreNames.FILMS, window.localStorage);

@@ -19,23 +19,10 @@ const createStoreStructure = (items) => {
   }, {});
 };
 
-const createStoreStructureComment = (filmId, comments) => {
-  return {
-    id: filmId,
-    comments
-  };
-};
-
 const filterLocalComments = (filmId, comments) => {
   return comments.find((comment) => {
     return comment.id === filmId;
   });
-};
-
-const deleteCommentFromLocal = (id, comments) => {
-  const index = comments.findIndex((it) => it.id === id);
-
-  comments = [].concat(comments.slice(0, index), comments.slice(index + 1));
 };
 
 export class Provider {
@@ -67,7 +54,7 @@ export class Provider {
       return this._api.getComments(filmId)
         .then((comments) => {
 
-          const localStoreComments = createStoreStructureComment(filmId, comments);
+          const localStoreComments = createStoreStructure(comments.map((comment) => comment.toRaw()));
 
           this._storeComments.setItem(filmId, localStoreComments);
 
@@ -87,7 +74,7 @@ export class Provider {
       return this._api.createComment(filmId, comment)
         .then((response) => {
           const newComments = response.comments;
-          const commentsToStore = createStoreStructureComment(filmId, (newComments.map((elem) => elem.toRaw())));
+          const commentsToStore = createStoreStructure(newComments.map((elem) => elem.toRaw()));
           this._storeComments.setItem(filmId, commentsToStore);
 
           const newFilm = response.movie;
@@ -101,7 +88,7 @@ export class Provider {
     this._synsRequired = true;
 
     const localNewFilmId = nanoid();
-    const localNewFilm = CommentModel.clone(Object.assign(comment, {id: localNewFilmId}));
+    const localNewFilm = FilmModel.clone(Object.assign(comment, {id: localNewFilmId}));
 
     this._storeComments.setItem(localNewFilm.id, localNewFilm.toRaw());
 
@@ -132,15 +119,18 @@ export class Provider {
       return this._api.deleteComment(id)
         .then(() => {
           this._storeComments.removeItem(id);
+          // debugger;
+          const localCommentsAll = this._storeComments.getItems();
+          const localComments = Object.values(localCommentsAll[filmId]);
 
-          // const localCommentsAll = this._storeComments.getItems();
-          // const localComments = Object.valueOf(localCommentsAll);
-          // console.log(localCommentsAll);
-          // deleteCommentFromLocal(id, localComments);
-          // console.log(localComments);
+          const index = localComments.findIndex((it) => it.id === id);
 
-          // const commentsToStore = createStoreStructureComment(filmId, (localComments.map((elem) => elem.toRaw())));
-          // this._storeComments.setItem(filmId, commentsToStore);
+          const updatedComments = [].concat(localComments.slice(0, index), localComments.slice(index + 1));
+
+          console.log(updatedComments);
+
+          const commentsToStore = createStoreStructure(updatedComments);
+          this._storeComments.setItem(filmId, commentsToStore);
         })
         .catch((err) => console.log(err));
     }
