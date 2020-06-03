@@ -123,8 +123,7 @@ export class PageController {
           filmController.render(filmModel);
         }
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         filmController.shake();
       });
   }
