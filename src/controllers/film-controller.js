@@ -4,6 +4,7 @@ import {FilmCardComponent} from "../components/film-card-component.js";
 import {CommentsModel} from "../models/comments-model.js";
 import {FilmModel} from "../models/film-model.js";
 import {CommentModel} from "../models/comment-model.js";
+import {ShowMode} from "../constants.js";
 
 const SHAKE_ANIMATION_TIMEOUT = 600;
 
@@ -32,6 +33,8 @@ export class FilmController {
     this._userPropertiesClickHandler = this._userPropertiesClickHandler.bind(this);
     this._commentsModel = new CommentsModel(this._film);
     this._popupScrollTop = null;
+    this._offlineHandler = this._offlineHandler.bind(this);
+    this._onlineHandler = this._onlineHandler.bind(this);
   }
 
   render(film) {
@@ -58,6 +61,26 @@ export class FilmController {
     this._setFilmHandlers();
   }
 
+  setDefaultView() {
+    this._closeDetailsButtonHandler();
+  }
+
+  destroy() {
+    remove(this._filmDetailsComponent);
+    remove(this._filmComponent);
+    document.removeEventListener(`keydown`, this._escPressHandler);
+  }
+
+  shake() {
+    this._filmDetailsComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._filmComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this._filmDetailsComponent.getElement().style.animation = ``;
+      this._filmComponent.getElement().style.animation = ``;
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
   _openPopup() {
     this._onViewChange();
 
@@ -69,6 +92,14 @@ export class FilmController {
 
         this._setPopupHandlers();
       });
+  }
+
+  _closePopup() {
+    remove(this._filmDetailsComponent);
+    this._filmDetailsComponent.removeEscButtonHandler(this._escPressHandler);
+    this._filmDetailsComponent.clearNewComment();
+
+    this._onDataChange(this, null, this._film);
   }
 
   _onCommentsChange(oldComment, newComment) {
@@ -118,26 +149,6 @@ export class FilmController {
     }
   }
 
-  setDefaultView() {
-    this._closeDetailsButtonHandler();
-  }
-
-  destroy() {
-    remove(this._filmDetailsComponent);
-    remove(this._filmComponent);
-    document.removeEventListener(`keydown`, this._escPressHandler);
-  }
-
-  shake() {
-    this._filmDetailsComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
-    this._filmComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
-
-    setTimeout(() => {
-      this._filmDetailsComponent.getElement().style.animation = ``;
-      this._filmComponent.getElement().style.animation = ``;
-    }, SHAKE_ANIMATION_TIMEOUT);
-  }
-
   _setFilmHandlers() {
     this._filmComponent.setClickHandler(this._openPopup);
     this._filmComponent.setWatchlistButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHLIST));
@@ -151,13 +162,24 @@ export class FilmController {
 
     this._filmDetailsComponent.setCloseButtonHandler(this._closeDetailsButtonHandler);
     this._filmDetailsComponent.setEscButtonHandler(this._escPressHandler);
-    this._filmDetailsComponent.setWatchlistButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHLIST));
-    this._filmDetailsComponent.setWatchedButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHED));
-    this._filmDetailsComponent.setFavoriteButtonClickHandler(this._userPropertiesClickHandler(UserProperty.FAVORITE));
+    this._filmDetailsComponent.setWatchlistButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHLIST, ShowMode.EDIT));
+    this._filmDetailsComponent.setWatchedButtonClickHandler(this._userPropertiesClickHandler(UserProperty.WATCHED, ShowMode.EDIT));
+    this._filmDetailsComponent.setFavoriteButtonClickHandler(this._userPropertiesClickHandler(UserProperty.FAVORITE, ShowMode.EDIT));
 
     if (this._commentsModel.getComments().length > 0) {
       this._filmDetailsComponent.setDeleteClickHandler((this._deleteClickHandler));
     }
+
+    this._filmDetailsComponent.setOfflineHandler(this._offlineHandler);
+    this._filmDetailsComponent.setOnlineHandler(this._onlineHandler);
+  }
+
+  _offlineHandler() {
+    this._filmDetailsComponent.blockForm();
+  }
+
+  _onlineHandler() {
+    this._filmDetailsComponent.unblockForm();
   }
 
   _filmDetailsNewCommentHandler(newComment) {
@@ -172,24 +194,23 @@ export class FilmController {
   }
 
   _closeDetailsButtonHandler() {
-    remove(this._filmDetailsComponent);
-    this._filmDetailsComponent.removeEscButtonHandler(this._escPressHandler);
-    this._filmDetailsComponent.clearNewComment();
+    this._closePopup();
   }
 
   _escPressHandler(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
-      this._closeDetailsButtonHandler();
+      this._closePopup();
     }
   }
 
-  _userPropertiesClickHandler(property) {
+  _userPropertiesClickHandler(property, showMode) {
     return (evt) => {
       evt.preventDefault();
       const newFilm = FilmModel.clone(this._film);
       newFilm[property] = !newFilm[property];
       this._popupScrollTop = this._filmDetailsComponent.getElement().scrollTop;
-      this._onDataChange(this, this._film, newFilm);
+
+      this._onDataChange(this, this._film, newFilm, showMode);
     };
   }
 }

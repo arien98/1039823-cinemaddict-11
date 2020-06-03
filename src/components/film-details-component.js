@@ -222,6 +222,14 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
       .addEventListener(`click`, handler);
   }
 
+  setOfflineHandler(handler) {
+    window.addEventListener(`offline`, handler);
+  }
+
+  setOnlineHandler(handler) {
+    window.addEventListener(`online`, handler);
+  }
+
   removeEmojiClickHandler(handler) {
     this.getElement()
       .querySelector(`.film-details__emoji-list`)
@@ -287,17 +295,6 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
     this.getElement().scrollTop = scrollTop;
   }
 
-  _createNewComment() {
-    const newComment = {
-      "comment": encode(this._newComment.text),
-      "emotion": this._newComment.emoji,
-      "date": new Date().toISOString()
-    };
-
-    this._newComment = {};
-    return newComment;
-  }
-
   setScrollTop(scrollTop) {
     this._scrollTop = scrollTop;
   }
@@ -309,7 +306,6 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
   blockForm() {
     this.getElement().querySelectorAll(`input, textarea,  button`)
       .forEach((elem) => elem.setAttribute(`disabled`, `disabled`));
-
     this.removeEmojiClickHandler(this.emojiClickHandler);
   }
 
@@ -344,5 +340,16 @@ export class FilmDetailsComponent extends AbstractSmartComponent {
         elem.style.textContent = DeleteButtonText.NOT_LOADING;
       });
     this.setEmojiClickHandler(this.emojiClickHandler);
+  }
+
+  _createNewComment() {
+    const newComment = {
+      "comment": encode(this._newComment.text),
+      "emotion": this._newComment.emoji,
+      "date": new Date().toISOString()
+    };
+
+    this._newComment = {};
+    return newComment;
   }
 }

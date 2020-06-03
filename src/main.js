@@ -10,7 +10,7 @@ import {Provider} from "./api/provider.js";
 import {Store} from "./api/store.js";
 import LoadingTitleComponent from "./components/loading-title-component.js";
 
-const AUTHORIZATION = `Basic 90fdsegfdgfdg67g90a=4$jfkd`;
+const AUTHORIZATION = `Basic 90fdsegfdgdg67g90a=4$jfkd`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 const STORE_PREFIX = `cinemaaddict-localstorage`;
 const StoreDataType = {
@@ -77,6 +77,6 @@ window.addEventListener(`online`, () => {
 //     });
 // });
 
-// window.addEventListener(`offline`, () => {
-//   document.title += ` [offline]`;
-// });
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
+});

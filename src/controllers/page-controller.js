@@ -3,6 +3,7 @@ import {NoFilmsComponents} from "../components/no-films-component.js";
 import {renderElement, RenderPosition, remove} from "../utils/render.js";
 import {SortingComponent, SortType} from "../components/sorting-component.js";
 import {FilmsContainerComponent} from "../components/films-container-component.js";
+import {ShowMode} from "../constants.js";
 import {FilmController} from "./film-controller.js";
 
 export class PageController {
@@ -32,11 +33,7 @@ export class PageController {
 
   render() {
     this._films = this._filmsModel.getFilms();
-    this._topRatedFilms = this._filmsModel.getTopRatedFilms();
-    this._mostCommentedFilms = this._filmsModel.getMostCommentedFilms();
     this._filmsContainer = this._filmsContainerComponent.getContainer();
-    this._topRatedFilmsContainer = this._filmsContainerComponent.getTopRatedContainer();
-    this._mostCommentedFilmsContainer = this._filmsContainerComponent.getTopMostCommentedContainer();
 
     renderElement(this._container, this._filmsContainerComponent);
 
@@ -44,11 +41,20 @@ export class PageController {
       renderElement(this._filmsContainer, this._noFilms);
       return;
     }
+
     renderElement(this._filmsContainer, this._sortComponent, RenderPosition.BEFORE);
 
     this._renderFilmDesk(this._films, this._filmsContainer);
 
     this._renderExtraFilms();
+  }
+
+  show() {
+    this._filmsContainerComponent.show();
+  }
+
+  hide() {
+    this._filmsContainerComponent.hide();
   }
 
   _renderFilms(start, end, container, films) {
@@ -73,6 +79,12 @@ export class PageController {
   }
 
   _renderExtraFilms() {
+    this._topRatedFilms = this._filmsModel.getTopRatedFilms();
+    this._mostCommentedFilms = this._filmsModel.getMostCommentedFilms();
+
+    this._topRatedFilmsContainer = this._filmsContainerComponent.getTopRatedContainer();
+    this._mostCommentedFilmsContainer = this._filmsContainerComponent.getTopMostCommentedContainer();
+
     let newFilms = this._renderFilms(0, this._topRatedFilmsCount, this._topRatedFilmsContainer, this._topRatedFilms);
     this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
 
@@ -112,15 +124,24 @@ export class PageController {
     this._renderExtraFilms();
   }
 
-  _onDataChange(filmController, oldFilm, newFilm) {
+  _onDataChange(filmController, oldFilm, newFilm, mode = ShowMode.DEFAULT) {
+    if (oldFilm === null) {
+      this._updateFilms();
+      return;
+    }
+
     this._api.updateFilm(oldFilm.id, newFilm)
       .then((filmModel) => {
 
         const isSuccess = this._filmsModel.updateFilm(oldFilm.id, filmModel);
 
         if (isSuccess) {
-          // this._updateFilms();
+
           filmController.render(filmModel);
+        }
+
+        if (mode === ShowMode.DEFAULT) {
+          this._updateFilms();
         }
       })
       .catch(() => {
@@ -135,6 +156,7 @@ export class PageController {
   _onFilterChange() {
     this._sortComponent.setDefaultSortType();
     remove(this._sortComponent);
+
     this._updateFilms();
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
   }
@@ -149,14 +171,6 @@ export class PageController {
   _updateFilms() {
     this._removeFilms();
     this.render();
-  }
-
-  show() {
-    this._filmsContainerComponent.show();
-  }
-
-  hide() {
-    this._filmsContainerComponent.hide();
   }
 
   _showButtonClickHandler(films, filmsContainer) {

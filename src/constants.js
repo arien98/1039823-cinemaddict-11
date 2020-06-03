@@ -11,3 +11,8 @@ export const DataType = {
   FILM: `film`,
   COMMENT: `commment`
 };
+
+export const ShowMode = {
+  DEFAULT: `default`,
+  EDIT: `edit popup`,
+};

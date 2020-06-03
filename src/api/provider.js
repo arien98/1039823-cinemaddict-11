@@ -81,8 +81,7 @@ export class Provider {
           this._storeFilms.setItem(newFilm.id, newFilm.toRaw());
 
           return {newFilm, newComments};
-        })
-        .catch((err) => console.log(err));
+        });
     }
 
     this._synsRequired = true;
@@ -119,7 +118,6 @@ export class Provider {
       return this._api.deleteComment(id)
         .then(() => {
           this._storeComments.removeItem(id);
-          // debugger;
           const localCommentsAll = this._storeComments.getItems();
           const localComments = Object.values(localCommentsAll[filmId]);
 
@@ -127,18 +125,10 @@ export class Provider {
 
           const updatedComments = [].concat(localComments.slice(0, index), localComments.slice(index + 1));
 
-          console.log(updatedComments);
-
           const commentsToStore = createStoreStructure(updatedComments);
           this._storeComments.setItem(filmId, commentsToStore);
-        })
-        .catch((err) => console.log(err));
+        });
     }
-
-    this._synsRequired = true;
-
-    this._storeComments.removeItem(id);
-
     return Promise.resolve();
   }
 
