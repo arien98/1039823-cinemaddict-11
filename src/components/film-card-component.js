@@ -47,7 +47,7 @@ export class FilmCardComponent extends AbstractComponent {
     const commentsCount = comments ? comments.length : `0`;
     const yearTemplate = moment(releaseDate).format(`YYYY`);
     const durationTemplate = `${Math.floor(duration / 60)}h ${duration % 60}m`;
-    const descriptionTemplate = (description.length > 140) ? `${description.slice(0, 139)}...` : description;
+    const descriptionTemplate = (description.length > 140) ? `${description.slice(0, 139)}…` : description;
 
     return (
       `<article class="film-card">

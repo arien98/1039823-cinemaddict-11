@@ -138,10 +138,10 @@ export class PageController {
         if (isSuccess) {
 
           filmController.render(filmModel);
-        }
 
-        if (mode === ShowMode.DEFAULT) {
-          this._updateFilms();
+          if (mode === ShowMode.DEFAULT) {
+            this._updateFilms();
+          }
         }
       })
       .catch(() => {
